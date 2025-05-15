@@ -3,100 +3,80 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Calendar, MapPin, Users, ChevronDown, Search } from "lucide-react"
+import { MapPin, Users, ChevronDown, Search, Calendar } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
 // This would normally come from a database
-const events = [
+const venues = [
   {
-    id: "tech-conference",
-    title: "Annual Tech Conference",
-    type: "Conference",
-    typeColor: "blue",
-    date: "April 15, 2025",
-    time: "9:00 AM - 5:00 PM",
-    location: "Main Auditorium",
-    registeredCount: 145,
+    id: "main-auditorium",
+    name: "Main Auditorium",
+    location: "Main Campus, Block A",
+    capacity: 500,
+    amenities: ["Projector", "Sound System", "Air Conditioning", "Stage"],
     imageSrc: "/placeholder.svg?height=300&width=400",
   },
   {
-    id: "cultural-festival",
-    title: "Cultural Festival",
-    type: "Festival",
-    typeColor: "purple",
-    date: "April 20, 2025",
-    time: "10:00 AM - 8:00 PM",
-    location: "University Grounds",
-    registeredCount: 320,
+    id: "science-building-conference-room",
+    name: "Science Building Conference Room",
+    location: "Science Campus, Block C",
+    capacity: 150,
+    amenities: ["Projector", "Whiteboard", "Video Conferencing"],
     imageSrc: "/placeholder.svg?height=300&width=400",
   },
   {
-    id: "research-symposium",
-    title: "Research Symposium",
-    type: "Academic",
-    typeColor: "green",
-    date: "April 25, 2025",
-    time: "1:00 PM - 6:00 PM",
-    location: "Science Building",
-    registeredCount: 78,
+    id: "university-grounds",
+    name: "University Grounds",
+    location: "Main Campus",
+    capacity: 2000,
+    amenities: ["Open Space", "Power Supply", "Parking"],
     imageSrc: "/placeholder.svg?height=300&width=400",
   },
   {
-    id: "career-fair",
-    title: "Career Fair",
-    type: "Networking",
-    typeColor: "blue",
-    date: "May 5, 2025",
-    time: "10:00 AM - 4:00 PM",
-    location: "Business School",
-    registeredCount: 210,
+    id: "business-school-lecture-hall",
+    name: "Business School Lecture Hall",
+    location: "Business Campus, Block B",
+    capacity: 200,
+    amenities: ["Projector", "Sound System", "Air Conditioning"],
     imageSrc: "/placeholder.svg?height=300&width=400",
   },
   {
-    id: "alumni-meetup",
-    title: "Alumni Meetup",
-    type: "Networking",
-    typeColor: "blue",
-    date: "May 12, 2025",
-    time: "6:00 PM - 9:00 PM",
-    location: "University Club",
-    registeredCount: 95,
+    id: "sports-complex",
+    name: "Sports Complex",
+    location: "Sports Campus",
+    capacity: 1000,
+    amenities: ["Indoor Courts", "Changing Rooms", "Sound System"],
     imageSrc: "/placeholder.svg?height=300&width=400",
   },
   {
-    id: "sports-tournament",
-    title: "Sports Tournament",
-    type: "Sports",
-    typeColor: "green",
-    date: "May 18-20, 2025",
-    time: "All Day",
-    location: "Sports Complex",
-    registeredCount: 180,
+    id: "library-seminar-room",
+    name: "Library Seminar Room",
+    location: "Main Campus, Library Building",
+    capacity: 50,
+    amenities: ["Projector", "Whiteboard", "Computers"],
     imageSrc: "/placeholder.svg?height=300&width=400",
   },
 ]
 
-export default function EventsPage() {
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<string>("All categories")
+export default function VenuesPage() {
+  const [isCapacityOpen, setIsCapacityOpen] = useState(false)
+  const [selectedCapacity, setSelectedCapacity] = useState<string>("Any capacity")
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState<string>("")
 
-  const categoryOptions = [
-    "All categories",
-    "Conference",
-    "Festival",
-    "Academic",
-    "Networking",
-    "Sports",
-    "Workshop",
-    "Seminar",
+  const capacityOptions = [
+    "Any capacity",
+    "Up to 50 people",
+    "50-100 people",
+    "100-200 people",
+    "200-500 people",
+    "500+ people",
   ]
 
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category)
-    setIsCategoryOpen(false)
+  const handleCapacitySelect = (capacity: string) => {
+    setSelectedCapacity(capacity)
+    setIsCapacityOpen(false)
   }
 
   const formatDate = (dateString: string) => {
@@ -112,14 +92,14 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="events" />
+      <Header activePage="venues" />
 
       <main className="flex-1">
         {/* Header Section */}
         <div className="bg-purple-50 py-16">
           <div className="container mx-auto px-16 max-w-7xl text-center">
-            <h1 className="text-4xl font-bold mb-4">Events</h1>
-            <p className="text-gray-600">Browse and register for upcoming events at the University of Rwanda.</p>
+            <h1 className="text-4xl font-bold mb-4">Venues</h1>
+            <p className="text-gray-600">Browse and book venues for your events at the University of Rwanda.</p>
           </div>
         </div>
 
@@ -130,30 +110,30 @@ export default function EventsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                placeholder="Search events..."
+                placeholder="Search venues..."
                 className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div className="flex gap-4 w-full md:w-auto">
-              {/* Category Dropdown */}
+              {/* Capacity Dropdown */}
               <div className="relative">
                 <button
                   className="flex items-center justify-between gap-2 border rounded-md px-4 py-2 text-gray-700 bg-white min-w-[160px]"
-                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                  onClick={() => setIsCapacityOpen(!isCapacityOpen)}
                 >
-                  <span>{selectedCategory}</span>
+                  <span>{selectedCapacity}</span>
                   <ChevronDown className="h-4 w-4" />
                 </button>
 
-                {isCategoryOpen && (
+                {isCapacityOpen && (
                   <div className="absolute z-10 mt-1 w-full bg-white border rounded-md shadow-lg">
                     <ul className="py-1">
-                      {categoryOptions.map((option) => (
+                      {capacityOptions.map((option) => (
                         <li
                           key={option}
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                          onClick={() => handleCategorySelect(option)}
+                          onClick={() => handleCapacitySelect(option)}
                         >
                           {option}
                         </li>
@@ -189,49 +169,44 @@ export default function EventsPage() {
                 )}
               </div>
 
-              <button className="bg-gray-900 text-white rounded-md px-4 py-2 hover:bg-gray-800">Create Event</button>
+              <button className="bg-gray-900 text-white rounded-md px-4 py-2 hover:bg-gray-800">
+                Create New Venue
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Events Grid */}
+        {/* Venues Grid */}
         <div className="container mx-auto px-16 max-w-7xl pb-16">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map((event) => (
-              <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow">
+            {venues.map((venue) => (
+              <div key={venue.id} className="bg-white rounded-lg overflow-hidden shadow">
                 <div className="h-48 relative">
-                  <Image src={event.imageSrc || "/placeholder.svg"} alt={event.title} fill className="object-cover" />
+                  <Image src={venue.imageSrc || "/placeholder.svg"} alt={venue.name} fill className="object-cover" />
                 </div>
                 <div className="p-6">
-                  <div
-                    className={`inline-block px-3 py-1 text-xs font-medium rounded-full mb-2 
-                    ${event.type === "Conference" ? "bg-blue-100 text-blue-800" : ""}
-                    ${event.type === "Festival" ? "bg-purple-100 text-purple-800" : ""}
-                    ${event.type === "Academic" ? "bg-green-100 text-green-800" : ""}
-                    ${event.type === "Networking" ? "bg-blue-100 text-blue-800" : ""}
-                    ${event.type === "Sports" ? "bg-green-100 text-green-800" : ""}
-                  `}
-                  >
-                    {event.type}
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">{event.title}</h3>
+                  <h3 className="text-xl font-bold mb-4">{venue.name}</h3>
                   <div className="space-y-2 text-sm text-gray-600 mb-4">
                     <div className="flex items-center">
-                      <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                      <span>
-                        {event.date} • {event.time}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
                       <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                      <span>{event.location}</span>
+                      <span>{venue.location}</span>
                     </div>
                     <div className="flex items-center">
                       <Users className="h-4 w-4 mr-2 text-gray-400" />
-                      <span>{event.registeredCount} registered</span>
+                      <span>Capacity: {venue.capacity}</span>
                     </div>
                   </div>
-                  <Link href={`/events/${event.id}`} className="text-sm font-medium text-blue-600 hover:text-blue-800">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {venue.amenities.map((amenity) => (
+                      <span
+                        key={amenity}
+                        className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded"
+                      >
+                        {amenity}
+                      </span>
+                    ))}
+                  </div>
+                  <Link href={`/venues/${venue.id}`} className="text-sm font-medium text-blue-600 hover:text-blue-800">
                     View Details
                   </Link>
                 </div>

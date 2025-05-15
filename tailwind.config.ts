@@ -1,4 +1,4 @@
-import type { Config } from "tailwind-config"
+import type { Config } from "tailwind-config";
 
 const config: Config = {
   darkMode: ["class"],

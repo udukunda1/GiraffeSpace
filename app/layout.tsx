@@ -7,10 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "GiraffeSpace",
+  title: "GiraffeSpace - Event Management System",
   description:
     "A centralized platform for planning, organizing, and managing all types of events for your organization.",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({

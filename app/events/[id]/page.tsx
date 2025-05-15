@@ -72,8 +72,8 @@ export default function EventPage({ params }: { params: { id: string } }) {
   if (!event) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-1 container mx-auto px-4 py-8">
+        <Header activePage="events" />
+        <main className="flex-1 container mx-auto px-16 py-8">
           <h1 className="text-3xl font-bold mb-4">Event Not Found</h1>
           <p className="mb-8">The event you're looking for doesn't exist or has been removed.</p>
           <Link href="/events" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
@@ -87,9 +87,9 @@ export default function EventPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header activePage="events" />
 
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-16 py-8 max-w-7xl">
         <Link href="/events" className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Events
