@@ -7,8 +7,20 @@ import { FeatureCard } from "@/components/feature-card"
 import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { Section } from "@/components/section"
+import { HeroSlideshow } from "@/components/hero-slideshow"
 
 export default function Home() {
+  const heroImages = [
+    {
+      src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/College%20Events%20%282%29-JPLWugAqmW1tfuxPOCyjRsA8svsqEi.png",
+      alt: "Speaker at a conference podium addressing an audience at a formal event",
+    },
+    {
+      src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/College%20Events%20%283%29-eGHN8itDszs54mjzAZht9i9JV2vxvR.png",
+      alt: "Conference presentation with large screens and audience in theater seating",
+    },
+  ]
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header activePage="home" />
@@ -36,11 +48,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="relative h-64 md:h-80 rounded-lg overflow-hidden">
-                <img
-                  src="/placeholder.svg?height=400&width=600"
-                  alt="Event presentation"
-                  className="object-cover w-full h-full"
-                />
+                <HeroSlideshow images={heroImages} interval={5000} />
               </div>
             </div>
           </Container>
