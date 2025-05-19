@@ -9,8 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {
   BarChart,
   Bar,
-  LineChart,
-  Line,
   PieChart,
   Pie,
   Cell,
@@ -52,21 +50,6 @@ const eventsByStatus = [
   { name: "Ongoing", value: 15 },
   { name: "Completed", value: 35 },
   { name: "Cancelled", value: 5 },
-]
-
-const eventGrowthTrend = [
-  { month: "Jan", events: 12 },
-  { month: "Feb", events: 15 },
-  { month: "Mar", events: 18 },
-  { month: "Apr", events: 22 },
-  { month: "May", events: 28 },
-  { month: "Jun", events: 32 },
-  { month: "Jul", events: 38 },
-  { month: "Aug", events: 42 },
-  { month: "Sep", events: 45 },
-  { month: "Oct", events: 48 },
-  { month: "Nov", events: 52 },
-  { month: "Dec", events: 58 },
 ]
 
 const attendanceByEventType = [
@@ -226,43 +209,6 @@ export default function DashboardPage() {
                   </CardContent>
                 </Card>
               </div>
-
-              {/* Event Growth Trend - Full Width */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Event Growth Trend</CardTitle>
-                  <CardDescription>Number of events over time</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[400px]">
-                    <ChartContainer
-                      config={{
-                        events: {
-                          label: "Events",
-                          color: "hsl(var(--chart-1))",
-                        },
-                      }}
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={eventGrowthTrend}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="month" />
-                          <YAxis />
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <Legend />
-                          <Line
-                            type="monotone"
-                            dataKey="events"
-                            stroke="var(--color-events)"
-                            strokeWidth={2}
-                            activeDot={{ r: 8 }}
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  </div>
-                </CardContent>
-              </Card>
             </TabsContent>
 
             <TabsContent value="attendance" className="space-y-8">
