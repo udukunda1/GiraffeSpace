@@ -1,8 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
-import { Menu, X } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Menu, X, ChevronDown, LogOut } from "lucide-react"
+import { useAuth } from "@/components/providers"
+import { useRouter } from "next/navigation"
 
 interface HeaderProps {
   activePage?: string
@@ -10,6 +12,24 @@ interface HeaderProps {
 
 export function Header({ activePage }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { isLoggedIn, logout } = useAuth()
+  const router = useRouter()
+
+  // Set mounted state after component mounts
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const handleLogout = () => {
+    logout()
+    setIsUserMenuOpen(false)
+    router.push("/")
+  }
+
+  // Don't render logged-in state until component is mounted
+  const showLoggedIn = mounted && isLoggedIn
 
   return (
     <header className="border-b">
@@ -74,25 +94,96 @@ export function Header({ activePage }: HeaderProps) {
           </Link>
         </nav>
 
-        {/* Desktop auth buttons */}
-        <div className="hidden md:flex items-center space-x-4">
-          <Link
-            href="/login"
-            className={`text-sm font-medium ${
-              activePage === "login" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Log In
-          </Link>
-          <Link
-            href="/register"
-            className={`text-sm font-medium text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-800 ${
-              activePage === "register" ? "bg-blue-600 hover:bg-blue-700" : ""
-            }`}
-          >
-            Register
-          </Link>
-        </div>
+        {/* Desktop auth buttons or user menu */}
+        {!mounted ? (
+          // Show nothing while mounting to prevent hydration mismatch
+          <div className="hidden md:block w-[150px]"></div>
+        ) : showLoggedIn ? (
+          <div className="hidden md:flex items-center space-x-6">
+            <Link
+              href="/manage"
+              className={`text-sm font-medium ${
+                activePage === "manage" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Manage
+            </Link>
+            <Link
+              href="/tickets"
+              className={`text-sm font-medium ${
+                activePage === "tickets" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              My tickets
+            </Link>
+            <div className="relative">
+              <div
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              >
+                <div className="w-8 h-8 bg-teal-500 rounded-full overflow-hidden">
+                  <img
+                    src="/placeholder.svg?height=32&width=32"
+                    alt="User avatar"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="text-sm font-medium">John Doe</span>
+                <ChevronDown className="h-4 w-4" />
+              </div>
+
+              {/* User dropdown menu */}
+              {isUserMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
+                  <div className="py-1">
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      href="/settings"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      Settings
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      <div className="flex items-center">
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Logout
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="hidden md:flex items-center space-x-4">
+            <Link
+              href="/login"
+              className={`text-sm font-medium ${
+                activePage === "login" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Log In
+            </Link>
+            <Link
+              href="/register"
+              className={`text-sm font-medium text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-800 ${
+                activePage === "register" ? "bg-blue-600 hover:bg-blue-700" : ""
+              }`}
+            >
+              Register
+            </Link>
+          </div>
+        )}
 
         {/* Mobile menu */}
         {isMenuOpen && (
@@ -144,26 +235,72 @@ export function Header({ activePage }: HeaderProps) {
                 >
                   Dashboard
                 </Link>
-                <div className="pt-4 border-t flex flex-col space-y-4">
-                  <Link
-                    href="/login"
-                    className={`text-sm font-medium ${
-                      activePage === "login" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    href="/register"
-                    className={`text-sm font-medium text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-800 text-center ${
-                      activePage === "register" ? "bg-blue-600 hover:bg-blue-700" : ""
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Register
-                  </Link>
-                </div>
+
+                {mounted && showLoggedIn ? (
+                  <>
+                    <Link
+                      href="/manage"
+                      className={`text-sm font-medium ${
+                        activePage === "manage" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Manage
+                    </Link>
+                    <Link
+                      href="/tickets"
+                      className={`text-sm font-medium ${
+                        activePage === "tickets" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My tickets
+                    </Link>
+                    <div className="pt-4 border-t">
+                      <div className="flex items-center space-x-2 mb-4">
+                        <div className="w-8 h-8 bg-teal-500 rounded-full overflow-hidden">
+                          <img
+                            src="/placeholder.svg?height=32&width=32"
+                            alt="User avatar"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-sm font-medium">John Doe</span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          handleLogout()
+                          setIsMenuOpen(false)
+                        }}
+                        className="flex items-center text-sm text-red-600"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Logout
+                      </button>
+                    </div>
+                  </>
+                ) : mounted ? (
+                  <div className="pt-4 border-t flex flex-col space-y-4">
+                    <Link
+                      href="/login"
+                      className={`text-sm font-medium ${
+                        activePage === "login" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Log In
+                    </Link>
+                    <Link
+                      href="/register"
+                      className={`text-sm font-medium text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-800 text-center ${
+                        activePage === "register" ? "bg-blue-600 hover:bg-blue-700" : ""
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Register
+                    </Link>
+                  </div>
+                ) : null}
               </nav>
             </div>
           </div>
