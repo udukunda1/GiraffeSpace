@@ -15,7 +15,7 @@ const venues = [
     location: "Main Campus, Block A",
     capacity: 500,
     amenities: ["Projector", "Sound System", "Air Conditioning", "Stage"],
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/main.png?height=300&width=400",
   },
   {
     id: "science-building-conference-room",
@@ -23,7 +23,7 @@ const venues = [
     location: "Science Campus, Block C",
     capacity: 150,
     amenities: ["Projector", "Whiteboard", "Video Conferencing"],
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/muhabura.png?height=300&width=400",
   },
   {
     id: "university-grounds",
@@ -31,7 +31,7 @@ const venues = [
     location: "Main Campus",
     capacity: 2000,
     amenities: ["Open Space", "Power Supply", "Parking"],
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/grounds.png?height=300&width=400",
   },
   {
     id: "business-school-lecture-hall",
@@ -39,7 +39,7 @@ const venues = [
     location: "Business Campus, Block B",
     capacity: 200,
     amenities: ["Projector", "Sound System", "Air Conditioning"],
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/hall.png?height=300&width=400",
   },
   {
     id: "sports-complex",
@@ -47,7 +47,7 @@ const venues = [
     location: "Sports Campus",
     capacity: 1000,
     amenities: ["Indoor Courts", "Changing Rooms", "Sound System"],
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/sportscomplex.png?height=300&width=400",
   },
   {
     id: "library-seminar-room",
@@ -55,7 +55,7 @@ const venues = [
     location: "Main Campus, Library Building",
     capacity: 50,
     amenities: ["Projector", "Whiteboard", "Computers"],
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/libsseminar.png?height=300&width=400",
   },
 ]
 

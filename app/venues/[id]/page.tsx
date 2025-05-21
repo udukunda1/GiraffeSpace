@@ -29,7 +29,7 @@ const getVenueData = (id: string) => {
         { date: "May 16, 2025", timeSlots: ["9:00 AM - 12:00 PM", "1:00 PM - 5:00 PM"] },
         { date: "May 17, 2025", timeSlots: ["9:00 AM - 12:00 PM", "1:00 PM - 5:00 PM"] },
       ],
-      imageSrc: "/placeholder.svg?height=500&width=1000",
+      imageSrc: "/main.png?height=500&width=1000",
     },
     "science-building-conference-room": {
       name: "Science Building Conference Room",
@@ -50,7 +50,7 @@ const getVenueData = (id: string) => {
         { date: "May 16, 2025", timeSlots: ["9:00 AM - 12:00 PM", "1:00 PM - 5:00 PM"] },
         { date: "May 17, 2025", timeSlots: ["9:00 AM - 12:00 PM", "1:00 PM - 5:00 PM"] },
       ],
-      imageSrc: "/placeholder.svg?height=500&width=1000",
+      imageSrc: "/muhabura.png?height=500&width=1000",
     },
     "university-grounds": {
       name: "University Grounds",
@@ -71,7 +71,7 @@ const getVenueData = (id: string) => {
         { date: "May 16, 2025", timeSlots: ["8:00 AM - 8:00 PM"] },
         { date: "May 17, 2025", timeSlots: ["8:00 AM - 8:00 PM"] },
       ],
-      imageSrc: "/placeholder.svg?height=500&width=1000",
+      imageSrc: "/grounds.png?height=500&width=1000",
     },
   }
 
