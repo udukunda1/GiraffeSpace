@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { Menu, X, ChevronDown, LogOut } from "lucide-react"
+import { Menu, X, ChevronDown, LogOut, Calendar, MapPin } from "lucide-react"
 import { useAuth } from "@/components/providers"
 import { useRouter } from "next/navigation"
 
@@ -13,6 +13,7 @@ interface HeaderProps {
 export function Header({ activePage }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [isManageMenuOpen, setIsManageMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { isLoggedIn, logout } = useAuth()
   const router = useRouter()
@@ -21,6 +22,28 @@ export function Header({ activePage }: HeaderProps) {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+
+      // Close manage menu if clicking outside
+      if (isManageMenuOpen && !target.closest("[data-manage-menu]")) {
+        setIsManageMenuOpen(false)
+      }
+
+      // Close user menu if clicking outside
+      if (isUserMenuOpen && !target.closest("[data-user-menu]")) {
+        setIsUserMenuOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isManageMenuOpen, isUserMenuOpen])
 
   const handleLogout = () => {
     logout()
@@ -100,14 +123,45 @@ export function Header({ activePage }: HeaderProps) {
           <div className="hidden md:block w-[150px]"></div>
         ) : showLoggedIn ? (
           <div className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/manage"
-              className={`text-sm font-medium ${
-                activePage === "manage" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Manage
-            </Link>
+            {/* Manage dropdown */}
+            <div className="relative" data-manage-menu>
+              <button
+                className={`flex items-center space-x-1 text-sm font-medium ${
+                  activePage === "manage" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+                }`}
+                onClick={() => setIsManageMenuOpen(!isManageMenuOpen)}
+                aria-expanded={isManageMenuOpen}
+                aria-haspopup="true"
+              >
+                <span>Manage</span>
+                <ChevronDown className="h-4 w-4" />
+              </button>
+
+              {/* Manage dropdown menu */}
+              {isManageMenuOpen && (
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
+                  <div className="py-1">
+                    <Link
+                      href="/manage/events"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsManageMenuOpen(false)}
+                    >
+                      <Calendar className="h-4 w-4 mr-2 text-gray-500" />
+                      Manage Events
+                    </Link>
+                    <Link
+                      href="/manage/venues"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsManageMenuOpen(false)}
+                    >
+                      <MapPin className="h-4 w-4 mr-2 text-gray-500" />
+                      Manage Venues
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <Link
               href="/tickets"
               className={`text-sm font-medium ${
@@ -116,7 +170,7 @@ export function Header({ activePage }: HeaderProps) {
             >
               My tickets
             </Link>
-            <div className="relative">
+            <div className="relative" data-user-menu>
               <div
                 className="flex items-center space-x-2 cursor-pointer"
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -238,15 +292,29 @@ export function Header({ activePage }: HeaderProps) {
 
                 {mounted && showLoggedIn ? (
                   <>
-                    <Link
-                      href="/manage"
-                      className={`text-sm font-medium ${
-                        activePage === "manage" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Manage
-                    </Link>
+                    {/* Mobile Manage section */}
+                    <div className="pt-4 border-t">
+                      <p className="text-sm font-medium text-gray-900 mb-2">Manage</p>
+                      <div className="pl-2 space-y-2">
+                        <Link
+                          href="/manage/events"
+                          className="flex items-center text-sm text-gray-600 hover:text-gray-900"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          <Calendar className="h-4 w-4 mr-2 text-gray-500" />
+                          Manage Events
+                        </Link>
+                        <Link
+                          href="/manage/venues"
+                          className="flex items-center text-sm text-gray-600 hover:text-gray-900"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          <MapPin className="h-4 w-4 mr-2 text-gray-500" />
+                          Manage Venues
+                        </Link>
+                      </div>
+                    </div>
+
                     <Link
                       href="/tickets"
                       className={`text-sm font-medium ${
@@ -267,12 +335,28 @@ export function Header({ activePage }: HeaderProps) {
                         </div>
                         <span className="text-sm font-medium">John Doe</span>
                       </div>
+                      <div className="space-y-2">
+                        <Link
+                          href="/profile"
+                          className="block text-sm text-gray-600 hover:text-gray-900"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          Profile
+                        </Link>
+                        <Link
+                          href="/settings"
+                          className="block text-sm text-gray-600 hover:text-gray-900"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          Settings
+                        </Link>
+                      </div>
                       <button
                         onClick={() => {
                           handleLogout()
                           setIsMenuOpen(false)
                         }}
-                        className="flex items-center text-sm text-red-600"
+                        className="flex items-center text-sm text-red-600 mt-4"
                       >
                         <LogOut className="h-4 w-4 mr-2" />
                         Logout
