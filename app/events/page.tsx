@@ -18,7 +18,7 @@ const events = [
     time: "9:00 AM - 5:00 PM",
     location: "Main Auditorium",
     registeredCount: 145,
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/techconference.png",
   },
   {
     id: "cultural-festival",
@@ -29,7 +29,7 @@ const events = [
     time: "10:00 AM - 8:00 PM",
     location: "University Grounds",
     registeredCount: 320,
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/cultural.png",
   },
   {
     id: "research-symposium",
@@ -40,7 +40,7 @@ const events = [
     time: "1:00 PM - 6:00 PM",
     location: "Science Building",
     registeredCount: 78,
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/research.png",
   },
   {
     id: "career-fair",
@@ -51,7 +51,7 @@ const events = [
     time: "10:00 AM - 4:00 PM",
     location: "Business School",
     registeredCount: 210,
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/career.png",
   },
   {
     id: "alumni-meetup",
@@ -62,7 +62,7 @@ const events = [
     time: "6:00 PM - 9:00 PM",
     location: "University Club",
     registeredCount: 95,
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/alumni.png?height=300&width=400",
   },
   {
     id: "sports-tournament",
@@ -73,7 +73,7 @@ const events = [
     time: "All Day",
     location: "Sports Complex",
     registeredCount: 180,
-    imageSrc: "/placeholder.svg?height=300&width=400",
+    imageSrc: "/sports.png?height=300&width=400",
   },
 ]
 

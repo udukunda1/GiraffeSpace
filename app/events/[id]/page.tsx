@@ -22,7 +22,7 @@ const getEventData = (id: string) => {
         "Join us for the annual technology conference featuring keynote speakers, workshops, and networking opportunities. This event brings together industry leaders, researchers, and students to discuss the latest trends and innovations in technology.",
       organizer: "Computer Science Department",
       resources: ["Projector", "Sound System", "Chairs", "Tables", "Wi-Fi"],
-      imageSrc: "/placeholder.svg?height=500&width=1000",
+      imageSrc: "/techconference.png?height=500&width=1000",
       tags: ["Conference", "Upcoming"],
     },
     "cultural-festival": {
@@ -40,7 +40,7 @@ const getEventData = (id: string) => {
         "Experience the rich cultural diversity of Rwanda and beyond at our annual cultural festival. Enjoy traditional performances, art exhibitions, culinary delights, and interactive cultural workshops.",
       organizer: "Cultural Affairs Office",
       resources: ["Stage", "Sound System", "Tents", "Food Stalls", "Restrooms"],
-      imageSrc: "/placeholder.svg?height=500&width=1000",
+      imageSrc: "/cultural.png?height=500&width=1000",
       tags: ["Festival", "Upcoming"],
     },
     "research-symposium": {
@@ -58,7 +58,7 @@ const getEventData = (id: string) => {
         "A platform for graduate students to present their research findings and receive feedback from faculty and peers. The symposium covers various disciplines and encourages interdisciplinary collaboration.",
       organizer: "Graduate Studies Office",
       resources: ["Projector", "Microphones", "Poster Boards", "Chairs", "Wi-Fi"],
-      imageSrc: "/placeholder.svg?height=500&width=1000",
+      imageSrc: "/research.png?height=500&width=1000",
       tags: ["Academic", "Upcoming"],
     },
   }

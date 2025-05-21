@@ -124,10 +124,7 @@ export default function Home() {
                 date="April 15, 2025 • 9:00 AM - 5:00 PM"
                 location="Main Auditorium"
                 registeredCount={145}
-                gradient={true}
-                gradientFrom="from-blue-500"
-                gradientTo="to-cyan-500"
-                specialText="TECHNOLOGY CONFERENCE"
+                imageSrc="/techconference.png"
               />
 
               <EventCard
@@ -138,7 +135,7 @@ export default function Home() {
                 date="April 20, 2025 • 10:00 AM - 8:00 PM"
                 location="University Grounds"
                 registeredCount={320}
-                imageSrc="/placeholder.svg?height=300&width=400"
+                imageSrc="/cultural.png"
               />
 
               <EventCard
@@ -149,7 +146,7 @@ export default function Home() {
                 date="April 25, 2025 • 1:00 PM - 6:00 PM"
                 location="Science Building"
                 registeredCount={78}
-                imageSrc="/placeholder.svg?height=300&width=400"
+                imageSrc="/research.png"
               />
             </div>
 
