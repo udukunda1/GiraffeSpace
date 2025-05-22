@@ -20,9 +20,9 @@ export function Sidebar() {
         <ul className="space-y-2">
           <li>
             <Link
-              href="/manage/dashboard"
+              href="/manage/venues/dashboard"
               className={`flex items-center gap-3 px-3 py-2 rounded-md ${
-                isActive("/manage/dashboard")
+                isActive("/manage/venues/dashboard")
                   ? "bg-gray-100 text-gray-900"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}
@@ -33,9 +33,9 @@ export function Sidebar() {
           </li>
           <li>
             <Link
-              href="/manage/venues"
+              href="/manage/venues/myvenues"
               className={`flex items-center gap-3 px-3 py-2 rounded-md ${
-                isActive("/manage/venues")
+                isActive("/manage/venues/myvenues")
                   ? "bg-gray-100 text-gray-900"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}
@@ -46,9 +46,9 @@ export function Sidebar() {
           </li>
           <li>
             <Link
-              href="/manage/bookings"
+              href="/manage/venues/bookings"
               className={`flex items-center gap-3 px-3 py-2 rounded-md ${
-                isActive("/manage/bookings")
+                isActive("/manage/venues/bookings")
                   ? "bg-gray-100 text-gray-900"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}

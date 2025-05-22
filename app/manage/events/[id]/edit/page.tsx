@@ -173,7 +173,6 @@ export default function EditEventPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header activePage="manage" />
         <main className="flex-1 bg-white">
           <div className="container mx-auto px-4 md:px-16 max-w-7xl py-8">
             <div className="flex justify-center items-center h-64">
@@ -189,7 +188,6 @@ export default function EditEventPage() {
   if (!formData.name) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header activePage="manage" />
         <main className="flex-1 bg-white">
           <div className="container mx-auto px-4 md:px-16 max-w-7xl py-8">
             <Link href="/manage/events" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
@@ -213,8 +211,6 @@ export default function EditEventPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="manage" />
-
       <main className="flex-1 bg-white">
         <div className="container mx-auto px-4 md:px-16 max-w-7xl py-8">
           <Link href={`/manage/events/${id}`} className="flex items-center text-gray-600 hover:text-gray-900 mb-6">

@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import { Building, Calendar, Clock, DollarSign } from "lucide-react"
 import Link from "next/link"
 import { Sidebar } from "@/components/sidebar"
+import { Header } from "@/components/header"
 
 export default function DashboardPage() {
   const { isLoggedIn } = useAuth()
@@ -18,6 +19,7 @@ export default function DashboardPage() {
   }, [isLoggedIn, router])
 
   return (
+    <>
     <div className="min-h-screen flex">
       <Sidebar />
 
@@ -141,5 +143,6 @@ export default function DashboardPage() {
         </div>
       </main>
     </div>
+    </>
   )
 }

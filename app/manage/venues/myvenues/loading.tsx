@@ -7,7 +7,6 @@ import { Loading } from "@/components/loading"
 export default function ManageVenuesLoading() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="manage" />
       <main className="flex-1">
         <div className="bg-green-50 py-16">
           <div className="container mx-auto px-4 md:px-16 max-w-7xl">

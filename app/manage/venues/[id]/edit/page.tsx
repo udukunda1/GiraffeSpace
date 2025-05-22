@@ -164,10 +164,9 @@ export default function EditVenuePage() {
   if (!formData.name) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header activePage="manage" />
         <main className="flex-1 bg-white">
           <div className="container mx-auto px-4 md:px-16 max-w-7xl py-8">
-            <Link href="/manage/venues" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
+            <Link href="/manage/venues/myvenues" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Venues
             </Link>
@@ -175,7 +174,7 @@ export default function EditVenuePage() {
               <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
               <h1 className="text-2xl font-bold mb-2">Venue Not Found</h1>
               <p className="text-gray-600 mb-6">The venue you're trying to edit doesn't exist or has been removed.</p>
-              <Link href="/manage/venues" className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800">
+              <Link href="/manage/venues/myvenues" className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800">
                 Return to Venues
               </Link>
             </div>

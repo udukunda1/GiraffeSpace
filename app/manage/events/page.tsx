@@ -80,7 +80,6 @@ export default function ManageEventsPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="manage" />
 
       <main className="flex-1 bg-white">
         <div className="container mx-auto px-4 md:px-16 max-w-7xl py-8">

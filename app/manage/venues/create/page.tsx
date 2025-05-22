@@ -80,12 +80,10 @@ export default function CreateVenuePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="manage" />
-
       <main className="flex-1 bg-white">
         <div className="container mx-auto px-4 md:px-16 max-w-7xl py-8">
           <div className="flex items-center mb-6">
-            <Link href="/manage/venues" className="flex items-center text-gray-600 hover:text-gray-900">
+            <Link href="/manage/venues/myvenues" className="flex items-center text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-4 w-4 mr-2" />
               <span>Back</span>
             </Link>

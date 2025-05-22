@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Check, X } from "lucide-react"
 import { Sidebar } from "@/components/sidebar"
+import { Header } from "@/components/header"
 
 // Sample booking data
 const bookingsData = [
@@ -88,6 +89,7 @@ export default function BookingRequestsPage() {
   })
 
   return (
+    <>
     <div className="min-h-screen flex">
       <Sidebar />
 
@@ -205,5 +207,6 @@ export default function BookingRequestsPage() {
         </div>
       </main>
     </div>
+    </>
   )
 }

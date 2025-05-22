@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { MapPin } from "lucide-react"
 import Link from "next/link"
 import { Sidebar } from "@/components/sidebar"
+import { Header } from "@/components/header"
 
 // Sample venue data
 const venuesData = [
@@ -58,6 +59,7 @@ export default function ManageVenuesPage() {
   )
 
   return (
+    <>
     <div className="min-h-screen flex">
       <Sidebar />
 
@@ -163,5 +165,6 @@ export default function ManageVenuesPage() {
         </div>
       </main>
     </div>
+    </>
   )
 }

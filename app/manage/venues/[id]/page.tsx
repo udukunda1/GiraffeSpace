@@ -119,14 +119,14 @@ export default function VenueDetailsPage() {
         <Sidebar />
         <main className="flex-1 bg-white">
           <div className="p-8">
-            <Link href="/manage/venues" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
+            <Link href="/manage/venues/myvenues" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Venues
             </Link>
             <div className="bg-white rounded-lg shadow p-8 text-center">
               <h1 className="text-2xl font-bold mb-2">Venue Not Found</h1>
               <p className="text-gray-600 mb-6">The venue you're looking for doesn't exist or has been removed.</p>
-              <Link href="/manage/venues" className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800">
+              <Link href="/manage/venues/myvenues" className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800">
                 Return to Venues
               </Link>
             </div>
@@ -144,7 +144,7 @@ export default function VenueDetailsPage() {
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <Link href="/manage/venues" className="text-gray-600 hover:text-gray-900 mr-4">
+              <Link href="/manage/venues/myvenues" className="text-gray-600 hover:text-gray-900 mr-4">
                 <ArrowLeft className="h-5 w-5" />
               </Link>
               <h1 className="text-2xl font-bold">{venue.name}</h1>
