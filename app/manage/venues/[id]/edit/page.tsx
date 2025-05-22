@@ -148,7 +148,6 @@ export default function EditVenuePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header activePage="manage" />
         <main className="flex-1 bg-white">
           <div className="container mx-auto px-4 md:px-16 max-w-7xl py-8">
             <div className="flex justify-center items-center h-64">
@@ -187,8 +186,6 @@ export default function EditVenuePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="manage" />
-
       <main className="flex-1 bg-white">
         <div className="container mx-auto px-4 md:px-16 max-w-7xl py-8">
           <div className="flex items-center mb-6">

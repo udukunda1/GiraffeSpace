@@ -305,7 +305,7 @@ export function Header({ activePage }: HeaderProps) {
                           Manage Events
                         </Link>
                         <Link
-                          href="/manage/venues"
+                          href="/manage/venues/myvenues"
                           className="flex items-center text-sm text-gray-600 hover:text-gray-900"
                           onClick={() => setIsMenuOpen(false)}
                         >
