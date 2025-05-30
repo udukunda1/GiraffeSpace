@@ -17,7 +17,7 @@ const venuesData = [
     capacity: 500,
     pricePerHour: 1000,
     bookings: 8,
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-9m7QZsRVcRP5PzKB678XCzqRchcPk8.png",
+    image: "/main.png",
   },
   {
     id: "riverside-meeting-room",
@@ -26,7 +26,7 @@ const venuesData = [
     capacity: 50,
     pricePerHour: 200,
     bookings: 3,
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-9m7QZsRVcRP5PzKB678XCzqRchcPk8.png",
+    image: "/main.png",
   },
   {
     id: "downtown-studio",
@@ -35,7 +35,7 @@ const venuesData = [
     capacity: 100,
     pricePerHour: 350,
     bookings: 1,
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-9m7QZsRVcRP5PzKB678XCzqRchcPk8.png",
+    image: "/main.png",
   },
 ]
 
