@@ -54,7 +54,7 @@ export default function LoginPage() {
                   Email / UserName / Phone number
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   id="email"
                   name="email"
                   placeholder="name@example.com"
