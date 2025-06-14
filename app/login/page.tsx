@@ -46,12 +46,12 @@ export default function LoginPage() {
 
           <div className="bg-white rounded-lg border p-6 mb-6">
             <h2 className="text-xl font-bold mb-1">Sign In</h2>
-            <p className="text-gray-600 text-sm mb-6">Choose your role to access the appropriate dashboard</p>
+            <p className="text-gray-600 text-sm mb-6">Enter your info to access your account</p>
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
+                  Email / UserName / Phone number
                 </label>
                 <input
                   type="email"

@@ -1,51 +1,53 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 
-interface SlideshowProps {
-  images: {
-    src: string
-    alt: string
-  }[]
+interface HeroImage {
+  src: string
+  alt: string
+}
+
+interface HeroSlideshowProps {
+  images: HeroImage[]
   interval?: number
 }
 
-export function HeroSlideshow({ images, interval = 3000 }: SlideshowProps) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+export function HeroSlideshow({ images, interval = 5000 }: HeroSlideshowProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
+    if (images.length <= 1) return
+
     const timer = setInterval(() => {
-      setIsTransitioning(true)
-      setTimeout(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
-        setIsTransitioning(false)
-      }, 500) // Transition duration
+      setCurrentImageIndex((prevIndex) => (prevIndex < images.length - 1 ? prevIndex + 1 : 0))
     }, interval)
 
     return () => clearInterval(timer)
   }, [images.length, interval])
 
+  if (images.length === 0) {
+    return (
+      <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+        <span className="text-gray-500">No images available</span>
+      </div>
+    )
+  }
+
   return (
     <div className="relative h-full w-full overflow-hidden rounded-lg">
       {images.map((image, index) => (
-        <div
+        <Image
           key={index}
-          className={`absolute inset-0 h-full w-full transition-opacity duration-500 ease-out ${
-            index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
-          } ${isTransitioning && index === currentIndex ? "opacity-70" : ""}`}
-        >
-          <Image
-            src={image.src || "/placeholder.svg"}
-            alt={image.alt}
-            fill
-            className="object-cover"
-            priority={index === 0}
-          />
-        </div>
+          src={image.src || "/placeholder.svg"}
+          alt={image.alt}
+          fill
+          className={`object-cover transition-opacity duration-1000 ease-in-out ${
+            index === currentImageIndex ? "opacity-100" : "opacity-0"
+          }`}
+          priority={index === 0}
+        />
       ))}
-      <div className="absolute inset-0 bg-black/30 z-20"></div>
     </div>
   )
 }

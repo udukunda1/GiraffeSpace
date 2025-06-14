@@ -1,3 +1,6 @@
+
+"use client"
+
 import { CalendarDays, Users, MapPin, BarChart3, CheckCircle, Lock } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -8,8 +11,20 @@ import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { Section } from "@/components/section"
 import { HeroSlideshow } from "@/components/hero-slideshow"
+import { useEffect, useState } from "react"
 
 export default function Home() {
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    // Trigger animations after component mounts
+    const timer = setTimeout(() => {
+      setIsLoaded(true)
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   const heroImages = [
     {
       src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/College%20Events%20%282%29-JPLWugAqmW1tfuxPOCyjRsA8svsqEi.png",
@@ -30,15 +45,27 @@ export default function Home() {
         <Section background="blue">
           <Container>
             <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
+              <div className="space-y-6">
+                <h1
+                  className={`text-4xl md:text-5xl font-bold tracking-tight text-gray-900 transform transition-all duration-1000 ease-out ${
+                    isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                  }`}
+                >
                   Events Management System
                 </h1>
-                <p className="text-lg text-gray-600 mb-8">
+                <p
+                  className={`text-lg text-gray-600 transform transition-all duration-1000 ease-out delay-200 ${
+                    isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                  }`}
+                >
                   A centralized platform for planning, organizing, and managing all types of events for your
                   organization.
                 </p>
-                <div className="flex flex-wrap gap-4">
+                <div
+                  className={`flex flex-wrap gap-4 transform transition-all duration-1000 ease-out delay-400 ${
+                    isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                  }`}
+                >
                   <Button href="/events" variant="primary">
                     Browse Events
                   </Button>
@@ -47,7 +74,11 @@ export default function Home() {
                   </Button>
                 </div>
               </div>
-              <div className="relative h-64 md:h-80 rounded-lg overflow-hidden">
+              <div
+                className={`relative h-64 md:h-80 rounded-lg overflow-hidden transform transition-all duration-1000 ease-out delay-300 ${
+                  isLoaded ? "translate-x-0 opacity-100 scale-100" : "translate-x-8 opacity-0 scale-95"
+                }`}
+              >
                 <HeroSlideshow images={heroImages} interval={5000} />
               </div>
             </div>
@@ -180,3 +211,4 @@ export default function Home() {
     </div>
   )
 }
+

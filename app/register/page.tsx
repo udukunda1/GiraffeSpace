@@ -21,10 +21,10 @@ export default function RegisterPage() {
 
           <div className="bg-white rounded-lg border p-6 mb-6">
             <h2 className="text-xl font-bold mb-1">Sign Up</h2>
-            <p className="text-gray-600 text-sm mb-6">Choose your role to register with the appropriate permissions</p>
+            <p className="text-gray-600 text-sm mb-6">register</p>
 
             <form>
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              {/* <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
                     First name
@@ -51,6 +51,20 @@ export default function RegisterPage() {
                     required
                   />
                 </div>
+              </div> */}
+
+              <div className="mb-4">
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                  UserName
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  placeholder="johndoe"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
               </div>
 
               <div className="mb-4">
@@ -62,6 +76,20 @@ export default function RegisterPage() {
                   id="email"
                   name="email"
                   placeholder="name@example.com"
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="phone-number" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone number
+                </label>
+                <input
+                  type="text"
+                  id="phone-number"
+                  name="phone-number"
+                  placeholder="0780000000"
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
