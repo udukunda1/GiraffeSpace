@@ -25,7 +25,7 @@ const eventsData = [
     organizer: "Tech Association of Rwanda",
     category: "Conference",
     ticketPrice: "$50",
-    featuredImage: "/placeholder.svg?height=400&width=800&text=ANNUAL+CONFERENCE",
+    featuredImage: "/techconference.png?height=300&width=400",
     createdAt: "January 15, 2025",
   },
   {
@@ -43,7 +43,7 @@ const eventsData = [
     organizer: "TechCorp Rwanda",
     category: "Product Launch",
     ticketPrice: "Free",
-    featuredImage: "/placeholder.svg?height=400&width=800&text=PRODUCT+LAUNCH",
+    featuredImage: "/techconference.png?height=300&width=400",
     createdAt: "January 20, 2025",
   },
   {
@@ -61,7 +61,7 @@ const eventsData = [
     organizer: "Corporate Events Rwanda",
     category: "Corporate",
     ticketPrice: "$75",
-    featuredImage: "/placeholder.svg?height=400&width=800&text=TEAM+BUILDING+RETREAT",
+    featuredImage: "/techconference.png?height=300&width=400",
     createdAt: "January 25, 2025",
   },
   {
@@ -79,7 +79,7 @@ const eventsData = [
     organizer: "Business Solutions Ltd",
     category: "Networking",
     ticketPrice: "By Invitation",
-    featuredImage: "/placeholder.svg?height=400&width=800&text=CLIENT+APPRECIATION+DAY",
+    featuredImage: "/techconference.png?height=300&width=400",
     createdAt: "February 5, 2025",
   },
 ]
