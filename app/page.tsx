@@ -1,4 +1,3 @@
-
 "use client"
 
 import { CalendarDays, Users, MapPin, BarChart3, CheckCircle, Lock } from "lucide-react"
@@ -148,36 +147,39 @@ export default function Home() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <EventCard
-                id="tech-conference"
+                id="tech-conference-2025"
                 title="Annual Tech Conference 2025"
                 type="Conference"
                 typeColor="blue"
                 date="April 15, 2025 • 9:00 AM - 5:00 PM"
                 location="Main Auditorium"
                 registeredCount={145}
-                imageSrc="/techconference.png"
+                imageSrc="/placeholder.svg?height=200&width=400"
+                imageAlt="Annual Tech Conference 2025"
               />
 
               <EventCard
-                id="cultural-festival"
-                title="Cultural Festival"
+                id="cultural-festival-2025"
+                title="Cultural Festival 2025"
                 type="Festival"
                 typeColor="purple"
                 date="April 20, 2025 • 10:00 AM - 8:00 PM"
                 location="University Grounds"
                 registeredCount={320}
-                imageSrc="/cultural.png"
+                imageSrc="/placeholder.svg?height=200&width=400"
+                imageAlt="Cultural Festival 2025"
               />
 
               <EventCard
-                id="research-symposium"
-                title="Research Symposium"
+                id="research-symposium-2025"
+                title="Research Symposium 2025"
                 type="Academic"
                 typeColor="green"
                 date="April 25, 2025 • 1:00 PM - 6:00 PM"
                 location="Science Building"
                 registeredCount={78}
-                imageSrc="/research.png"
+                imageSrc="/placeholder.svg?height=200&width=400"
+                imageAlt="Research Symposium 2025"
               />
             </div>
 
@@ -211,4 +213,3 @@ export default function Home() {
     </div>
   )
 }
-
