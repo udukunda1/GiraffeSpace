@@ -10,6 +10,7 @@ import { Button } from "@/components/button"
 import { Container } from "@/components/container"
 import { Section } from "@/components/section"
 import { HeroSlideshow } from "@/components/hero-slideshow"
+import { events } from "@/data/events"
 import { useEffect, useState } from "react"
 
 export default function Home() {
@@ -34,6 +35,28 @@ export default function Home() {
       alt: "Conference presentation with large screens and audience in theater seating",
     },
   ]
+
+  // Get first 3 events for upcoming events section
+  const upcomingEvents = events.slice(0, 3)
+
+  const formatEventDate = (eventDate: string, startTime: string, endTime: string) => {
+    const date = new Date(eventDate).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
+    const start = new Date(`2000-01-01T${startTime}`).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+    const end = new Date(`2000-01-01T${endTime}`).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+    return `${date} • ${start} - ${end}`
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -146,41 +169,20 @@ export default function Home() {
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <EventCard
-                id="tech-conference-2025"
-                title="Annual Tech Conference 2025"
-                type="Conference"
-                typeColor="blue"
-                date="April 15, 2025 • 9:00 AM - 5:00 PM"
-                location="Main Auditorium"
-                registeredCount={145}
-                imageSrc="/placeholder.svg?height=200&width=400"
-                imageAlt="Annual Tech Conference 2025"
-              />
-
-              <EventCard
-                id="cultural-festival-2025"
-                title="Cultural Festival 2025"
-                type="Festival"
-                typeColor="purple"
-                date="April 20, 2025 • 10:00 AM - 8:00 PM"
-                location="University Grounds"
-                registeredCount={320}
-                imageSrc="/placeholder.svg?height=200&width=400"
-                imageAlt="Cultural Festival 2025"
-              />
-
-              <EventCard
-                id="research-symposium-2025"
-                title="Research Symposium 2025"
-                type="Academic"
-                typeColor="green"
-                date="April 25, 2025 • 1:00 PM - 6:00 PM"
-                location="Science Building"
-                registeredCount={78}
-                imageSrc="/placeholder.svg?height=200&width=400"
-                imageAlt="Research Symposium 2025"
-              />
+              {upcomingEvents.map((event) => (
+                <EventCard
+                  key={event.eventId}
+                  id={event.eventId}
+                  title={event.eventTitle}
+                  type={event.eventType}
+                  typeColor={event.typeColor}
+                  date={formatEventDate(event.eventDate, event.eventStartTime, event.eventEndTime)}
+                  location={event.venue}
+                  registeredCount={event.registeredCount}
+                  imageSrc={event.imageURL}
+                  imageAlt={event.eventTitle}
+                />
+              ))}
             </div>
 
             <div className="text-center mt-12">
@@ -200,10 +202,10 @@ export default function Home() {
             </p>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatCard value={245} label="Total Events" />
+              <StatCard value={events.length} label="Total Events" />
               <StatCard value="1,892" label="Active Users" />
               <StatCard value={28} label="Venues" />
-              <StatCard value={42} label="Upcoming Events" />
+              <StatCard value={events.filter((event) => event.status === "Active").length} label="Upcoming Events" />
             </div>
           </Container>
         </Section>
