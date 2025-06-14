@@ -109,7 +109,7 @@ export default function EventsPage() {
         </div>
 
         {/* Search and Filters with Animation */}
-        <div className="container mx-auto px-16 max-w-7xl py-8">
+        <div className="container mx-auto px-16 max-w-7xl py-8 relative z-20">
           <div
             className={`flex flex-col md:flex-row gap-4 items-center transform transition-all duration-1000 ease-out delay-400 ${
               isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
@@ -128,7 +128,7 @@ export default function EventsPage() {
 
             <div className="flex gap-4 w-full md:w-auto">
               {/* Category Dropdown */}
-              <div className="relative">
+              <div className="relative z-30">
                 <button
                   className="flex items-center justify-between gap-2 border rounded-md px-4 py-2 text-gray-700 bg-white min-w-[160px] hover:bg-gray-50 transition-colors duration-200"
                   onClick={() => setIsCategoryOpen(!isCategoryOpen)}
@@ -140,7 +140,7 @@ export default function EventsPage() {
                 </button>
 
                 {isCategoryOpen && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border rounded-md shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute z-50 mt-1 w-full bg-white border rounded-md shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
                     <ul className="py-1">
                       {categoryOptions.map((option) => (
                         <li
@@ -157,7 +157,7 @@ export default function EventsPage() {
               </div>
 
               {/* Date Picker */}
-              <div className="relative">
+              <div className="relative z-30">
                 <button
                   className="flex items-center justify-between gap-2 border rounded-md px-4 py-2 text-gray-700 bg-white min-w-[160px] hover:bg-gray-50 transition-colors duration-200"
                   onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
@@ -170,7 +170,7 @@ export default function EventsPage() {
                 </button>
 
                 {isDatePickerOpen && (
-                  <div className="absolute z-10 mt-1 bg-white border rounded-md shadow-lg p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute z-50 mt-1 bg-white border rounded-md shadow-lg p-2 animate-in fade-in slide-in-from-top-2 duration-200">
                     <input
                       type="date"
                       className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
@@ -192,7 +192,7 @@ export default function EventsPage() {
         </div>
 
         {/* Events Grid with Staggered Animation */}
-        <div className="container mx-auto px-16 max-w-7xl pb-16">
+        <div className="container mx-auto px-16 max-w-7xl pb-16 relative z-10">
           {filteredEvents.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredEvents.map((event, index) => (
