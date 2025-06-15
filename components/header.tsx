@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { Menu, X, ChevronDown, LogOut, Calendar, MapPin } from "lucide-react"
+import { Menu, X, ChevronDown, LogOut, Calendar, MapPin, Shield } from "lucide-react"
 import { useAuth } from "@/components/providers"
 import { useRouter } from "next/navigation"
 
@@ -15,7 +15,7 @@ export function Header({ activePage }: HeaderProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isManageMenuOpen, setIsManageMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const { isLoggedIn, logout } = useAuth()
+  const { isLoggedIn, user, logout } = useAuth()
   const router = useRouter()
 
   // Set mounted state after component mounts
@@ -54,13 +54,17 @@ export function Header({ activePage }: HeaderProps) {
   // Don't render logged-in state until component is mounted
   const showLoggedIn = mounted && isLoggedIn
 
+  // Get user display name and initials
+  const userDisplayName = user ? `${user.firstName} ${user.lastName}` : "User"
+  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : "U"
+
   return (
     <header className="border-b">
       <div className="container mx-auto px-16 py-4 max-w-7xl flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-6 h-6 bg-blue-500 rounded"></div>
           <Link href="/" className="font-bold text-xl">
-            GiraffeSpace
+            EventsMS
           </Link>
         </div>
 
@@ -100,12 +104,12 @@ export function Header({ activePage }: HeaderProps) {
             Venues
           </Link>
           <Link
-            href="/organizations"
+            href="/organizers"
             className={`text-sm font-medium ${
-              activePage === "organizations" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+              activePage === "organizers" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            Organizations
+            Organizers
           </Link>
           <Link
             href="/dashboard"
@@ -141,6 +145,16 @@ export function Header({ activePage }: HeaderProps) {
               {isManageMenuOpen && (
                 <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
                   <div className="py-1">
+                    {user?.roleId === "role_admin" && (
+                      <Link
+                        href="/admin"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsManageMenuOpen(false)}
+                      >
+                        <Shield className="h-4 w-4 mr-2 text-gray-500" />
+                        Admin Dashboard
+                      </Link>
+                    )}
                     <Link
                       href="/manage/events"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -150,7 +164,7 @@ export function Header({ activePage }: HeaderProps) {
                       Manage Events
                     </Link>
                     <Link
-                      href="/manage/venues/myvenues"
+                      href="/manage/venues/dashboard"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={() => setIsManageMenuOpen(false)}
                     >
@@ -175,14 +189,23 @@ export function Header({ activePage }: HeaderProps) {
                 className="flex items-center space-x-2 cursor-pointer"
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
               >
-                <div className="w-8 h-8 bg-teal-500 rounded-full overflow-hidden">
-                  <img
-                    src="/placeholder.svg?height=32&width=32"
-                    alt="User avatar"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-8 h-8 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-medium">
+                  {user?.profilePictureURL ? (
+                    <img
+                      src={user.profilePictureURL || "/placeholder.svg"}
+                      alt="User avatar"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    userInitials
+                  )}
                 </div>
-                <span className="text-sm font-medium">John Doe</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">{userDisplayName}</span>
+                  {user?.roleId === "role_admin" && (
+                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Admin</span>
+                  )}
+                </div>
                 <ChevronDown className="h-4 w-4" />
               </div>
 
@@ -272,13 +295,13 @@ export function Header({ activePage }: HeaderProps) {
                   Venues
                 </Link>
                 <Link
-                  href="/organizations"
+                  href="/organizers"
                   className={`text-sm font-medium ${
-                    activePage === "organizations" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
+                    activePage === "organizers" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Organizations
+                  Organizers
                 </Link>
                 <Link
                   href="/dashboard"
@@ -296,6 +319,16 @@ export function Header({ activePage }: HeaderProps) {
                     <div className="pt-4 border-t">
                       <p className="text-sm font-medium text-gray-900 mb-2">Manage</p>
                       <div className="pl-2 space-y-2">
+                        {user?.roleId === "role_admin" && (
+                          <Link
+                            href="/admin"
+                            className="flex items-center text-sm text-gray-600 hover:text-gray-900"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            <Shield className="h-4 w-4 mr-2 text-gray-500" />
+                            Admin Dashboard
+                          </Link>
+                        )}
                         <Link
                           href="/manage/events"
                           className="flex items-center text-sm text-gray-600 hover:text-gray-900"
@@ -305,7 +338,7 @@ export function Header({ activePage }: HeaderProps) {
                           Manage Events
                         </Link>
                         <Link
-                          href="/manage/venues/myvenues"
+                          href="/manage/venues"
                           className="flex items-center text-sm text-gray-600 hover:text-gray-900"
                           onClick={() => setIsMenuOpen(false)}
                         >
@@ -326,14 +359,23 @@ export function Header({ activePage }: HeaderProps) {
                     </Link>
                     <div className="pt-4 border-t">
                       <div className="flex items-center space-x-2 mb-4">
-                        <div className="w-8 h-8 bg-teal-500 rounded-full overflow-hidden">
-                          <img
-                            src="/placeholder.svg?height=32&width=32"
-                            alt="User avatar"
-                            className="w-full h-full object-cover"
-                          />
+                        <div className="w-8 h-8 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-medium">
+                          {user?.profilePictureURL ? (
+                            <img
+                              src={user.profilePictureURL || "/placeholder.svg"}
+                              alt="User avatar"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            userInitials
+                          )}
                         </div>
-                        <span className="text-sm font-medium">John Doe</span>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">{userDisplayName}</span>
+                          {user?.roleId === "role_admin" && (
+                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Admin</span>
+                          )}
+                        </div>
                       </div>
                       <div className="space-y-2">
                         <Link
