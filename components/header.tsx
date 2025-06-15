@@ -64,7 +64,7 @@ export function Header({ activePage }: HeaderProps) {
         <div className="flex items-center space-x-2">
           <div className="w-6 h-6 bg-blue-500 rounded"></div>
           <Link href="/" className="font-bold text-xl">
-            EventsMS
+            GiraffeSpace
           </Link>
         </div>
 
