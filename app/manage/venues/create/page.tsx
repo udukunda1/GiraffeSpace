@@ -1,8 +1,8 @@
 "use client"
 
 import type React from "react"
+import ImageUpload from './uploadImage';
 
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { useAuth } from "@/components/providers"
 import { useRouter } from "next/navigation"
@@ -29,7 +29,14 @@ export default function CreateVenuePage() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    address: "",
+    location: "",
+    latitude:"",
+    longitude: "",
+    venueType: "",
+    contactPerson: "",
+    contactEmail: "",
+    contactPhone: "",
+    websiteUrl: "",
     capacity: "",
     pricePerHour: "",
     image: "",
@@ -128,20 +135,55 @@ export default function CreateVenuePage() {
                 </div>
 
                 <div className="mb-4">
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                    Address
+                  <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                    Location
                   </label>
                   <input
                     type="text"
-                    id="address"
-                    name="address"
-                    value={formData.address}
+                    id="location"
+                    name="location"
+                    value={formData.location}
                     onChange={handleInputChange}
-                    placeholder="Enter venue address"
+                    placeholder="Enter venue location"
                     className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                     required
                   />
                 </div>
+
+                  <div className="mb-4">
+                  <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-1">
+                    Latitude
+                  </label>
+                  <input
+                    type="text"
+                    id="latitude"
+                    name="latitude"
+                    value={formData.latitude}
+                    onChange={handleInputChange}
+                    placeholder="Enter venue latitude"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 mb-1">
+                    Longitude
+                  </label>
+                  <input
+                    type="text"
+                    id="longitude"
+                    name="longitude"
+                    value={formData.longitude}
+                    onChange={handleInputChange}
+                    placeholder="Enter venue longitude"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+                
+
+
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
@@ -176,23 +218,95 @@ export default function CreateVenuePage() {
                       required
                     />
                   </div>
+                  <div className="mb-4">
+                  <label htmlFor="venueType" className="block text-sm font-medium text-gray-700 mb-1">
+                    Venue Type
+                  </label>
+                  <input
+                    type="text"
+                    id="venueType"
+                    name="venueType"
+                    value={formData.venueType}
+                    onChange={handleInputChange}
+                    placeholder="Enter venue venue Type"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+                  <div className="mb-4">
+                  <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 mb-1">
+                    Owner Name
+                  </label>
+                  <input
+                    type="text"
+                    id="contactPerson"
+                    name="contactPerson"
+                    value={formData.contactPerson}
+                    onChange={handleInputChange}
+                    placeholder="Enter venue Owner Name"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                    Owner Email
+                  </label>
+                  <input
+                    type="email"
+                    id="contactEmail"
+                    name="contactEmail"
+                    value={formData.contactEmail}
+                    onChange={handleInputChange}
+                    placeholder="Enter venue Owner Email"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 mb-1">
+                    Owner Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="contactPhone"
+                    name="contactPhone"
+                    value={formData.contactPhone}
+                    onChange={handleInputChange}
+                    placeholder="Enter venue Owner Phone Number"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                    Website Url
+                  </label>
+                  <input
+                    type="text"
+                    id="websiteUrl"
+                    name="websiteUrl"
+                    value={formData.websiteUrl}
+                    onChange={handleInputChange}
+                    placeholder="Enter venue website Url"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  />
+                </div>
+
+
+                
                 </div>
               </div>
 
               {/* Right Column - Image Upload and Amenities */}
-              <div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Venue Image</label>
-                  <div className="bg-gray-100 rounded-lg p-4 flex flex-col items-center justify-center h-64">
-                    <Upload className="h-12 w-12 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-500 mb-1">No image uploaded</p>
-                    <button
-                      type="button"
-                      className="mt-4 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-                    >
-                      Choose File
-                    </button>
-                  </div>
+              <div >
+                <div className="mb-6">
+                  
+                   <label className="block text-sm font-medium text-gray-700 mb-1">Venue Image</label>
+                  
+                    <ImageUpload />
+                    
+              
                   <p className="text-xs text-gray-500 mt-1">
                     Upload a high-quality image of your venue. Recommended size: 1200x600px.
                   </p>
@@ -230,10 +344,10 @@ export default function CreateVenuePage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:opacity-50 flex items-center gap-2"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
               >
                 {saving && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent "></div>
                 )}
                 {saving ? "Creating..." : "Create Venue"}
               </button>

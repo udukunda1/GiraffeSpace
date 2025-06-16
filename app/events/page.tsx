@@ -184,7 +184,7 @@ export default function EventsPage() {
                 )}
               </div>
 
-              <button className="bg-gray-900 text-white rounded-md px-4 py-2 hover:bg-gray-800 transition-colors duration-200 transform hover:scale-105">
+              <button className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition-colors duration-200 transform hover:scale-105">
                 Create Event
               </button>
             </div>
