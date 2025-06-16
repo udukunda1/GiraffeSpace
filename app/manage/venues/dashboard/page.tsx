@@ -5,7 +5,6 @@ import { useEffect } from "react"
 import { Building, Calendar, Clock, DollarSign } from "lucide-react"
 import Link from "next/link"
 import { Sidebar } from "@/components/sidebar"
-import { Header } from "@/components/header"
 
 export default function DashboardPage() {
   const { isLoggedIn } = useAuth()
@@ -83,8 +82,8 @@ export default function DashboardPage() {
 
           {/* Recent Booking Requests */}
           <div className="border rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-2">Recent Booking Requests</h2>
-            <p className="text-gray-600 mb-6">You have 3 pending booking requests that need your approval.</p>
+            <h2 className="text-xl font-bold mb-2">Recent Approval Requests</h2>
+            <p className="text-gray-600 mb-6">You have 3 pending Approval requests that need admin approval.</p>
 
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
