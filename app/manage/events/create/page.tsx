@@ -1,6 +1,5 @@
 "use client"
 
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { useAuth } from "@/components/providers"
 import { useRouter } from "next/navigation"
