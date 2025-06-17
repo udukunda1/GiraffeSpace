@@ -38,7 +38,7 @@ export default function RegisterPage() {
       const response = await ApiService.registerUser(formData)
       if(response.success){
         setSuccess(true)
-        router.push("/login")
+        router.push("/logindefaultpassword")
       }
     } catch (err: any) {
       setError(err?.response?.data?.message || "Registration failed")
