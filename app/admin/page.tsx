@@ -35,7 +35,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     // Redirect if not logged in or not admin
-    if (!isLoggedIn || user?.Role.RoleName !== "role_admin") {
+    if (!isLoggedIn || user?.Role.RoleName !== "ADMIN") {
       router.push("/")
       return
     }
@@ -48,7 +48,7 @@ export default function AdminDashboard() {
   }, [isLoggedIn, user, router])
 
   // Don't render if not admin
-  if (!isLoggedIn || user?.Role.RoleName !== "role_admin") {
+  if (!isLoggedIn || user?.Role.RoleName !== "ADMIN") {
     return null
   }
 
@@ -407,8 +407,8 @@ export default function AdminDashboard() {
                                   <h3 className="font-medium">
                                     {userData.firstName} {userData.lastName}
                                   </h3>
-                                  <Badge variant={userData.Role.RoleName === "role_admin" ? "default" : "secondary"}>
-                                    {userData.Role.RoleName === "role_admin" ? "Admin" : "User"}
+                                  <Badge variant={userData.Role.RoleName === "ADMIN" ? "default" : "secondary"}>
+                                    {userData.Role.RoleName === "ADMIN" ? "Admin" : "User"}
                                   </Badge>
                                 </div>
                                 <p className="text-sm text-gray-600">{userData.email}</p>

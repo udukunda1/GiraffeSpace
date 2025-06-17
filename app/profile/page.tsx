@@ -18,10 +18,6 @@ import {
   Shield,
   Bell,
   MessageSquare,
-  Linkedin,
-  Twitter,
-  Facebook,
-  Instagram,
   Clock,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
@@ -39,24 +35,13 @@ export default function ProfilePage() {
     email: user?.email || "",
     phoneNumber: user?.phoneNumber || "",
     bio: user?.bio || "",
-    addressLine1: user?.addressLine1 || "",
-    addressLine2: user?.addressLine2 || "",
+    addressLine: user?.addressLine || "",
     city: user?.city || "",
     stateProvince: user?.stateProvince || "",
-    postalCode: user?.postalCode || "",
     country: user?.country || "",
     dateOfBirth: user?.dateOfBirth || "",
     gender: user?.gender || "",
-    preferredLanguage: user?.preferredLanguage || "",
-    timezone: user?.timezone || "",
     emailNotificationsEnabled: user?.emailNotificationsEnabled || false,
-    smsNotificationsEnabled: user?.smsNotificationsEnabled || false,
-    socialMediaLinks: {
-      linkedin: user?.socialMediaLinks?.linkedin || "",
-      twitter: user?.socialMediaLinks?.twitter || "",
-      facebook: user?.socialMediaLinks?.facebook || "",
-      instagram: user?.socialMediaLinks?.instagram || "",
-    },
   })
 
   // Redirect if not logged in
@@ -72,24 +57,13 @@ export default function ProfilePage() {
           email: user.email,
           phoneNumber: user.phoneNumber,
           bio: user.bio,
-          addressLine1: user.addressLine1,
-          addressLine2: user.addressLine2 || "",
+          addressLine: user.addressLine,
           city: user.city,
           stateProvince: user.stateProvince,
-          postalCode: user.postalCode,
           country: user.country,
           dateOfBirth: user.dateOfBirth,
           gender: user.gender,
-          preferredLanguage: user.preferredLanguage,
-          timezone: user.timezone,
-          emailNotificationsEnabled: user.emailNotificationsEnabled,
-          smsNotificationsEnabled: user.smsNotificationsEnabled,
-          socialMediaLinks: {
-            linkedin: user.socialMediaLinks?.linkedin || "",
-            twitter: user.socialMediaLinks?.twitter || "",
-            facebook: user.socialMediaLinks?.facebook || "",
-            instagram: user.socialMediaLinks?.instagram || "",
-          },
+          emailNotificationsEnabled: user.emailNotificationsEnabled
         })
       }
 
@@ -104,16 +78,7 @@ export default function ProfilePage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
 
-    if (name.startsWith("socialMediaLinks.")) {
-      const socialField = name.split(".")[1]
-      setFormData((prev) => ({
-        ...prev,
-        socialMediaLinks: {
-          ...prev.socialMediaLinks,
-          [socialField]: value,
-        },
-      }))
-    } else if (type === "checkbox") {
+   if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked
       setFormData((prev) => ({ ...prev, [name]: checked }))
     } else {
@@ -137,24 +102,13 @@ export default function ProfilePage() {
         email: user.email,
         phoneNumber: user.phoneNumber,
         bio: user.bio,
-        addressLine1: user.addressLine1,
-        addressLine2: user.addressLine2 || "",
+        addressLine: user.addressLine,
         city: user.city,
         stateProvince: user.stateProvince,
-        postalCode: user.postalCode,
         country: user.country,
         dateOfBirth: user.dateOfBirth,
         gender: user.gender,
-        preferredLanguage: user.preferredLanguage,
-        timezone: user.timezone,
-        emailNotificationsEnabled: user.emailNotificationsEnabled,
-        smsNotificationsEnabled: user.smsNotificationsEnabled,
-        socialMediaLinks: {
-          linkedin: user.socialMediaLinks?.linkedin || "",
-          twitter: user.socialMediaLinks?.twitter || "",
-          facebook: user.socialMediaLinks?.facebook || "",
-          instagram: user.socialMediaLinks?.instagram || "",
-        },
+        emailNotificationsEnabled: user.emailNotificationsEnabled
       })
     }
     setIsEditing(false)
@@ -222,7 +176,7 @@ export default function ProfilePage() {
                   <h2 className="text-2xl font-bold">
                     {user.firstName} {user.lastName}
                   </h2>
-                  {user.Role.RoleName === "role_admin" && (
+                  {user.Role.RoleName === "ADMIN" && (
                     <Badge variant="default" className="flex items-center gap-1">
                       <Shield className="h-3 w-3" />
                       Admin
@@ -376,18 +330,18 @@ export default function ProfilePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">
                         <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700 mb-1">
-                          Address Line 1
+                          Address Line
                         </label>
                         <input
                           type="text"
                           id="addressLine1"
                           name="addressLine1"
-                          value={formData.addressLine1}
+                          value={formData.addressLine}
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
-                      <div className="md:col-span-2">
+                      {/* <div className="md:col-span-2">
                         <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700 mb-1">
                           Address Line 2 (Optional)
                         </label>
@@ -399,7 +353,7 @@ export default function ProfilePage() {
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                      </div>
+                      </div> */}
                       <div>
                         <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
                           City
@@ -426,7 +380,7 @@ export default function ProfilePage() {
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
-                      <div>
+                      {/* <div>
                         <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">
                           Postal Code
                         </label>
@@ -438,7 +392,7 @@ export default function ProfilePage() {
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                      </div>
+                      </div> */}
                       <div>
                         <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
                           Country
@@ -459,7 +413,7 @@ export default function ProfilePage() {
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Preferences</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
+                      {/* <div>
                         <label htmlFor="preferredLanguage" className="block text-sm font-medium text-gray-700 mb-1">
                           Preferred Language
                         </label>
@@ -474,8 +428,8 @@ export default function ProfilePage() {
                           <option value="fr">French</option>
                           <option value="rw">Kinyarwanda</option>
                         </select>
-                      </div>
-                      <div>
+                      </div> */}
+                      {/* <div>
                         <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-1">
                           Timezone
                         </label>
@@ -487,7 +441,7 @@ export default function ProfilePage() {
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
@@ -508,7 +462,7 @@ export default function ProfilePage() {
                           Enable email notifications
                         </label>
                       </div>
-                      <div className="flex items-center">
+                      {/* <div className="flex items-center">
                         <input
                           type="checkbox"
                           id="smsNotificationsEnabled"
@@ -520,11 +474,11 @@ export default function ProfilePage() {
                         <label htmlFor="smsNotificationsEnabled" className="ml-2 block text-sm text-gray-700">
                           Enable SMS notifications
                         </label>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
-                  {/* Social Media Links */}
+                  {/* //Social Media Links
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Social Media Links</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -597,7 +551,7 @@ export default function ProfilePage() {
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </form>
               ) : (
                 <div className="space-y-8">
@@ -646,14 +600,14 @@ export default function ProfilePage() {
                         <Building className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">Organization</p>
-                          <p className="font-medium">{user.organizationId}</p>
+                          <p className="font-medium">{user.organizations[0]}</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Address Information */}
-                  <div>
+                  {/* <div>
                     <h3 className="text-lg font-semibold mb-4">Address Information</h3>
                     <div className="flex items-start">
                       <MapPin className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
@@ -669,10 +623,10 @@ export default function ProfilePage() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Preferences */}
-                  <div>
+                  {/* <div>
                     <h3 className="text-lg font-semibold mb-4">Preferences</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="flex items-start">
@@ -690,7 +644,7 @@ export default function ProfilePage() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Notification Settings */}
                   <div>
@@ -705,7 +659,7 @@ export default function ProfilePage() {
                           </Badge>
                         </div>
                       </div>
-                      <div className="flex items-start">
+                      {/* <div className="flex items-start">
                         <MessageSquare className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">SMS Notifications</p>
@@ -713,12 +667,12 @@ export default function ProfilePage() {
                             {user.smsNotificationsEnabled ? "Enabled" : "Disabled"}
                           </Badge>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
                   {/* Social Media Links */}
-                  {(user.socialMediaLinks?.linkedin ||
+                  {/* {(user.socialMediaLinks?.linkedin ||
                     user.socialMediaLinks?.twitter ||
                     user.socialMediaLinks?.facebook ||
                     user.socialMediaLinks?.instagram) && (
@@ -779,7 +733,7 @@ export default function ProfilePage() {
                         )}
                       </div>
                     </div>
-                  )}
+                  )} */}
 
                   {/* Bio */}
                   <div>
