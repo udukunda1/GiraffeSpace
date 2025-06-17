@@ -8,7 +8,7 @@ export interface User {
   phoneNumber: string
   roleId: string
   organizationId: string
-  bio: string
+      bio: string
   profilePictureURL: string
   preferredLanguage: string
   timezone: string
