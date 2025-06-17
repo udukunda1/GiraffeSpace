@@ -2,6 +2,7 @@
 
 import { type ReactNode, createContext, useContext, useState, useEffect } from "react"
 import { getUserByEmail, getUserByUsername, type User } from "@/data/users"
+import ApiService from "@/api/apiConfig"
 
 type AuthContextType = {
   isLoggedIn: boolean
@@ -37,30 +38,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setMounted(true)
   }, [])
 
-  const login = async (identifier: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    // Try to find user by email first, then by username
-    let foundUser = getUserByEmail(identifier)
-    if (!foundUser) {
-      foundUser = getUserByUsername(identifier)
+  const login = async (
+  identifier: string,
+  password: string
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    const response = await ApiService.loginUser({ identifier, password });
+
+    if (response?.token && response?.user) {
+      setIsLoggedIn(true);
+      setUser(response.user);
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("currentUser", JSON.stringify(response.user));
+
+      return { success: true };
+    } else {
+      return { success: false, error: response?.message || "Login failed." };
     }
-
-    // Check if user exists and password matches
-    if (!foundUser) {
-      return { success: false, error: "User not found. Please check your email/username." }
-    }
-
-    if (foundUser.password !== password) {
-      return { success: false, error: "Invalid password. Please try again." }
-    }
-
-    // Login successful
-    setIsLoggedIn(true)
-    setUser(foundUser)
-    localStorage.setItem("isLoggedIn", "true")
-    localStorage.setItem("currentUser", JSON.stringify(foundUser))
-
-    return { success: true }
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error?.response?.data?.message || "Login failed. Try again.",
+    };
   }
+};
 
   const logout = () => {
     setIsLoggedIn(false)

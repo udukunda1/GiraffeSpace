@@ -9,6 +9,9 @@ export interface User {
   Role: {RoleName: string}
   organizations: string[]
   bio: string
+  roleId: string
+  organizationId: string
+      bio: string
   profilePictureURL: string
   // preferredLanguage: string
   // timezone: string
