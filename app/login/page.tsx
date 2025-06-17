@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Calendar, AlertCircle } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 

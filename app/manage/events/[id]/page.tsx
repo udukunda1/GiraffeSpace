@@ -2,7 +2,7 @@
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useRouter, useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { ArrowLeft, Calendar, MapPin, Users, Edit, Share2, Trash2, AlertCircle } from "lucide-react"

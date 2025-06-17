@@ -4,7 +4,7 @@ import type React from "react"
 import ImageUpload from './uploadImage';
 
 import { Footer } from "@/components/footer"
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { ArrowLeft, Upload } from "lucide-react"

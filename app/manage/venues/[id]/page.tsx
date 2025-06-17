@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useRouter, useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { ArrowLeft, Users, DollarSign, Eye, Edit } from "lucide-react"

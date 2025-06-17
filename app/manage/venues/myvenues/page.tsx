@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { MapPin } from "lucide-react"

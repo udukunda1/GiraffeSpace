@@ -4,7 +4,7 @@ import type React from "react"
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Bell, Moon, Globe, Lock, CreditCard, UserX } from "lucide-react"

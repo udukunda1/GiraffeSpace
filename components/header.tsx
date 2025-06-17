@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Menu, X, ChevronDown, LogOut, Calendar, MapPin, Shield } from "lucide-react"
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 
 interface HeaderProps {
@@ -312,7 +312,6 @@ export function Header({ activePage }: HeaderProps) {
                 >
                   Dashboard
                 </Link>
-
                 {mounted && showLoggedIn ? (
                   <>
                     {/* Mobile Manage section */}
@@ -347,7 +346,6 @@ export function Header({ activePage }: HeaderProps) {
                         </Link>
                       </div>
                     </div>
-
                     <Link
                       href="/tickets"
                       className={`text-sm font-medium ${

@@ -104,7 +104,7 @@ export default function OrganizersPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="organizations" />
+      <Header activePage="organizers" />
 
       <main className="flex-1">
         {/* Header Section with Animations */}

@@ -1,5 +1,5 @@
 "use client"
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { Building, Calendar, Clock, DollarSign } from "lucide-react"
