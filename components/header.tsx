@@ -55,8 +55,8 @@ export function Header({ activePage }: HeaderProps) {
   const showLoggedIn = mounted && isLoggedIn
 
   // Get user display name and initials
-  const userDisplayName = user ? `${user.firstName} ${user.lastName}` : "User"
-  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : "U"
+  const userDisplayName = user ? `${user.username} ${user.username}` : "User"
+  const userInitials = user ? `${user.username[0]}${user.username[0]}` : "U"
 
   return (
     <header className="border-b">
