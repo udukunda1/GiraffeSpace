@@ -2,7 +2,7 @@
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useAuth } from "@/components/providers"
+import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Calendar, Plus, Filter, ChevronDown, Users, MapPin, Clock } from "lucide-react"
