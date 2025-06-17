@@ -35,7 +35,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     // Redirect if not logged in or not admin
-    if (!isLoggedIn || user?.roleId !== "role_admin") {
+    if (!isLoggedIn || user?.Role.RoleName !== "role_admin") {
       router.push("/")
       return
     }
@@ -48,7 +48,7 @@ export default function AdminDashboard() {
   }, [isLoggedIn, user, router])
 
   // Don't render if not admin
-  if (!isLoggedIn || user?.roleId !== "role_admin") {
+  if (!isLoggedIn || user?.Role.RoleName !== "role_admin") {
     return null
   }
 
@@ -279,7 +279,7 @@ export default function AdminDashboard() {
                       <CardDescription>Manage and approve events</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
+                       <div className="space-y-4">
                         {events.slice(0, 8).map((event) => (
                           <div key={event.eventId} className="flex items-center justify-between p-4 border rounded-lg">
                             <div className="flex-1">
@@ -407,8 +407,8 @@ export default function AdminDashboard() {
                                   <h3 className="font-medium">
                                     {userData.firstName} {userData.lastName}
                                   </h3>
-                                  <Badge variant={userData.roleId === "role_admin" ? "default" : "secondary"}>
-                                    {userData.roleId === "role_admin" ? "Admin" : "User"}
+                                  <Badge variant={userData.Role.RoleName === "role_admin" ? "default" : "secondary"}>
+                                    {userData.Role.RoleName === "role_admin" ? "Admin" : "User"}
                                   </Badge>
                                 </div>
                                 <p className="text-sm text-gray-600">{userData.email}</p>

@@ -6,27 +6,27 @@ export interface User {
   email: string
   password: string
   phoneNumber: string
-  roleId: string
-  organizationId: string
+  Role: {RoleName: string}
+  organizations: string[]
   bio: string
   profilePictureURL: string
-  preferredLanguage: string
-  timezone: string
+  // preferredLanguage: string
+  // timezone: string
   emailNotificationsEnabled: boolean
-  smsNotificationsEnabled: boolean
-  socialMediaLinks: {
-    linkedin?: string
-    twitter?: string
-    facebook?: string
-    instagram?: string
-  }
+  // smsNotificationsEnabled: boolean
+  // socialMediaLinks: {
+  //   linkedin?: string
+  //   twitter?: string
+  //   facebook?: string
+  //   instagram?: string
+  // }
   dateOfBirth: string
   gender: string
-  addressLine1: string
-  addressLine2?: string
+  addressLine: string
+  // addressLine2?: string
   city: string
   stateProvince: string
-  postalCode: string
+  // postalCode: string
   country: string
 }
 
@@ -39,25 +39,25 @@ export const users: User[] = [
     email: "jean.uwimana@ur.ac.rw",
     password: "hashed_password_123",
     phoneNumber: "+250 788 123 456",
-    roleId: "role_admin",
-    organizationId: "org_university_rwanda",
+    Role: {RoleName: "role_admin"},//
+    organizations: ["org_university_rwanda"],//
     bio: "System Administrator with over 8 years of experience in educational technology and event management systems. Passionate about streamlining processes and improving user experiences.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=JU",
-    preferredLanguage: "en",
-    timezone: "Africa/Kigali",
+    // preferredLanguage: "en",
+    // timezone: "Africa/Kigali",
     emailNotificationsEnabled: true,
-    smsNotificationsEnabled: true,
-    socialMediaLinks: {
-      linkedin: "https://linkedin.com/in/jean-uwimana",
-      twitter: "https://twitter.com/jean_uwimana",
-    },
+    // smsNotificationsEnabled: true,
+    // socialMediaLinks: {
+    //   linkedin: "https://linkedin.com/in/jean-uwimana",
+    //   twitter: "https://twitter.com/jean_uwimana",
+    // },
     dateOfBirth: "1985-03-15",
     gender: "Male",
-    addressLine1: "KG 15 Ave, Nyarutarama",
-    addressLine2: "Apartment 12B",
+    addressLine: "KG 15 Ave, Nyarutarama",
+    // addressLine2: "Apartment 12B",
     city: "Kigali",
     stateProvince: "Kigali City",
-    postalCode: "00001",
+    // postalCode: "00001",
     country: "Rwanda",
   },
   {
@@ -68,25 +68,25 @@ export const users: User[] = [
     email: "marie.mukamana@student.ur.ac.rw",
     password: "hashed_password_456",
     phoneNumber: "+250 788 234 567",
-    roleId: "role_user",
-    organizationId: "org_computer_science_dept",
+    Role: {RoleName: "role_user"},//
+    organizations: ["org_university_rwanda"],//
     bio: "Computer Science student passionate about software development and artificial intelligence. Active member of the university's tech club and event organizing committee.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=MM",
-    preferredLanguage: "en",
-    timezone: "Africa/Kigali",
+    // preferredLanguage: "en",
+    // timezone: "Africa/Kigali",
     emailNotificationsEnabled: true,
-    smsNotificationsEnabled: false,
-    socialMediaLinks: {
-      linkedin: "https://linkedin.com/in/marie-mukamana",
-      instagram: "https://instagram.com/marie_mukamana",
-      twitter: "https://twitter.com/marie_codes",
-    },
+    // smsNotificationsEnabled: false,
+    // socialMediaLinks: {
+    //   linkedin: "https://linkedin.com/in/marie-mukamana",
+    //   instagram: "https://instagram.com/marie_mukamana",
+    //   twitter: "https://twitter.com/marie_codes",
+    // },
     dateOfBirth: "2001-07-22",
     gender: "Female",
-    addressLine1: "KG 25 St, Remera",
+    addressLine: "KG 25 St, Remera",
     city: "Kigali",
     stateProvince: "Kigali City",
-    postalCode: "00002",
+    // postalCode: "00002",
     country: "Rwanda",
   },
   {
@@ -97,25 +97,25 @@ export const users: User[] = [
     email: "paul.nkurunziza@ur.ac.rw",
     password: "hashed_password_789",
     phoneNumber: "+250 788 345 678",
-    roleId: "role_user",
-    organizationId: "org_business_school",
+    Role: {RoleName: "role_user"},
+    organizations: ["org_university_rwanda"],//
     bio: "Associate Professor of Business Administration with expertise in organizational management and strategic planning. Regular speaker at academic conferences and business seminars.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=PN",
-    preferredLanguage: "en",
-    timezone: "Africa/Kigali",
+    // preferredLanguage: "en",
+    // timezone: "Africa/Kigali",
     emailNotificationsEnabled: true,
-    smsNotificationsEnabled: true,
-    socialMediaLinks: {
-      linkedin: "https://linkedin.com/in/paul-nkurunziza-phd",
-      facebook: "https://facebook.com/paul.nkurunziza",
-    },
+    // smsNotificationsEnabled: true,
+    // socialMediaLinks: {
+    //   linkedin: "https://linkedin.com/in/paul-nkurunziza-phd",
+    //   facebook: "https://facebook.com/paul.nkurunziza",
+    // },
     dateOfBirth: "1978-11-08",
     gender: "Male",
-    addressLine1: "KG 45 Ave, Kimihurura",
-    addressLine2: "House No. 78",
+    addressLine: "KG 45 Ave, Kimihurura",
+    // addressLine2: "House No. 78",
     city: "Kigali",
     stateProvince: "Kigali City",
-    postalCode: "00003",
+    // postalCode: "00003",
     country: "Rwanda",
   },
 ]
@@ -127,26 +127,23 @@ export const getUserByEmail = (email: string) => users.find((user) => user.email
 
 export const getUserByUsername = (username: string) => users.find((user) => user.username === username)
 
-export const getUsersByRole = (roleId: string) => users.filter((user) => user.roleId === roleId)
+// export const getUsersByRole = (roleId: string) => users.filter((user) => user.roleId === roleId)
 
-export const getUsersByOrganization = (organizationId: string) =>
-  users.filter((user) => user.organizationId === organizationId)
+// export const getAdminUsers = () => users.filter((user) => user.roleId === "role_admin")
 
-export const getAdminUsers = () => users.filter((user) => user.roleId === "role_admin")
-
-export const getRegularUsers = () => users.filter((user) => user.roleId === "role_user")
+// export const getRegularUsers = () => users.filter((user) => user.roleId === "role_user")
 
 export const getUsersByCountry = (country: string) =>
   users.filter((user) => user.country.toLowerCase() === country.toLowerCase())
 
 export const getUsersByCity = (city: string) => users.filter((user) => user.city.toLowerCase() === city.toLowerCase())
 
-export const getUsersWithNotificationsEnabled = (type: "email" | "sms") => {
-  if (type === "email") {
-    return users.filter((user) => user.emailNotificationsEnabled)
-  }
-  return users.filter((user) => user.smsNotificationsEnabled)
-}
+// export const getUsersWithNotificationsEnabled = (type: "email" | "sms") => {
+//   if (type === "email") {
+//     return users.filter((user) => user.emailNotificationsEnabled)
+//   }
+//   return users.filter((user) => user.smsNotificationsEnabled)
+// }
 
 export const searchUsers = (query: string) => {
   const lowercaseQuery = query.toLowerCase()
@@ -163,17 +160,13 @@ export const searchUsers = (query: string) => {
 // User statistics
 export const getUserStats = () => {
   const totalUsers = users.length
-  const adminUsers = getAdminUsers().length
-  const regularUsers = getRegularUsers().length
-  const usersWithEmailNotifications = getUsersWithNotificationsEnabled("email").length
-  const usersWithSmsNotifications = getUsersWithNotificationsEnabled("sms").length
+  // const adminUsers = getAdminUsers().length
+  // const regularUsers = getRegularUsers().length
 
   return {
     totalUsers,
-    adminUsers,
-    regularUsers,
-    usersWithEmailNotifications,
-    usersWithSmsNotifications,
+    // adminUsers,
+    // regularUsers
   }
 }
 

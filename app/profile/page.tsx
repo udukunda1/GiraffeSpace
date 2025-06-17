@@ -222,7 +222,7 @@ export default function ProfilePage() {
                   <h2 className="text-2xl font-bold">
                     {user.firstName} {user.lastName}
                   </h2>
-                  {user.roleId === "role_admin" && (
+                  {user.Role.RoleName === "role_admin" && (
                     <Badge variant="default" className="flex items-center gap-1">
                       <Shield className="h-3 w-3" />
                       Admin
