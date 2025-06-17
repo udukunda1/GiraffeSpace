@@ -38,14 +38,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setMounted(true)
   }, [])
 
-  const login = async (
+const login = async (
   identifier: string,
   password: string
 ): Promise<{ success: boolean; error?: string }> => {
-  try {
-    const response = await ApiService.loginUser({ identifier, password });
+  const formData = { identifier, password };
 
-    // const response = {token: "dfghjlytrtyuiihg", user: users[0], message: "success"};
+  try {
+    const response = await ApiService.loginUser(formData);
 
     if (response?.token && response?.user) {
       setIsLoggedIn(true);
@@ -65,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }
 };
+
 
   const logout = () => {
     setIsLoggedIn(false)

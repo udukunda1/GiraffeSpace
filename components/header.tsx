@@ -146,7 +146,7 @@ export function Header({ activePage }: HeaderProps) {
               {isManageMenuOpen && (
                 <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
                   <div className="py-1">
-                    {user?.Role.RoleName === "ADMIN" && (
+                    {user?.Role.roleName === "ADMIN" && (
                       <Link
                         href="/admin"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -203,7 +203,7 @@ export function Header({ activePage }: HeaderProps) {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">{userDisplayName}</span>
-                  {user?.Role.RoleName === "ADMIN" && (
+                  {user?.Role.roleName === "ADMIN" && (
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Admin</span>
                   )}
                 </div>
@@ -316,7 +316,7 @@ export function Header({ activePage }: HeaderProps) {
                     <div className="pt-4 border-t">
                       <p className="text-sm font-medium text-gray-900 mb-2">Manage</p>
                       <div className="pl-2 space-y-2">
-                        {user?.Role.RoleName === "ADMIN" && (
+                        {user?.Role.roleName === "ADMIN" && (
                           <Link
                             href="/admin"
                             className="flex items-center text-sm text-gray-600 hover:text-gray-900"
@@ -368,7 +368,7 @@ export function Header({ activePage }: HeaderProps) {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">{userDisplayName}</span>
-                          {user?.Role.RoleName === "ADMIN" && (
+                          {user?.Role.roleName === "ADMIN" && (
                             <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Admin</span>
                           )}
                         </div>

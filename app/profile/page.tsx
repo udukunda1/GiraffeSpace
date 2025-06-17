@@ -176,7 +176,7 @@ export default function ProfilePage() {
                   <h2 className="text-2xl font-bold">
                     {user.firstName} {user.lastName}
                   </h2>
-                  {user.Role.RoleName === "ADMIN" && (
+                  {user.Role.roleName === "ADMIN" && (
                     <Badge variant="default" className="flex items-center gap-1">
                       <Shield className="h-3 w-3" />
                       Admin
@@ -600,7 +600,7 @@ export default function ProfilePage() {
                         <Building className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">Organization</p>
-                          <p className="font-medium">{user.organizations[0]}</p>
+                          <p className="font-medium">{user.organizations[0].organizationName}</p>
                         </div>
                       </div>
                     </div>

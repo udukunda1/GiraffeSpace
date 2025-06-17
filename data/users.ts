@@ -6,8 +6,8 @@ export interface User {
   email: string
   password: string
   phoneNumber: string
-  Role: {RoleName: string}
-  organizations: string[]
+  Role: {roleName: string}
+  organizations: any[]
   bio: string
   profilePictureURL: string
   // preferredLanguage: string
@@ -39,7 +39,7 @@ export const users: User[] = [
     email: "jean.uwimana@ur.ac.rw",
     password: "hashed_password_123",
     phoneNumber: "+250 788 123 456",
-    Role: {RoleName: "ADMIN"},//
+    Role: {roleName: "ADMIN"},//
     organizations: ["org_university_rwanda"],//
     bio: "System Administrator with over 8 years of experience in educational technology and event management systems. Passionate about streamlining processes and improving user experiences.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=JU",
@@ -68,7 +68,7 @@ export const users: User[] = [
     email: "marie.mukamana@student.ur.ac.rw",
     password: "hashed_password_456",
     phoneNumber: "+250 788 234 567",
-    Role: {RoleName: "GUEST"},//
+    Role: {roleName: "GUEST"},//
     organizations: ["org_university_rwanda"],//
     bio: "Computer Science student passionate about software development and artificial intelligence. Active member of the university's tech club and event organizing committee.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=MM",
@@ -97,7 +97,7 @@ export const users: User[] = [
     email: "paul.nkurunziza@ur.ac.rw",
     password: "hashed_password_789",
     phoneNumber: "+250 788 345 678",
-    Role: {RoleName: "GUEST"},
+    Role: {roleName: "GUEST"},
     organizations: ["org_university_rwanda"],//
     bio: "Associate Professor of Business Administration with expertise in organizational management and strategic planning. Regular speaker at academic conferences and business seminars.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=PN",
