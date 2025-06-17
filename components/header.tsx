@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { Menu, X, ChevronDown, LogOut, Calendar, MapPin, Shield } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
+import { Button } from "./button"
 
 interface HeaderProps {
   activePage?: string
@@ -251,14 +252,11 @@ export function Header({ activePage }: HeaderProps) {
             >
               Log In
             </Link>
-            <Link
+            <Button
               href="/register"
-              className={`text-sm font-medium text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-800 ${
-                activePage === "register" ? "bg-blue-600 hover:bg-blue-700" : ""
-              }`}
             >
               Register
-            </Link>
+            </Button>
           </div>
         )}
 
