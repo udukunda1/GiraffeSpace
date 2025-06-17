@@ -1,9 +1,52 @@
+"use client"
+
 import Link from "next/link"
-import { Calendar } from "lucide-react"
+import { Calendar, AlertCircle } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { useState } from "react"
+import ApiService from "@/api/apiConfig"
+import { useRouter } from "next/navigation"
 
 export default function RegisterPage() {
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [username, setUserName] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState(false)
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    setIsLoading(true)
+    setError("")
+    setSuccess(false)
+
+    const formData = {
+      username,
+      email,
+      phone,
+      firstName,
+      lastName
+    }
+
+    try {
+      const response = await ApiService.registerUser(formData)
+      if(response.success){
+        setSuccess(true)
+        router.push("/login")
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Registration failed")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -23,8 +66,58 @@ export default function RegisterPage() {
             <h2 className="text-xl font-bold mb-1">Sign Up</h2>
             <p className="text-gray-600 text-sm mb-6">register</p>
 
-            <form>
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center">
+                <AlertCircle className="h-4 w-4 text-red-500 mr-2 flex-shrink-0" />
+                <span className="text-red-700 text-sm">{error}</span>
+              </div>
+            )}
 
+            {success && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md flex items-center">
+                <AlertCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <span className="text-green-700 text-sm">Account created successfully!</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label htmlFor="firstname" className="block text-sm font-medium text-gray-700 mb-1">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  id="firstname"
+                  name="firstname"
+                  placeholder="John"
+                  value={firstName}
+                  onChange={(e) => {
+                    setFirstName(e.target.value)
+                    if (error) setError("") // Clear error when user starts typing
+                  }}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="lastname" className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastname"
+                  name="lastname"
+                  placeholder="Doe"
+                  value={lastName}
+                  onChange={(e) => {
+                    setLastName(e.target.value)
+                    if (error) setError("") // Clear error when user starts typing
+                  }}
+                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
 
               <div className="mb-4">
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
@@ -35,6 +128,11 @@ export default function RegisterPage() {
                   id="username"
                   name="username"
                   placeholder="johndoe"
+                  value={username}
+                  onChange={(e) => {
+                    setUserName(e.target.value)
+                    if (error) setError("") // Clear error when user starts typing
+                  }}
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -49,6 +147,11 @@ export default function RegisterPage() {
                   id="email"
                   name="email"
                   placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    if (error) setError("") // Clear error when user starts typing
+                  }}
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -63,32 +166,11 @@ export default function RegisterPage() {
                   id="phone-number"
                   name="phone-number"
                   placeholder="0780000000"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-
-              <div className="mb-6">
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value)
+                    if (error) setError("") // Clear error when user starts typing
+                  }}
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -112,9 +194,10 @@ export default function RegisterPage() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                disabled={isLoading}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Register
+                {isLoading ? "Registering..." : "Register"}
               </button>
             </form>
           </div>
