@@ -73,7 +73,7 @@ export default function ManageVenuesPage() {
 
             <Link
               href="/manage/venues/create"
-              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
+              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
             >
               <span className="text-lg">+</span>
               Add New Venue

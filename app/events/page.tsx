@@ -6,6 +6,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { EventCard } from "@/components/event-card"
 import { events } from "@/data/events"
+import { Button } from "@/components/button"
 
 export default function EventsPage() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false)
@@ -184,9 +185,8 @@ export default function EventsPage() {
                 )}
               </div>
 
-              <button className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition-colors duration-200 transform hover:scale-105">
-                Create Event
-              </button>
+              
+               <Button href="/manage/events/create" >   Create Event </Button>
             </div>
           </div>
         </div>

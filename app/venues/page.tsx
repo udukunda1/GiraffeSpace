@@ -7,6 +7,7 @@ import { MapPin, Users, ChevronDown, Search, Calendar } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { venues } from "@/data/venues"
+import { Button } from "@/components/button"
 
 export default function VenuesPage() {
   const [isCapacityOpen, setIsCapacityOpen] = useState(false)
@@ -171,9 +172,7 @@ export default function VenuesPage() {
                 )}
               </div>
 
-              <button className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-blue-700 transition-colors duration-200 transform hover:scale-105">
-                Create New Venue
-              </button>
+              <Button href="/manage/venues/create" >   Create New Venue </Button>
             </div>
           </div>
         </div>

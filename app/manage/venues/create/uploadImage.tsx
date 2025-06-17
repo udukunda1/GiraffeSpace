@@ -31,18 +31,17 @@ export default function UploadImage() {
 
   return (
     <div>
-      <div className="bg-gray-100 rounded-lg p-4 flex items-center justify-center h-64 w-full max-w-md mx-auto">
-        {previewUrl ? (
+      <div className="bg-gray-100 rounded-lg p-4 flex flex-col items-center justify-center h-64 w-full max-w-md mx-auto">
+        {previewUrl && (
           <img
             src={previewUrl}
             alt="Selected"
-            className="max-h-full max-w-full object-contain mx-auto"
+            className="max-h-40 max-w-full object-contain rounded mb-2"
           />
-        ) : (
-          <p className="text-gray-500 mx-2">
-            {selectedFile ? selectedFile.name : 'No image uploaded'}
-          </p>
         )}
+        <p className="text-gray-500 mb-4 text-center px-2">
+          {selectedFile ? selectedFile.name : 'No image uploaded'}
+        </p>
         <input
           type="file"
           accept="image/*"
@@ -53,7 +52,7 @@ export default function UploadImage() {
         <button
           type="button"
           onClick={handleButtonClick}
-          className="mt-4 px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+          className="px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
         >
           Choose File
         </button>
