@@ -43,9 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   password: string
 ): Promise<{ success: boolean; error?: string }> => {
   try {
-    // const response = await ApiService.loginUser({ identifier, password });
+    const response = await ApiService.loginUser({ identifier, password });
 
-    const response = {token: "dfghjlytrtyuiihg", user: users[0], message: "success"};
+    // const response = {token: "dfghjlytrtyuiihg", user: users[0], message: "success"};
 
     if (response?.token && response?.user) {
       setIsLoggedIn(true);
