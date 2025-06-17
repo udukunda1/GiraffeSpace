@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, createContext, useContext, useState, useEffect } from "react"
-import { getUserByEmail, getUserByUsername, type User } from "@/data/users"
+import { getUserByEmail, getUserByUsername, type User, users } from "@/data/users"
 import ApiService from "@/api/apiConfig"
 
 type AuthContextType = {
@@ -43,7 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   password: string
 ): Promise<{ success: boolean; error?: string }> => {
   try {
-    const response = await ApiService.loginUser({ identifier, password });
+    // const response = await ApiService.loginUser({ identifier, password });
+
+    const response = {token: "dfghjlytrtyuiihg", user: users[0], message: "success"};
 
     if (response?.token && response?.user) {
       setIsLoggedIn(true);
