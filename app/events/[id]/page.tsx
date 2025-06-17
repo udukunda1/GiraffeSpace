@@ -235,6 +235,7 @@ export default function EventDetailPage({ params }: { params: { id: string } }) 
               </div>
 
               <Button
+              href="/events/payment"
                 variant="primary"
                 className="w-full mb-2"
                 disabled={event.availableSeats === 0 || event.status !== "Active"}
