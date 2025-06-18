@@ -1,15 +1,9 @@
 import axios, { AxiosRequestHeaders } from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import type { User, UserResult, UserApiResponse } from "@/data/users";
 
 interface UserFormData {
   [key: string]: any;
-}
-
-interface UserResponse {
-  success: boolean;
-  message?: string;
-  token?: string;
-  user?: any;
 }
 
 interface DecodedToken extends JwtPayload {
@@ -34,7 +28,7 @@ class ApiService {
   }
 
   /** Register a new user */
-  static async registerUser(formData: UserFormData): Promise<UserResponse> {
+  static async registerUser(formData: UserFormData): Promise<UserApiResponse> {
     try {
       const response = await axios.post(
         `${this.BASE_URL}/user/signup`,
@@ -51,7 +45,7 @@ class ApiService {
   }
 
   /** Login a registered user */
-  static async loginUser(formData: UserFormData): Promise<UserResponse> {
+  static async loginUser(formData: UserFormData): Promise<UserApiResponse> {
     try {
       const response = await axios.post(
         `${this.BASE_URL}/users/login`,
@@ -67,8 +61,25 @@ class ApiService {
     }
   }
 
+  /** Login with default password (special endpoint) */
+  static async loginUserDefaultPassword(formData: UserFormData): Promise<{ success: boolean; token?: string }> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/users/login-default-password`,
+        formData,
+        {
+          headers: this.getHeader(formData),
+        }
+      );
+      return { success: response.data.success, token: response.data.token };
+    } catch (error) {
+      console.error("Error logging in with default password:", error);
+      return { success: false };
+    }
+  }
+
   /** Get all users */
-  static async getAllUser(): Promise<UserResponse> {
+  static async getAllUser(): Promise<UserApiResponse> {
     try {
       const response = await axios.get(`${this.BASE_URL}/user/getAll`, {
         headers: this.getHeader(),
@@ -81,7 +92,7 @@ class ApiService {
   }
 
   /** Get user profile */
-  static async getUserProfile(): Promise<UserResponse> {
+  static async getUserProfile(): Promise<UserApiResponse> {
     try {
       const response = await axios.get(`${this.BASE_URL}/user/getUserProfile`, {
         headers: this.getHeader(),
@@ -94,7 +105,7 @@ class ApiService {
   }
 
   /** Get user by ID */
-  static async getUserById(userId: string): Promise<UserResponse> {
+  static async getUserById(userId: string): Promise<UserApiResponse> {
     try {
       const response = await axios.get(
         `${this.BASE_URL}/user/getById/${userId}`,
@@ -113,7 +124,7 @@ class ApiService {
   static async updateUserById(
     userId: string,
     updatedData: UserFormData
-  ): Promise<UserResponse> {
+  ): Promise<UserApiResponse> {
     try {
       const response = await axios.put(
         `${this.BASE_URL}/user/update/${userId}`,
@@ -130,7 +141,7 @@ class ApiService {
   }
 
   /** Delete user */
-  static async deleteUser(userId: string): Promise<UserResponse> {
+  static async deleteUser(userId: string): Promise<UserApiResponse> {
     try {
       const response = await axios.delete(
         `${this.BASE_URL}/user/delete/${userId}`,

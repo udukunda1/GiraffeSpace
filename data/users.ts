@@ -1,129 +1,121 @@
-export interface User {
-  userId: string
-  username: string
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  phoneNumber: string
-  Role: {roleName: string}
-  organizations: any[]
-  bio: string
-  profilePictureURL: string
-  emailNotificationsEnabled: boolean
-  dateOfBirth: string
-  gender: string
-  addressLine: string
-  city: string
-  stateProvince: string
-  country: string
+export interface Role {
+  roleId: string;
+  roleName: string;
+  permissions: string[];
 }
 
+export interface Organization {
+  organizationId: string;
+  organizationName: string;
+  description: string;
+  contactEmail: string;
+  contactPhone: string | null;
+  address: string | null;
+  city: string | null;
+  country: string | null;
+  postalCode: string | null;
+  stateProvince: string | null;
+  organizationType: string;
+}
+
+export interface User {
+  userId: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  bio: string | null;
+  profilePictureURL: string | null;
+  preferredLanguage: string | null;
+  timezone: string | null;
+  emailNotificationsEnabled: boolean;
+  smsNotificationsEnabled: boolean;
+  socialMediaLinks: any;
+  dateOfBirth: string | null;
+  gender: string | null;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  city: string | null;
+  stateProvince: string | null;
+  postalCode: string | null;
+  country: string | null;
+  role: Role;
+  organizations: Organization[];
+}
+
+export interface UserResult {
+  success: boolean;
+  message: string;
+  user: User;
+  token?: string;
+}
+
+export interface UserApiResponse {
+  success: boolean;
+  message: string;
+  user: User;
+  token: string;
+}
+
+// Example mock data
 export const users: User[] = [
   {
-    userId: "user_admin_001",
-    username: "admin.uwimana",
-    firstName: "Jean",
-    lastName: "Uwimana",
-    email: "jean.uwimana@ur.ac.rw",
-    password: "hashed_password_123",
-    phoneNumber: "+250 788 123 456",
-    Role: {roleName: "ADMIN"},//
-    organizations: [{organizationName:"org_university_rwanda"}],//
-    bio: "System Administrator with over 8 years of experience in educational technology and event management systems. Passionate about streamlining processes and improving user experiences.",
-    profilePictureURL: "/placeholder.svg?height=150&width=150&text=JU",
+    userId: "f460b67c-d8a6-459d-9e6a-043176cf1213",
+    username: "gison456",
+    email: "gison28466@finfave.com",
+    firstName: "gison",
+    lastName: "Weber",
+    phoneNumber: "+250780697450",
+    bio: null,
+    profilePictureURL: null,
+    preferredLanguage: null,
+    timezone: null,
     emailNotificationsEnabled: true,
-    dateOfBirth: "1985-03-15",
-    gender: "Male",
-    addressLine: "KG 15 Ave, Nyarutarama",
-    city: "Kigali",
-    stateProvince: "Kigali City",
-    country: "Rwanda",
-  },
-  {
-    userId: "user_student_001",
-    username: "marie.mukamana",
-    firstName: "Marie",
-    lastName: "Mukamana",
-    email: "marie.mukamana@student.ur.ac.rw",
-    password: "hashed_password_456",
-    phoneNumber: "+250 788 234 567",
-    Role: {roleName: "GUEST"},//
-    organizations: [{organizationName:"org_university_rwanda"}],//
-    bio: "Computer Science student passionate about software development and artificial intelligence. Active member of the university's tech club and event organizing committee.",
-    profilePictureURL: "/placeholder.svg?height=150&width=150&text=MM",
-    // preferredLanguage: "en",
-    // timezone: "Africa/Kigali",
-    emailNotificationsEnabled: true,
-    // smsNotificationsEnabled: false,
-    // socialMediaLinks: {
-    //   linkedin: "https://linkedin.com/in/marie-mukamana",
-    //   instagram: "https://instagram.com/marie_mukamana",
-    //   twitter: "https://twitter.com/marie_codes",
-    // },
-    dateOfBirth: "2001-07-22",
-    gender: "Female",
-    addressLine: "KG 25 St, Remera",
-    city: "Kigali",
-    stateProvince: "Kigali City",
-    // postalCode: "00002",
-    country: "Rwanda",
-  },
-  {
-    userId: "user_faculty_001",
-    username: "paul.nkurunziza",
-    firstName: "Paul",
-    lastName: "Nkurunziza",
-    email: "paul.nkurunziza@ur.ac.rw",
-    password: "hashed_password_789",
-    phoneNumber: "+250 788 345 678",
-    Role: {roleName: "GUEST"},
-    organizations: [{organizationName:"org_university_rwanda"}],//
-    bio: "Associate Professor of Business Administration with expertise in organizational management and strategic planning. Regular speaker at academic conferences and business seminars.",
-    profilePictureURL: "/placeholder.svg?height=150&width=150&text=PN",
-    // preferredLanguage: "en",
-    // timezone: "Africa/Kigali",
-    emailNotificationsEnabled: true,
-    // smsNotificationsEnabled: true,
-    // socialMediaLinks: {
-    //   linkedin: "https://linkedin.com/in/paul-nkurunziza-phd",
-    //   facebook: "https://facebook.com/paul.nkurunziza",
-    // },
-    dateOfBirth: "1978-11-08",
-    gender: "Male",
-    addressLine: "KG 45 Ave, Kimihurura",
-    // addressLine2: "House No. 78",
-    city: "Kigali",
-    stateProvince: "Kigali City",
-    // postalCode: "00003",
-    country: "Rwanda",
-  },
+    smsNotificationsEnabled: true,
+    socialMediaLinks: null,
+    dateOfBirth: null,
+    gender: null,
+    addressLine1: null,
+    addressLine2: null,
+    city: null,
+    stateProvince: null,
+    postalCode: null,
+    country: null,
+    role: {
+      roleId: "44746a4c-2e7e-4c87-8c06-b56e7e0d5557",
+      roleName: "GUEST",
+      permissions: ["read:public"]
+    },
+    organizations: [
+      {
+        organizationId: "a38ff5ec-5f50-4e9f-ab30-b94d2d0a8c80",
+        organizationName: "Independent",
+        description: "Auto-created organization: Independent",
+        contactEmail: "admin@independent.com",
+        contactPhone: null,
+        address: null,
+        city: null,
+        country: null,
+        postalCode: null,
+        stateProvince: null,
+        organizationType: "General"
+      }
+    ]
+  }
 ]
 
-// Helper functions
+// Helper functions (update as needed for new structure)
 export const getUserById = (id: string) => users.find((user) => user.userId === id)
 
 export const getUserByEmail = (email: string) => users.find((user) => user.email === email)
 
 export const getUserByUsername = (username: string) => users.find((user) => user.username === username)
 
-// export const getUsersByRole = (roleId: string) => users.filter((user) => user.roleId === roleId)
-
-// export const getAdminUsers = () => users.filter((user) => user.roleId === "role_admin")
-
-// export const getRegularUsers = () => users.filter((user) => user.roleId === "role_user")
-
 export const getUsersByCountry = (country: string) =>
-  users.filter((user) => user.country.toLowerCase() === country.toLowerCase())
+  users.filter((user) => (user.country || "").toLowerCase() === country.toLowerCase())
 
-export const getUsersByCity = (city: string) => users.filter((user) => user.city.toLowerCase() === city.toLowerCase())
-
-// export const getUsersWithNotificationsEnabled = (type: "email" | "sms") => {
-//   if (type === "email") {
-//     return users.filter((user) => user.emailNotificationsEnabled)
-//   }
-//   return users.filter((user) => user.smsNotificationsEnabled)
-// }
+export const getUsersByCity = (city: string) => users.filter((user) => (user.city || "").toLowerCase() === city.toLowerCase())
 
 export const searchUsers = (query: string) => {
   const lowercaseQuery = query.toLowerCase()
@@ -137,63 +129,9 @@ export const searchUsers = (query: string) => {
   )
 }
 
-// User statistics
 export const getUserStats = () => {
   const totalUsers = users.length
-  // const adminUsers = getAdminUsers().length
-  // const regularUsers = getRegularUsers().length
-
   return {
     totalUsers,
-    // adminUsers,
-    // regularUsers
   }
-}
-
-// Role definitions for reference
-export const roles = {
-  role_admin: {
-    id: "role_admin",
-    name: "Administrator",
-    description: "Full system access with administrative privileges",
-    permissions: [
-      "create_events",
-      "edit_events",
-      "delete_events",
-      "manage_users",
-      "manage_venues",
-      "view_reports",
-      "system_settings",
-    ],
-  },
-  role_user: {
-    id: "role_user",
-    name: "User",
-    description: "Standard user with basic event management capabilities",
-    permissions: ["create_events", "edit_own_events", "register_for_events", "view_events"],
-  },
-}
-
-// Organization definitions for reference
-export const organizations = {
-  org_university_rwanda: {
-    id: "org_university_rwanda",
-    name: "University of Rwanda",
-    type: "Educational Institution",
-    description: "Main university organization",
-  },
-  org_computer_science_dept: {
-    id: "org_computer_science_dept",
-    name: "Computer Science Department",
-    type: "Academic Department",
-    description: "Computer Science and IT Department",
-    parentOrganization: "org_university_rwanda",
-  },
-  org_business_school: {
-    id: "org_business_school",
-    name: "Business School",
-    type: "Academic School",
-    description: "School of Business and Economics",
-    parentOrganization: "org_university_rwanda",
-  },
 }

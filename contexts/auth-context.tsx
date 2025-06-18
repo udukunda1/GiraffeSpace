@@ -1,7 +1,7 @@
 "use client"
 
 import { type ReactNode, createContext, useContext, useState, useEffect } from "react"
-import { getUserByEmail, getUserByUsername, type User, users } from "@/data/users"
+import { getUserByEmail, getUserByUsername, type User, users, UserApiResponse } from "@/data/users"
 import ApiService from "@/api/apiConfig"
 
 type AuthContextType = {
@@ -46,15 +46,13 @@ const login = async (
   const formData = { identifier, password };
 
   try {
-    const response = await ApiService.loginUser(formData);
-
-    if (response?.token && response?.user) {
+    const response: UserApiResponse = await ApiService.loginUser(formData);
+    if (response.success && response.user && response.token) {
       setIsLoggedIn(true);
       setUser(response.user);
       localStorage.setItem("token", response.token);
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("currentUser", JSON.stringify(response.user));
-
       return { success: true };
     } else {
       return { success: false, error: response?.message || "Login failed." };
@@ -73,18 +71,12 @@ const updateUser = async (
   if (!user) {
     return { success: false, error: "No user logged in." };
   }
-  console.log(updatedData);
-
   try {
-    const response = await ApiService.updateUserById(user.userId, updatedData);
-
-    if (response?.user) {
-      // Update the user state with the new data
-      const updatedUser = { ...user, ...response.user };
+    const response: UserApiResponse = await ApiService.updateUserById(user.userId, updatedData);
+    const updatedUser = response.success && response.user;
+    if (updatedUser) {
       setUser(updatedUser);
-      // Update localStorage with the new user data
       localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-
       return { success: true };
     } else {
       return { success: false, error: response?.message || "Update failed." };

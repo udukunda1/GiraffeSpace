@@ -37,13 +37,21 @@ export default function ProfilePage() {
     email: user?.email || "",
     phoneNumber: user?.phoneNumber || "",
     bio: user?.bio || "",
-    addressLine: user?.addressLine || "",
-    city: user?.city || "",
-    stateProvince: user?.stateProvince || "",
-    country: user?.country || "",
+    preferredLanguage: user?.preferredLanguage || "",
+    timezone: user?.timezone || "",
+    emailNotificationsEnabled: user?.emailNotificationsEnabled || false,
+    smsNotificationsEnabled: user?.smsNotificationsEnabled || false,
+    socialMediaLinks: user?.socialMediaLinks || "",
     dateOfBirth: user?.dateOfBirth || "",
     gender: user?.gender || "",
-    emailNotificationsEnabled: user?.emailNotificationsEnabled || false,
+    addressLine1: user?.addressLine1 || "",
+    addressLine2: user?.addressLine2 || "",
+    city: user?.city || "",
+    stateProvince: user?.stateProvince || "",
+    postalCode: user?.postalCode || "",
+    country: user?.country || "",
+    role: user?.role || { roleId: '', roleName: '', permissions: [] },
+    organizations: user?.organizations || [],
   })
 
   // Redirect if not logged in
@@ -54,18 +62,26 @@ export default function ProfilePage() {
       // Update form data when user data is available
       if (user) {
         setFormData({
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-          bio: user.bio,
-          addressLine: user.addressLine,
-          city: user.city,
-          stateProvince: user.stateProvince,
-          country: user.country,
-          dateOfBirth: user.dateOfBirth,
-          gender: user.gender,
-          emailNotificationsEnabled: user.emailNotificationsEnabled
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          email: user.email || "",
+          phoneNumber: user.phoneNumber || "",
+          bio: user.bio || "",
+          preferredLanguage: user.preferredLanguage || "",
+          timezone: user.timezone || "",
+          emailNotificationsEnabled: user.emailNotificationsEnabled || false,
+          smsNotificationsEnabled: user.smsNotificationsEnabled || false,
+          socialMediaLinks: user.socialMediaLinks || "",
+          dateOfBirth: user.dateOfBirth || "",
+          gender: user.gender || "",
+          addressLine1: user.addressLine1 || "",
+          addressLine2: user.addressLine2 || "",
+          city: user.city || "",
+          stateProvince: user.stateProvince || "",
+          postalCode: user.postalCode || "",
+          country: user.country || "",
+          role: user.role || { roleId: '', roleName: '', permissions: [] },
+          organizations: user.organizations || [],
         })
       }
 
@@ -95,7 +111,6 @@ export default function ProfilePage() {
 
     try {
       const result = await updateUser(formData)
-      
       if (result.success) {
         setIsEditing(false)
         // Optional: Show success message
@@ -115,18 +130,26 @@ export default function ProfilePage() {
     // Reset form data to current user data
     if (user) {
       setFormData({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        bio: user.bio,
-        addressLine: user.addressLine,
-        city: user.city,
-        stateProvince: user.stateProvince,
-        country: user.country,
-        dateOfBirth: user.dateOfBirth,
-        gender: user.gender,
-        emailNotificationsEnabled: user.emailNotificationsEnabled
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        email: user.email || "",
+        phoneNumber: user.phoneNumber || "",
+        bio: user.bio || "",
+        preferredLanguage: user.preferredLanguage || "",
+        timezone: user.timezone || "",
+        emailNotificationsEnabled: user.emailNotificationsEnabled || false,
+        smsNotificationsEnabled: user.smsNotificationsEnabled || false,
+        socialMediaLinks: user.socialMediaLinks || "",
+        dateOfBirth: user.dateOfBirth || "",
+        gender: user.gender || "",
+        addressLine1: user.addressLine1 || "",
+        addressLine2: user.addressLine2 || "",
+        city: user.city || "",
+        stateProvince: user.stateProvince || "",
+        postalCode: user.postalCode || "",
+        country: user.country || "",
+        role: user.role || { roleId: '', roleName: '', permissions: [] },
+        organizations: user.organizations || [],
       })
     }
     setIsEditing(false)
@@ -140,6 +163,12 @@ export default function ProfilePage() {
       day: "numeric",
     })
   }
+
+  // Helper for displaying nullable fields
+  const displayValue = (value: string) => {
+    const str = value.trim();
+    return str !== "" && str !== "null" && str !== "undefined" ? str : "Not specified";
+  };
 
   if (!user) {
     return <div>Loading...</div>
@@ -194,7 +223,7 @@ export default function ProfilePage() {
                   <h2 className="text-2xl font-bold">
                     {user.firstName} {user.lastName}
                   </h2>
-                  {user.Role.roleName === "ADMIN" && (
+                  {user.role.roleName === "ADMIN" && (
                     <Badge variant="default" className="flex items-center gap-1">
                       <Shield className="h-3 w-3" />
                       Admin
@@ -377,14 +406,27 @@ export default function ProfilePage() {
                     <h3 className="text-lg font-semibold mb-4">Address Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">
-                        <label htmlFor="addressLine" className="block text-sm font-medium text-gray-700 mb-1">
-                          Address Line
+                        <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700 mb-1">
+                          Address Line 1
                         </label>
                         <input
                           type="text"
-                          id="addressLine"
-                          name="addressLine"
-                          value={formData.addressLine}
+                          id="addressLine1"
+                          name="addressLine1"
+                          value={formData.addressLine1}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700 mb-1">
+                          Address Line 2
+                        </label>
+                        <input
+                          type="text"
+                          id="addressLine2"
+                          name="addressLine2"
+                          value={formData.addressLine2}
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
@@ -411,6 +453,19 @@ export default function ProfilePage() {
                           id="stateProvince"
                           name="stateProvince"
                           value={formData.stateProvince}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">
+                          Postal Code
+                        </label>
+                        <input
+                          type="text"
+                          id="postalCode"
+                          name="postalCode"
+                          value={formData.postalCode}
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
@@ -446,6 +501,19 @@ export default function ProfilePage() {
                         />
                         <label htmlFor="emailNotificationsEnabled" className="ml-2 block text-sm text-gray-700">
                           Enable email notifications
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id="smsNotificationsEnabled"
+                          name="smsNotificationsEnabled"
+                          checked={formData.smsNotificationsEnabled}
+                          onChange={handleInputChange}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor="smsNotificationsEnabled" className="ml-2 block text-sm text-gray-700">
+                          Enable SMS notifications
                         </label>
                       </div>
                     </div>
@@ -484,28 +552,32 @@ export default function ProfilePage() {
                         <Calendar className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">Date of Birth</p>
-                          <p className="font-medium">{formatDate(user.dateOfBirth)}</p>
+                          <p className="font-medium">{formatDate(user.dateOfBirth ? formatDate(user.dateOfBirth) : 'N/A')}</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <User className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">Gender</p>
-                          <p className="font-medium">{user.gender}</p>
+                          <p className="font-medium">{displayValue(user.gender ?? "")}</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <Building className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">Organization</p>
-                          <p className="font-medium">{user.organizations[0].organizationName}</p>
+                          <p className="font-medium">
+                            {user.organizations.length > 0
+                              ? user.organizations.map(org => displayValue((org.organizationName ?? '').toString())).join(", ")
+                              : "Not specified"}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <MapPin className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">Address</p>
-                          <p className="font-medium">{user.addressLine}</p>
+                          <p className="font-medium">{user.addressLine1}</p>
                         </div>
                       </div>
                       <div className="flex items-start">
@@ -548,6 +620,37 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
+                  {/* Role Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Role Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="flex items-start">
+                        <User className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-gray-500">Role</p>
+                          <p className="font-medium">{user.role.roleName}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Organization Information */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Organization Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="flex items-start">
+                        <Building className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-gray-500">Organizations</p>
+                          <p className="font-medium">
+                            {user.organizations.length > 0
+                              ? user.organizations.map(org => displayValue((org.organizationName ?? '').toString())).join(", ")
+                              : "Not specified"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* Bio */}
                   <div>
