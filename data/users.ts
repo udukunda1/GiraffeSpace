@@ -9,12 +9,9 @@ export interface Organization {
   organizationName: string;
   description: string;
   contactEmail: string;
-  contactPhone: string | null;
-  address: string | null;
-  city: string | null;
-  country: string | null;
-  postalCode: string | null;
-  stateProvince: string | null;
+  contactPhone: string;
+  isExternal: boolean;
+  address: string;
   organizationType: string;
 }
 
@@ -61,7 +58,7 @@ export interface UserApiResponse {
 // Example mock data
 export const users: User[] = [
   {
-    userId: "f460b67c-d8a6-459d-9e6a-043176cf1213",
+    userId: "f460b67c-d8a6-459d-9e6a",
     username: "gison456",
     email: "gison28466@finfave.com",
     firstName: "gison",
@@ -84,7 +81,7 @@ export const users: User[] = [
     country: null,
     role: {
       roleId: "44746a4c-2e7e-4c87-8c06-b56e7e0d5557",
-      roleName: "GUEST",
+      roleName: "ADMIN",
       permissions: ["read:public"]
     },
     organizations: [
@@ -93,12 +90,19 @@ export const users: User[] = [
         organizationName: "Independent",
         description: "Auto-created organization: Independent",
         contactEmail: "admin@independent.com",
-        contactPhone: null,
-        address: null,
-        city: null,
-        country: null,
-        postalCode: null,
-        stateProvince: null,
+        contactPhone: "0780000000",
+        isExternal: false,
+        address: "Kigali, Rwanda",
+        organizationType: "General"
+      },
+      {
+        organizationId: "a38ff5ec-5f50-4e9f0",
+        organizationName: "University Of RW",
+        description: "top university",
+        contactEmail: "mail@ur.com",
+        contactPhone: "07834563454",
+        isExternal: true,
+        address: "kigali-kiyovu",
         organizationType: "General"
       }
     ]
