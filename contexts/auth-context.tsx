@@ -72,7 +72,9 @@ const updateUser = async (
     return { success: false, error: "No user logged in." };
   }
   try {
+     console.log("form data", updatedData)
     const response: UserApiResponse = await ApiService.updateUserById(user.userId, updatedData);
+   
     const updatedUser = response.success && response.user;
     if (updatedUser) {
       setUser(updatedUser);

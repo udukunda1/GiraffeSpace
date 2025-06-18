@@ -126,16 +126,24 @@ class ApiService {
     }
   }
 
-  /** Get user profile */
-  static async getUserProfile(): Promise<UserApiResponse> {
+  
+  /** Reset defaultPassword user */
+  static async forgetPassword(
+    formData: UserFormData
+  ): Promise<UserApiResponse> {
     try {
-      const response = await axios.get(`${this.BASE_URL}/user/getUserProfile`, {
-        headers: this.getHeader(),
-        withCredentials: true, // Enable credentials
-      });
+      const response = await axios.post(
+        `${this.BASE_URL}/users/auth/forgot`,
+        formData,
+        {
+          headers: this.getHeader(formData),
+          withCredentials: true, // Enable credentials
+        }
+      );
+      console.log("response", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error get user profile:", error);
+      console.error("Error Reset defaultPassword:", error);
       throw error;
     }
   }
@@ -161,7 +169,7 @@ class ApiService {
   ): Promise<UserApiResponse> {
     try {
       const response = await axios.put(
-        `${this.BASE_URL}/user/update/${userId}`,
+        `${this.BASE_URL}/users/${userId}`,
         updatedData,
         {
           headers: this.getHeader(updatedData),
