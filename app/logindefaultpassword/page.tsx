@@ -4,12 +4,12 @@ import Link from "next/link"
 import { Calendar, AlertCircle, Eye, EyeOff } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useAuth } from "@/contexts/auth-context"
+import { useDefaultPasswordAuth } from "@/contexts/default-password-auth-context"
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
 export default function LoginDefaultPasswordPage() {
-  const { login, isLoggedIn } = useAuth()
+  const { loginWithDefaultPassword } = useDefaultPasswordAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const [password, setPassword] = useState("")
@@ -17,16 +17,7 @@ export default function LoginDefaultPasswordPage() {
   const [error, setError] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-
-  // Get email from URL params
-  const email = searchParams.get('email') || ""
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.push("/")
-    }
-  }, [isLoggedIn, router])
+  const [email, setEmail] = useState("")
 
   // Animation trigger
   useEffect(() => {
@@ -43,11 +34,11 @@ export default function LoginDefaultPasswordPage() {
     setError("")
 
     try {
-      const result = await login(email, password)
+      const result = await loginWithDefaultPassword(email, password)
 
       if (result.success) {
         // Redirect to password change page instead of home
-        router.push("/change-password")
+        router.push("/change-default-password")
       } else {
         setError(result.error || "Login failed. Please check your email and default password.")
       }
@@ -108,8 +99,9 @@ export default function LoginDefaultPasswordPage() {
                   id="email"
                   name="email"
                   value={email}
-                  className="w-full px-3 py-2 border rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                  disabled
+                  className="w-full px-3 py-2 border rounded-md bg-white text-gray-900"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
                 <p className="text-xs text-gray-500 mt-1">This is the email you used for registration</p>
               </div>

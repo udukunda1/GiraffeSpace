@@ -4,12 +4,14 @@ import Link from "next/link"
 import { Lock, AlertCircle, Eye, EyeOff, CheckCircle } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useAuth } from "@/contexts/auth-context"
-import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useDefaultPasswordAuth } from "@/contexts/default-password-auth-context"
+import { useState, useEffect } from "react"
+import axios from "axios"
 
-export default function ChangePasswordPage() {
-  const { user, isLoggedIn, updateUser } = useAuth()
+export default function ChangeDefaultPasswordPage() {
+  const { token } = useDefaultPasswordAuth()
+  // console.log("token", token);
   const router = useRouter()
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
@@ -21,13 +23,6 @@ export default function ChangePasswordPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
-  // Redirect if not logged in
-  useEffect(() => {   //
-    if (!isLoggedIn) {
-      router.push("/login")
-    }
-  }, [isLoggedIn, router])
 
   // Animation trigger
   useEffect(() => {
@@ -77,30 +72,38 @@ export default function ChangePasswordPage() {
       return
     }
 
-    try {
-      // Update the user's password
-      const result = await updateUser({
-        password: newPassword
-      })
-
-      if (result.success) {
-        setSuccess(true)
-        // Redirect to login after 3 seconds
-        setTimeout(() => {
-          router.push("/login")
-        }, 3000)
-      } else {
-        setError(result.error || "Failed to update password. Please try again.")
+    let result
+    if (token) {
+      try {
+        const response = await axios.post("/api/change-password", {
+          currentPassword,
+          newPassword
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        })
+        result = { success: true }
+      } catch (error: any) {
+        result = { success: false, error: error?.response?.data?.error || "Failed to update password. Please try again." }
       }
-    } catch (err) {
-      setError("An unexpected error occurred. Please try again.")
-    } finally {
+    } else {
+      setError("No token found. Please log in again.")
       setIsLoading(false)
+      return
     }
-  }
 
-  if (!user) {
-    return <div>Loading...</div> //
+    if (result.success) {
+      setSuccess(true)
+      // Redirect to login after 3 seconds
+      setTimeout(() => {
+        router.push("/login")
+      }, 3000)
+    } else {
+      setError(result.error)
+    }
+    setIsLoading(false)
   }
 
   if (success) {
@@ -114,8 +117,8 @@ export default function ChangePasswordPage() {
             </div>
             <h1 className="text-3xl font-bold mb-4 text-green-800">Password Updated Successfully!</h1>
             <p className="text-gray-600 mb-6">Your password has been changed successfully. You will be redirected to the login page in a few seconds.</p>
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className="inline-block bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors"
             >
               Go to Login
