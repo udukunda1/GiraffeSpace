@@ -73,11 +73,12 @@ const updateUser = async (
   if (!user) {
     return { success: false, error: "No user logged in." };
   }
+  console.log(updatedData);
 
   try {
     const response = await ApiService.updateUserById(user.userId, updatedData);
 
-    if (response?.success && response?.user) {
+    if (response?.user) {
       // Update the user state with the new data
       const updatedUser = { ...user, ...response.user };
       setUser(updatedUser);

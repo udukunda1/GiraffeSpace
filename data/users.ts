@@ -10,23 +10,12 @@ export interface User {
   organizations: any[]
   bio: string
   profilePictureURL: string
-  // preferredLanguage: string
-  // timezone: string
   emailNotificationsEnabled: boolean
-  // smsNotificationsEnabled: boolean
-  // socialMediaLinks: {
-  //   linkedin?: string
-  //   twitter?: string
-  //   facebook?: string
-  //   instagram?: string
-  // }
   dateOfBirth: string
   gender: string
   addressLine: string
-  // addressLine2?: string
   city: string
   stateProvince: string
-  // postalCode: string
   country: string
 }
 
@@ -43,21 +32,12 @@ export const users: User[] = [
     organizations: [{organizationName:"org_university_rwanda"}],//
     bio: "System Administrator with over 8 years of experience in educational technology and event management systems. Passionate about streamlining processes and improving user experiences.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=JU",
-    // preferredLanguage: "en",
-    // timezone: "Africa/Kigali",
     emailNotificationsEnabled: true,
-    // smsNotificationsEnabled: true,
-    // socialMediaLinks: {
-    //   linkedin: "https://linkedin.com/in/jean-uwimana",
-    //   twitter: "https://twitter.com/jean_uwimana",
-    // },
     dateOfBirth: "1985-03-15",
     gender: "Male",
     addressLine: "KG 15 Ave, Nyarutarama",
-    // addressLine2: "Apartment 12B",
     city: "Kigali",
     stateProvince: "Kigali City",
-    // postalCode: "00001",
     country: "Rwanda",
   },
   {

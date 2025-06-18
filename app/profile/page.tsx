@@ -23,10 +23,12 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 export default function ProfilePage() {
-  const { isLoggedIn, user } = useAuth()
+  const { isLoggedIn, user, updateUser } = useAuth()
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Initialize form data with user data
   const [formData, setFormData] = useState({
@@ -86,11 +88,27 @@ export default function ProfilePage() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // In a real app, this would update the user data via API
-    console.log("Updated profile data:", formData)
-    setIsEditing(false)
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const result = await updateUser(formData)
+      
+      if (result.success) {
+        setIsEditing(false)
+        // Optional: Show success message
+        console.log("Profile updated successfully")
+      } else {
+        setError(result.error || "Failed to update profile")
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.")
+      console.error("Profile update error:", err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleCancel = () => {
@@ -197,16 +215,30 @@ export default function ProfilePage() {
                 ) : (
                   <div className="flex gap-2">
                     <button
+                      type="button"
                       onClick={handleCancel}
-                      className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      disabled={isLoading}
+                      className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Cancel
                     </button>
                     <button
+                      type="submit"
                       onClick={handleSubmit}
-                      className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
+                      disabled={isLoading}
+                      className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                     >
-                      Save Changes
+                      {isLoading ? (
+                        <>
+                          <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Saving...
+                        </>
+                      ) : (
+                        "Save Changes"
+                      )}
                     </button>
                   </div>
                 )}
@@ -217,6 +249,22 @@ export default function ProfilePage() {
             <div className="p-6 md:p-8">
               {isEditing ? (
                 <form onSubmit={handleSubmit} className="space-y-8">
+                  {/* Error Display */}
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm text-red-800">{error}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Basic Information */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
@@ -329,13 +377,13 @@ export default function ProfilePage() {
                     <h3 className="text-lg font-semibold mb-4">Address Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">
-                        <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="addressLine" className="block text-sm font-medium text-gray-700 mb-1">
                           Address Line
                         </label>
                         <input
                           type="text"
-                          id="addressLine1"
-                          name="addressLine1"
+                          id="addressLine"
+                          name="addressLine"
                           value={formData.addressLine}
                           onChange={handleInputChange}
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
