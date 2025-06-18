@@ -341,19 +341,6 @@ export default function ProfilePage() {
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
-                      {/* <div className="md:col-span-2">
-                        <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700 mb-1">
-                          Address Line 2 (Optional)
-                        </label>
-                        <input
-                          type="text"
-                          id="addressLine2"
-                          name="addressLine2"
-                          value={formData.addressLine2}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div> */}
                       <div>
                         <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
                           City
@@ -380,19 +367,6 @@ export default function ProfilePage() {
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
-                      {/* <div>
-                        <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1">
-                          Postal Code
-                        </label>
-                        <input
-                          type="text"
-                          id="postalCode"
-                          name="postalCode"
-                          value={formData.postalCode}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div> */}
                       <div>
                         <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
                           Country
@@ -406,42 +380,6 @@ export default function ProfilePage() {
                           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Preferences */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Preferences</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* <div>
-                        <label htmlFor="preferredLanguage" className="block text-sm font-medium text-gray-700 mb-1">
-                          Preferred Language
-                        </label>
-                        <select
-                          id="preferredLanguage"
-                          name="preferredLanguage"
-                          value={formData.preferredLanguage}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                          <option value="en">English</option>
-                          <option value="fr">French</option>
-                          <option value="rw">Kinyarwanda</option>
-                        </select>
-                      </div> */}
-                      {/* <div>
-                        <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-1">
-                          Timezone
-                        </label>
-                        <input
-                          type="text"
-                          id="timezone"
-                          name="timezone"
-                          value={formData.timezone}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div> */}
                     </div>
                   </div>
 
@@ -462,96 +400,8 @@ export default function ProfilePage() {
                           Enable email notifications
                         </label>
                       </div>
-                      {/* <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="smsNotificationsEnabled"
-                          name="smsNotificationsEnabled"
-                          checked={formData.smsNotificationsEnabled}
-                          onChange={handleInputChange}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor="smsNotificationsEnabled" className="ml-2 block text-sm text-gray-700">
-                          Enable SMS notifications
-                        </label>
-                      </div> */}
                     </div>
                   </div>
-
-                  {/* //Social Media Links
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4">Social Media Links</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label
-                          htmlFor="socialMediaLinks.linkedin"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          LinkedIn
-                        </label>
-                        <input
-                          type="url"
-                          id="socialMediaLinks.linkedin"
-                          name="socialMediaLinks.linkedin"
-                          value={formData.socialMediaLinks.linkedin}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="https://linkedin.com/in/username"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="socialMediaLinks.twitter"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          Twitter
-                        </label>
-                        <input
-                          type="url"
-                          id="socialMediaLinks.twitter"
-                          name="socialMediaLinks.twitter"
-                          value={formData.socialMediaLinks.twitter}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="https://twitter.com/username"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="socialMediaLinks.facebook"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          Facebook
-                        </label>
-                        <input
-                          type="url"
-                          id="socialMediaLinks.facebook"
-                          name="socialMediaLinks.facebook"
-                          value={formData.socialMediaLinks.facebook}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="https://facebook.com/username"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="socialMediaLinks.instagram"
-                          className="block text-sm font-medium text-gray-700 mb-1"
-                        >
-                          Instagram
-                        </label>
-                        <input
-                          type="url"
-                          id="socialMediaLinks.instagram"
-                          name="socialMediaLinks.instagram"
-                          value={formData.socialMediaLinks.instagram}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="https://instagram.com/username"
-                        />
-                      </div>
-                    </div>
-                  </div> */}
                 </form>
               ) : (
                 <div className="space-y-8">
@@ -606,46 +456,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* Address Information */}
-                  {/* <div>
-                    <h3 className="text-lg font-semibold mb-4">Address Information</h3>
-                    <div className="flex items-start">
-                      <MapPin className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
-                      <div>
-                        <p className="text-sm text-gray-500">Address</p>
-                        <div className="font-medium">
-                          <p>{user.addressLine1}</p>
-                          {user.addressLine2 && <p>{user.addressLine2}</p>}
-                          <p>
-                            {user.city}, {user.stateProvince} {user.postalCode}
-                          </p>
-                          <p>{user.country}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
-
-                  {/* Preferences */}
-                  {/* <div>
-                    <h3 className="text-lg font-semibold mb-4">Preferences</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="flex items-start">
-                        <Globe className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
-                        <div>
-                          <p className="text-sm text-gray-500">Preferred Language</p>
-                          <p className="font-medium">{user.preferredLanguage.toUpperCase()}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <Clock className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
-                        <div>
-                          <p className="text-sm text-gray-500">Timezone</p>
-                          <p className="font-medium">{user.timezone}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
-
                   {/* Notification Settings */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Notification Settings</h3>
@@ -659,81 +469,9 @@ export default function ProfilePage() {
                           </Badge>
                         </div>
                       </div>
-                      {/* <div className="flex items-start">
-                        <MessageSquare className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
-                        <div>
-                          <p className="text-sm text-gray-500">SMS Notifications</p>
-                          <Badge variant={user.smsNotificationsEnabled ? "default" : "secondary"}>
-                            {user.smsNotificationsEnabled ? "Enabled" : "Disabled"}
-                          </Badge>
-                        </div>
-                      </div> */}
                     </div>
                   </div>
 
-                  {/* Social Media Links */}
-                  {/* {(user.socialMediaLinks?.linkedin ||
-                    user.socialMediaLinks?.twitter ||
-                    user.socialMediaLinks?.facebook ||
-                    user.socialMediaLinks?.instagram) && (
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4">Social Media</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {user.socialMediaLinks?.linkedin && (
-                          <div className="flex items-center">
-                            <Linkedin className="h-5 w-5 mr-3 text-blue-600" />
-                            <a
-                              href={user.socialMediaLinks.linkedin}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 transition-colors"
-                            >
-                              LinkedIn Profile
-                            </a>
-                          </div>
-                        )}
-                        {user.socialMediaLinks?.twitter && (
-                          <div className="flex items-center">
-                            <Twitter className="h-5 w-5 mr-3 text-blue-400" />
-                            <a
-                              href={user.socialMediaLinks.twitter}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 transition-colors"
-                            >
-                              Twitter Profile
-                            </a>
-                          </div>
-                        )}
-                        {user.socialMediaLinks?.facebook && (
-                          <div className="flex items-center">
-                            <Facebook className="h-5 w-5 mr-3 text-blue-700" />
-                            <a
-                              href={user.socialMediaLinks.facebook}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 transition-colors"
-                            >
-                              Facebook Profile
-                            </a>
-                          </div>
-                        )}
-                        {user.socialMediaLinks?.instagram && (
-                          <div className="flex items-center">
-                            <Instagram className="h-5 w-5 mr-3 text-pink-600" />
-                            <a
-                              href={user.socialMediaLinks.instagram}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 transition-colors"
-                            >
-                              Instagram Profile
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )} */}
 
                   {/* Bio */}
                   <div>

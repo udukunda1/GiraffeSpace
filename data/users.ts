@@ -40,7 +40,7 @@ export const users: User[] = [
     password: "hashed_password_123",
     phoneNumber: "+250 788 123 456",
     Role: {roleName: "ADMIN"},//
-    organizations: ["org_university_rwanda"],//
+    organizations: [{organizationName:"org_university_rwanda"}],//
     bio: "System Administrator with over 8 years of experience in educational technology and event management systems. Passionate about streamlining processes and improving user experiences.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=JU",
     // preferredLanguage: "en",
@@ -69,7 +69,7 @@ export const users: User[] = [
     password: "hashed_password_456",
     phoneNumber: "+250 788 234 567",
     Role: {roleName: "GUEST"},//
-    organizations: ["org_university_rwanda"],//
+    organizations: [{organizationName:"org_university_rwanda"}],//
     bio: "Computer Science student passionate about software development and artificial intelligence. Active member of the university's tech club and event organizing committee.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=MM",
     // preferredLanguage: "en",
@@ -98,7 +98,7 @@ export const users: User[] = [
     password: "hashed_password_789",
     phoneNumber: "+250 788 345 678",
     Role: {roleName: "GUEST"},
-    organizations: ["org_university_rwanda"],//
+    organizations: [{organizationName:"org_university_rwanda"}],//
     bio: "Associate Professor of Business Administration with expertise in organizational management and strategic planning. Regular speaker at academic conferences and business seminars.",
     profilePictureURL: "/placeholder.svg?height=150&width=150&text=PN",
     // preferredLanguage: "en",

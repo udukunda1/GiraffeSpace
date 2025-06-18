@@ -9,6 +9,7 @@ type AuthContextType = {
   user: User | null
   login: (identifier: string, password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
+  updateUser: (updatedData: Partial<User>) => Promise<{ success: boolean; error?: string }>
 }
 
 // Create the context with undefined initially
@@ -66,6 +67,34 @@ const login = async (
   }
 };
 
+const updateUser = async (
+  updatedData: Partial<User>
+): Promise<{ success: boolean; error?: string }> => {
+  if (!user) {
+    return { success: false, error: "No user logged in." };
+  }
+
+  try {
+    const response = await ApiService.updateUserById(user.userId, updatedData);
+
+    if (response?.success && response?.user) {
+      // Update the user state with the new data
+      const updatedUser = { ...user, ...response.user };
+      setUser(updatedUser);
+      // Update localStorage with the new user data
+      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+      return { success: true };
+    } else {
+      return { success: false, error: response?.message || "Update failed." };
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error?.response?.data?.message || "Update failed. Try again.",
+    };
+  }
+};
 
   const logout = () => {
     setIsLoggedIn(false)
@@ -80,6 +109,7 @@ const login = async (
     user,
     login,
     logout,
+    updateUser,
   }
 
   // Only render children after mounting on the client
