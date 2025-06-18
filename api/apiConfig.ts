@@ -233,6 +233,24 @@ class ApiService {
   static isAdmin(): boolean {
     return this.getUserRole() === "Admin";
   }
+
+  /** Add a new organization */
+  static async addOrganization(orgData: any): Promise<any> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/organizations`,
+        orgData,
+        {
+          headers: this.getHeader(orgData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error adding organization:", error);
+      throw error;
+    }
+  }
 }
 
 export default ApiService;

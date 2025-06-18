@@ -6,6 +6,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import Link from "next/link";
 import { Building2, AlertCircle } from "lucide-react";
+import ApiService from "@/api/apiConfig";
 
 export default function AddOrganizationPage() {
   // organizationId can be auto-generated or left blank for now
@@ -29,11 +30,21 @@ export default function AddOrganizationPage() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    // TODO: Replace with actual API call
-    setTimeout(() => {
+    try {
+      await ApiService.addOrganization({
+        organizationName,
+        description,
+        contactEmail,
+        contactPhone,
+        address,
+        organizationType,
+      });
       setIsLoading(false);
       router.push("/my-organizations");
-    }, 1000);
+    } catch (err: any) {
+      setIsLoading(false);
+      setError(err?.response?.data?.message || "Failed to add organization. Please try again.");
+    }
   };
 
   return (
