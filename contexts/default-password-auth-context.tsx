@@ -22,14 +22,14 @@ export function DefaultPasswordAuthProvider({ children }: { children: ReactNode 
 
   // Login with default password (calls a different API endpoint)
   const loginWithDefaultPassword = async (
-    email: string,
+    identifier: string,
     password: string
   ): Promise<{ success: boolean; token?: string; error?: string }> => {
     try {
-      const response = await ApiService.loginUserDefaultPassword({ email, password })
+      const response = await ApiService.loginUserDefaultPassword({ identifier, password })
       if (response.success && response.token) {
         setToken(response.token)
-        localStorage.setItem("defaultPasswordToken", response.token)
+        localStorage.setItem("token", response.token)
         return { success: true, token: response.token }
       } else {
         return { success: false, error: "Login failed." }

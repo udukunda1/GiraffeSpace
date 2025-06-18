@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { useDefaultPasswordAuth } from "@/contexts/default-password-auth-context"
 import { useState, useEffect } from "react"
 import axios from "axios"
+import ApiService from "@/api/apiConfig"
 
 export default function ChangeDefaultPasswordPage() {
   const { token } = useDefaultPasswordAuth()
@@ -75,14 +76,9 @@ export default function ChangeDefaultPasswordPage() {
     let result
     if (token) {
       try {
-        const response = await axios.post("/api/change-password", {
-          currentPassword,
-          newPassword
-        }, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          }
+        const response = await ApiService.resetDefaultPassword( {
+          confirm_password:confirmPassword,
+          password:newPassword
         })
         result = { success: true }
       } catch (error: any) {

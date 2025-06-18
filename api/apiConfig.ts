@@ -29,17 +29,43 @@ class ApiService {
 
   /** Register a new user */
   static async registerUser(formData: UserFormData): Promise<UserApiResponse> {
+    console.log("hdtdrwywywuwuwiwqq");
     try {
+      console.log("in try brock");
       const response = await axios.post(
-        `${this.BASE_URL}/user/signup`,
+        `${this.BASE_URL}/users/auth/register`,
         formData,
         {
           headers: this.getHeader(formData),
+          withCredentials: true, // Enable credentials
         }
       );
+      console.log("hdtdrwywywuwuwiwqq");
+      console.log("response", response.data);
       return response.data;
     } catch (error) {
       console.error("Error signup:", error);
+      throw error;
+    }
+  }
+
+  /** Reset defaultPassword user */
+  static async resetDefaultPassword(
+    formData: UserFormData
+  ): Promise<UserApiResponse> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/users/auth/reset`,
+        formData,
+        {
+          headers: this.getHeader(formData),
+          withCredentials: true, // Enable credentials
+        }
+      );
+      console.log("response", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error Reset defaultPassword:", error);
       throw error;
     }
   }
@@ -48,10 +74,11 @@ class ApiService {
   static async loginUser(formData: UserFormData): Promise<UserApiResponse> {
     try {
       const response = await axios.post(
-        `${this.BASE_URL}/users/login`,
+        `${this.BASE_URL}/users/auth/login`,
         formData,
         {
           headers: this.getHeader(formData),
+          withCredentials: true, // Enable credentials
         }
       );
       return response.data;
@@ -62,15 +89,21 @@ class ApiService {
   }
 
   /** Login with default password (special endpoint) */
-  static async loginUserDefaultPassword(formData: UserFormData): Promise<{ success: boolean; token?: string }> {
+  static async loginUserDefaultPassword(
+    formData: UserFormData
+  ): Promise<{ success: boolean; token?: string }> {
+    console.log("hdtdrwywywuwuwiwqq");
     try {
+      console.log("in try block");
       const response = await axios.post(
-        `${this.BASE_URL}/users/login-default-password`,
+        `${this.BASE_URL}/users/auth/login/default`,
         formData,
         {
           headers: this.getHeader(formData),
+          withCredentials: true, // Enable credentials
         }
       );
+      console.log("response", response.data);
       return { success: response.data.success, token: response.data.token };
     } catch (error) {
       console.error("Error logging in with default password:", error);
@@ -83,7 +116,9 @@ class ApiService {
     try {
       const response = await axios.get(`${this.BASE_URL}/user/getAll`, {
         headers: this.getHeader(),
+        withCredentials: true, // Enable credentials
       });
+
       return response.data;
     } catch (error) {
       console.error("Error get all user:", error);
@@ -96,6 +131,7 @@ class ApiService {
     try {
       const response = await axios.get(`${this.BASE_URL}/user/getUserProfile`, {
         headers: this.getHeader(),
+        withCredentials: true, // Enable credentials
       });
       return response.data;
     } catch (error) {
@@ -107,12 +143,10 @@ class ApiService {
   /** Get user by ID */
   static async getUserById(userId: string): Promise<UserApiResponse> {
     try {
-      const response = await axios.get(
-        `${this.BASE_URL}/user/getById/${userId}`,
-        {
-          headers: this.getHeader(),
-        }
-      );
+      const response = await axios.get(`${this.BASE_URL}/users/${userId}`, {
+        headers: this.getHeader(),
+        withCredentials: true, // Enable credentials
+      });
       return response.data;
     } catch (error) {
       console.error(`Error fetching user with ID ${userId}:`, error);
@@ -131,6 +165,7 @@ class ApiService {
         updatedData,
         {
           headers: this.getHeader(updatedData),
+          withCredentials: true, // Enable credentials
         }
       );
       return response.data;
@@ -147,6 +182,7 @@ class ApiService {
         `${this.BASE_URL}/user/delete/${userId}`,
         {
           headers: this.getHeader(),
+          withCredentials: true, // Enable credentials
         }
       );
       return response.data;
