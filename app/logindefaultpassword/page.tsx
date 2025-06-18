@@ -46,9 +46,10 @@ export default function LoginDefaultPasswordPage() {
       const result = await login(email, password)
 
       if (result.success) {
-        router.push("/")
+        // Redirect to password change page instead of home
+        router.push("/change-password")
       } else {
-        setError(result.error || "Login failed. Please try again.")
+        setError(result.error || "Login failed. Please check your email and default password.")
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.")
@@ -68,8 +69,8 @@ export default function LoginDefaultPasswordPage() {
               isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
             }`}
           >
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-              <Calendar className="h-6 w-6 text-green-600" />
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+              <Calendar className="h-6 w-6 text-blue-600" />
             </div>
           </div>
 
@@ -78,8 +79,8 @@ export default function LoginDefaultPasswordPage() {
               isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
             }`}
           >
-            <h1 className="text-3xl font-bold mb-2">Account Created Successfully!</h1>
-            <p className="text-gray-600">Please set your default password to complete registration</p>
+            <h1 className="text-3xl font-bold mb-2">Login with Default Password</h1>
+            <p className="text-gray-600">Use the default password sent to your email to access your account</p>
           </div>
 
           <div
@@ -87,8 +88,8 @@ export default function LoginDefaultPasswordPage() {
               isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
             }`}
           >
-            <h2 className="text-xl font-bold mb-1">Set Default Password</h2>
-            <p className="text-gray-600 text-sm mb-6">Enter your default password to access your account</p>
+            <h2 className="text-xl font-bold mb-1">Default Password Login</h2>
+            <p className="text-gray-600 text-sm mb-6">Enter your email and the default password sent to your email</p>
 
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center">
@@ -122,7 +123,7 @@ export default function LoginDefaultPasswordPage() {
                     type={showPassword ? "text" : "password"}
                     id="password"
                     name="password"
-                    placeholder="Enter your default password"
+                    placeholder="Enter the default password from your email"
                     className="w-full px-3 py-2 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     required
                     value={password}
@@ -143,12 +144,12 @@ export default function LoginDefaultPasswordPage() {
                     )}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">This will be your temporary password. You can change it later in settings.</p>
+                <p className="text-xs text-gray-500 mt-1">Enter the default password that was sent to your email address.</p>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -173,10 +174,10 @@ export default function LoginDefaultPasswordPage() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       ></path>
                     </svg>
-                    Setting password...
+                    Logging in...
                   </>
                 ) : (
-                  "Set Password & Login"
+                  "Login with Default Password"
                 )}
               </button>
             </form>
@@ -186,24 +187,30 @@ export default function LoginDefaultPasswordPage() {
               <p className="text-sm font-medium text-blue-800 mb-2">Default Password Information:</p>
               <div className="text-xs text-blue-700 space-y-1">
                 <div>
-                  • Use a strong password with at least 8 characters
+                  • Check your email for the default password
                 </div>
                 <div>
-                  • Include uppercase, lowercase, numbers, and symbols
+                  • After successful login, you'll be redirected to change your password
                 </div>
                 <div>
-                  • You can change this password anytime in your account settings
+                  • You can change your password anytime in your account settings
                 </div>
               </div>
             </div>
           </div>
 
-          <p className="text-center text-gray-600">
-            Already have an account?{" "}
-            <Link href="/login" className="text-blue-600 hover:text-blue-800 font-medium">
-              Log in
-            </Link>
-          </p>
+          <div
+            className={`text-center transform transition-all duration-1000 ease-out delay-600 ${
+              isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+          >
+            <p className="text-gray-600 text-sm">
+              Don't have the default password?{" "}
+              <Link href="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+                Try regular login
+              </Link>
+            </p>
+          </div>
         </div>
       </main>
 
