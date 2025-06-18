@@ -4,25 +4,53 @@ import { useAuth } from "@/contexts/auth-context";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import Link from "next/link";
+import ApiService from "@/api/apiConfig";
+import { useEffect, useState } from "react";
 
 export default function MyOrganizationsPage() {
   const { user } = useAuth();
-  const organizations = user?.organizations || [];
+  const [organizations, setOrganizations] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setIsLoading(true);
+      setError("");
+      try {
+        const response = await ApiService.getUserById(user!.userId);
+        const orgs = response?.user?.organizations || [];
+        console.log(response);
+        setOrganizations(orgs);
+      } catch (err: any) {
+        setError("Failed to load organizations.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (user && user.userId) {
+      fetchUser();
+    }
+  }, [user?.userId]);
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-3xl">
-        <div className="flex items-center justify-between mb-6">
+      <Header activePage="my-organizations" />
+      <main className="flex-1 container mx-auto px-4 md:px-16 max-w-7xl py-8">
+        <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">My Organizations</h1>
           <Link
             href="/my-organizations/add"
-            className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
             Add New Organization
           </Link>
         </div>
-        {organizations.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center text-gray-500 py-12">Loading organizations...</div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-12">{error}</div>
+        ) : organizations.length === 0 ? (
           <div className="text-center text-gray-500 py-12">
             You have not added any organizations yet.
           </div>
