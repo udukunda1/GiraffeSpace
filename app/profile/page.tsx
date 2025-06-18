@@ -453,6 +453,34 @@ export default function ProfilePage() {
                           <p className="font-medium">{user.organizations[0].organizationName}</p>
                         </div>
                       </div>
+                      <div className="flex items-start">
+                        <MapPin className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-gray-500">Address</p>
+                          <p className="font-medium">{user.addressLine}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <MapPin className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-gray-500">City</p>
+                          <p className="font-medium">{user.city}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <MapPin className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-gray-500">State/Province</p>
+                          <p className="font-medium">{user.stateProvince}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <Globe className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-gray-500">Country</p>
+                          <p className="font-medium">{user.country}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
