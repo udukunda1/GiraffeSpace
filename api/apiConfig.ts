@@ -200,45 +200,61 @@ class ApiService {
     }
   }
 
-  static logout(): void {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-  }
-
-  static isAuthenticated(): boolean {
-    const token = localStorage.getItem("token");
-    return !!token;
-  }
-
-  static getUserRole(): string | null {
-    const token = localStorage.getItem("token");
-    if (!token) return null;
-
-    try {
-      const decoded = jwtDecode<DecodedToken>(token);
-      return decoded.role ?? null;
-    } catch {
-      return null;
-    }
-  }
-
-  static isUser(): boolean {
-    return this.getUserRole() === "Buyer";
-  }
-
-  static isSeller(): boolean {
-    return this.getUserRole() === "Seller";
-  }
-
-  static isAdmin(): boolean {
-    return this.getUserRole() === "Admin";
-  }
+ //**** ORGANIZATION ROUTE *** */
 
   /** Add a new organization */
   static async addOrganization(orgData: any): Promise<any> {
     try {
       const response = await axios.post(
         `${this.BASE_URL}/organizations`,
+        orgData,
+        {
+          headers: this.getHeader(orgData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error adding organization:", error);
+      throw error;
+    }
+  }
+   static async getAllOrganization(): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.BASE_URL}/organizations`,
+      
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error adding organization:", error);
+      throw error;
+    }
+  }
+    static async getOrganizationById(orgId:string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.BASE_URL}/organizations/${orgId}`,
+      
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error adding organization:", error);
+      throw error;
+    }
+  }
+  static async updateOrganizationById(orgId:string,orgData: any): Promise<any> {
+    try {
+      const response = await axios.put(
+        `${this.BASE_URL}/organizations/${orgId}`,
         orgData,
         {
           headers: this.getHeader(orgData),

@@ -31,7 +31,7 @@ export default function AddOrganizationPage() {
     setIsLoading(true);
     setError("");
     try {
-      await ApiService.addOrganization({
+      const response = await ApiService.addOrganization({
         organizationName,
         description,
         contactEmail,
@@ -39,6 +39,8 @@ export default function AddOrganizationPage() {
         address,
         organizationType,
       });
+
+      console.log("response", response.data)
       setIsLoading(false);
       router.push("/my-organizations");
     } catch (err: any) {
