@@ -24,6 +24,7 @@ export interface Venue {
   imageSrc?: string
 }
 
+
 export const venues: Venue[] = [
   {
     venueId: "main-auditorium",

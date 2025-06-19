@@ -12,31 +12,37 @@ import Link from "next/link"
 import ApiService from "@/api/apiConfig";
 
 export default function CreateVenuePage() {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, user } = useAuth()
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
+    venueName: "",
+    capacity: "",
     location: "",
-    latitude:"",
+    latitude: "",
     longitude: "",
+    googleMapsLink: "",
+    managerId: user?.userId || "",
     venueType: "",
     contactPerson: "",
     contactEmail: "",
     contactPhone: "",
-    websiteUrl: "",
-    capacity: "",
-    pricePerHour: "",
-    image: "",
-    amenities: [] as string[],
+    websiteURL: "",
+    description: "",
+    imageSrc: "",
+    organizationId: "",
+    resources: [] as any[],
   })
-  const [amenities, setAmenities] = useState<string[]>([]);
-  const [amenitiesLoading, setAmenitiesLoading] = useState(true);
-  const [amenitiesError, setAmenitiesError] = useState("");
-  const [newAmenity, setNewAmenity] = useState("");
-  const [addingAmenity, setAddingAmenity] = useState(false);
-  const [addAmenityError, setAddAmenityError] = useState("");
+  const [organizations, setOrganizations] = useState<any[]>([])
+  const [orgLoading, setOrgLoading] = useState(true)
+  const [orgError, setOrgError] = useState("")
+  const [resourceForm, setResourceForm] = useState({
+    resourceName: "",
+    description: "",
+    costPerUnit: "",
+    quantity: "",
+  })
+  const [resources, setResources] = useState<any[]>([])
 
   // Redirect if not logged in
   useEffect(() => {
@@ -45,23 +51,24 @@ export default function CreateVenuePage() {
     }
   }, [isLoggedIn, router])
 
-  // Fetch amenities from backend
+  // Fetch organizations for user
   useEffect(() => {
-    const fetchAmenities = async () => {
-      setAmenitiesLoading(true);
-      setAmenitiesError("");
+    const fetchUserOrgs = async () => {
+      setOrgLoading(true)
+      setOrgError("")
       try {
-        const response = await ApiService.getAllAmenities();
-        // Assume response is an array of amenities, each with a name property
-        setAmenities(response.amenities ? response.amenities.map((a: any) => a.name) : []);
+        if (user && user.userId) {
+          const response = await ApiService.getUserById(user.userId)
+          setOrganizations(response?.user?.organizations || [])
+        }
       } catch (err) {
-        setAmenitiesError("Failed to load amenities.");
+        setOrgError("Failed to load organizations.")
       } finally {
-        setAmenitiesLoading(false);
+        setOrgLoading(false)
       }
-    };
-    fetchAmenities();
-  }, []);
+    }
+    fetchUserOrgs()
+  }, [user])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -71,31 +78,54 @@ export default function CreateVenuePage() {
     }))
   }
 
-  const handleAmenityChange = (amenity: string) => {
-    setFormData((prev) => {
-      if (prev.amenities.includes(amenity)) {
-        return {
-          ...prev,
-          amenities: prev.amenities.filter((a) => a !== amenity),
-        }
-      } else {
-        return {
-          ...prev,
-          amenities: [...prev.amenities, amenity],
-        }
-      }
-    })
+  const handleOrgChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prev) => ({ ...prev, organizationId: e.target.value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Resource form handlers
+  const handleResourceInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setResourceForm((prev) => ({ ...prev, [name]: value }))
+  }
+  const handleAddResource = () => {
+    if (!resourceForm.resourceName || !resourceForm.quantity) return
+    setResources((prev) => [
+      ...prev,
+      {
+        resource: {
+          resourceName: resourceForm.resourceName,
+          description: resourceForm.description,
+          costPerUnit: parseFloat(resourceForm.costPerUnit) || 0,
+        },
+        quantity: parseInt(resourceForm.quantity, 10) || 1,
+      },
+    ])
+    setResourceForm({ resourceName: "", description: "", costPerUnit: "", quantity: "" })
+  }
+  const handleRemoveResource = (idx: number) => {
+    setResources((prev) => prev.filter((_, i) => i !== idx))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-
-    // In a real app, this would be an API call to create the venue
-    // For now, just simulate success and redirect
-    setTimeout(() => {
+    try {
+      const venuePayload = {
+        ...formData,
+        capacity: parseInt(formData.capacity, 10) || 0,
+        latitude: parseFloat(formData.latitude) || 0,
+        longitude: parseFloat(formData.longitude) || 0,
+        managerId: user?.userId,
+        resources,
+        imageSrc: formData.imageSrc, // TODO: handle image upload
+      }
+      await ApiService.createVenue(venuePayload)
       router.push("/manage/venues")
-    }, 1000)
+    } catch (err) {
+      // handle error (show toast, etc)
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -116,14 +146,14 @@ export default function CreateVenuePage() {
               {/* Left Column - Venue Details */}
               <div>
                 <div className="mb-4">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="venueName" className="block text-sm font-medium text-gray-700 mb-1">
                     Venue Name
                   </label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
+                    id="venueName"
+                    name="venueName"
+                    value={formData.venueName}
                     onChange={handleInputChange}
                     placeholder="Enter venue name"
                     className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -163,7 +193,7 @@ export default function CreateVenuePage() {
                   />
                 </div>
 
-                  <div className="mb-4">
+                <div className="mb-4">
                   <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-1">
                     Latitude
                   </label>
@@ -194,9 +224,31 @@ export default function CreateVenuePage() {
                     required
                   />
                 </div>
-                
 
-
+                <div className="mb-4">
+                  <label htmlFor="organizationId" className="block text-sm font-medium text-gray-700 mb-1">Organization</label>
+                  {orgLoading ? (
+                    <div className="text-gray-500 text-sm">Loading organizations...</div>
+                  ) : orgError ? (
+                    <div className="text-red-500 text-sm">{orgError}</div>
+                  ) : (
+                    <select
+                      id="organizationId"
+                      name="organizationId"
+                      value={formData.organizationId}
+                      onChange={handleOrgChange}
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      required
+                    >
+                      <option value="">Select organization</option>
+                      {organizations.map((org) => (
+                        <option key={org.organizationId} value={org.organizationId}>
+                          {org.organizationName}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
@@ -216,102 +268,83 @@ export default function CreateVenuePage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="pricePerHour" className="block text-sm font-medium text-gray-700 mb-1">
-                      Price per Hour ($)
+                    <label htmlFor="venueType" className="block text-sm font-medium text-gray-700 mb-1">
+                      Venue Type
                     </label>
                     <input
-                      type="number"
-                      id="pricePerHour"
-                      name="pricePerHour"
-                      value={formData.pricePerHour}
+                      type="text"
+                      id="venueType"
+                      name="venueType"
+                      value={formData.venueType}
                       onChange={handleInputChange}
-                      placeholder="Price per hour"
-                      min="0"
+                      placeholder="Enter venue venue Type"
                       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                       required
                     />
                   </div>
                   <div className="mb-4">
-                  <label htmlFor="venueType" className="block text-sm font-medium text-gray-700 mb-1">
-                    Venue Type
-                  </label>
-                  <input
-                    type="text"
-                    id="venueType"
-                    name="venueType"
-                    value={formData.venueType}
-                    onChange={handleInputChange}
-                    placeholder="Enter venue venue Type"
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    required
-                  />
-                </div>
+                    <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 mb-1">
+                      Owner Name
+                    </label>
+                    <input
+                      type="text"
+                      id="contactPerson"
+                      name="contactPerson"
+                      value={formData.contactPerson}
+                      onChange={handleInputChange}
+                      placeholder="Enter venue Owner Name"
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      required
+                    />
+                  </div>
                   <div className="mb-4">
-                  <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 mb-1">
-                    Owner Name
-                  </label>
-                  <input
-                    type="text"
-                    id="contactPerson"
-                    name="contactPerson"
-                    value={formData.contactPerson}
-                    onChange={handleInputChange}
-                    placeholder="Enter venue Owner Name"
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-1">
-                    Owner Email
-                  </label>
-                  <input
-                    type="email"
-                    id="contactEmail"
-                    name="contactEmail"
-                    value={formData.contactEmail}
-                    onChange={handleInputChange}
-                    placeholder="Enter venue Owner Email"
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Owner Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="contactPhone"
-                    name="contactPhone"
-                    value={formData.contactPhone}
-                    onChange={handleInputChange}
-                    placeholder="Enter venue Owner Phone Number"
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label htmlFor="websiteUrl" className="block text-sm font-medium text-gray-700 mb-1">
-                    Website Url
-                  </label>
-                  <input
-                    type="text"
-                    id="websiteUrl"
-                    name="websiteUrl"
-                    value={formData.websiteUrl}
-                    onChange={handleInputChange}
-                    placeholder="Enter venue website Url"
-                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  />
-                </div>
-
-
-                
+                    <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                      Owner Email
+                    </label>
+                    <input
+                      type="email"
+                      id="contactEmail"
+                      name="contactEmail"
+                      value={formData.contactEmail}
+                      onChange={handleInputChange}
+                      placeholder="Enter venue Owner Email"
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 mb-1">
+                      Owner Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="contactPhone"
+                      name="contactPhone"
+                      value={formData.contactPhone}
+                      onChange={handleInputChange}
+                      placeholder="Enter venue Owner Phone Number"
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label htmlFor="websiteURL" className="block text-sm font-medium text-gray-700 mb-1">
+                      Website Url
+                    </label>
+                    <input
+                      type="text"
+                      id="websiteURL"
+                      name="websiteURL"
+                      value={formData.websiteURL}
+                      onChange={handleInputChange}
+                      placeholder="Enter venue website Url"
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Right Column - Image Upload and Amenities */}
+              {/* Right Column - Image Upload and Resources */}
               <div>
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Venue Image</label>
@@ -320,71 +353,64 @@ export default function CreateVenuePage() {
                     Upload a high-quality image of your venue. Recommended size: 1200x600px.
                   </p>
                 </div>
-                <div>
-                  <p className="block text-sm font-medium text-gray-700 mb-2">Amenities</p>
-                  {amenitiesLoading ? (
-                    <div className="text-gray-500 text-sm mb-2">Loading amenities...</div>
-                  ) : amenitiesError ? (
-                    <div className="text-red-500 text-sm mb-2">{amenitiesError}</div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-2 mb-2">
-                      {amenities.map((amenity) => (
-                        <div key={amenity} className="flex items-center">
-                          <input
-                            type="checkbox"
-                            id={`amenity-${amenity}`}
-                            checked={formData.amenities.includes(amenity)}
-                            onChange={() => handleAmenityChange(amenity)}
-                            className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300 rounded"
-                          />
-                          <label htmlFor={`amenity-${amenity}`} className="ml-2 block text-sm text-gray-700">
-                            {amenity}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {/* Add new amenity UI */}
-                  <div className="mt-4">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">
-                      Add another amenity (resource):
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={newAmenity}
-                        onChange={e => setNewAmenity(e.target.value)}
-                        placeholder="Add new amenity"
-                        className="flex-1 px-2 py-1 border rounded text-sm"
-                        disabled={addingAmenity}
-                      />
-                      <button
-                        type="button"
-                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-                        disabled={addingAmenity || !newAmenity.trim()}
-                        onClick={async () => {
-                          setAddAmenityError("");
-                          setAddingAmenity(true);
-                          try {
-                            await ApiService.addAmenity({ name: newAmenity.trim() });
-                            setNewAmenity("");
-                            // Re-fetch amenities
-                            setAmenitiesLoading(true);
-                            const response = await ApiService.getAllAmenities();
-                            setAmenities(response.amenities ? response.amenities.map((a: any) => a.name) : []);
-                          } catch (err) {
-                            setAddAmenityError("Failed to add amenity.");
-                          } finally {
-                            setAddingAmenity(false);
-                            setAmenitiesLoading(false);
-                          }
-                        }}
-                      >
-                        {addingAmenity ? "Adding..." : "Add"}
-                      </button>
-                    </div>
-                    {addAmenityError && <div className="text-red-500 text-xs mt-1">{addAmenityError}</div>}
+                {/* Resources Form */}
+                <div className="mb-6 bg-gray-50 rounded-lg p-4 shadow-sm max-w-md mx-auto">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Resources</label>
+                  <div className="flex flex-col gap-2 mb-2">
+                    <input
+                      type="text"
+                      name="resourceName"
+                      value={resourceForm.resourceName}
+                      onChange={handleResourceInputChange}
+                      placeholder="Resource Name"
+                      className="px-3 py-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    />
+                    <input
+                      type="text"
+                      name="description"
+                      value={resourceForm.description}
+                      onChange={handleResourceInputChange}
+                      placeholder="Description"
+                      className="px-3 py-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    />
+                    <input
+                      type="number"
+                      name="costPerUnit"
+                      value={resourceForm.costPerUnit}
+                      onChange={handleResourceInputChange}
+                      placeholder="Cost Per Unit"
+                      className="px-3 py-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    />
+                    <input
+                      type="number"
+                      name="quantity"
+                      value={resourceForm.quantity}
+                      onChange={handleResourceInputChange}
+                      placeholder="Quantity"
+                      className="px-3 py-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    />
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm mt-2 transition-colors"
+                      onClick={handleAddResource}
+                    >
+                      Add Resource
+                    </button>
                   </div>
+                  {/* List of added resources */}
+                  {resources.length > 0 && (
+                    <ul className="mb-2 mt-2 divide-y divide-gray-200">
+                      {resources.map((res, idx) => (
+                        <li key={idx} className="flex items-center justify-between py-2 text-sm">
+                          <span className="font-medium text-gray-800">{res.resource.resourceName}</span>
+                          <span className="text-gray-500">x{res.quantity}</span>
+                          <button type="button" className="text-red-500 hover:underline ml-2" onClick={() => handleRemoveResource(idx)}>
+                            Remove
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             </div>

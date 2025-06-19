@@ -304,6 +304,24 @@ class ApiService {
       throw error;
     }
   }
+
+  /** Create a new venue */
+  static async createVenue(venueData: any): Promise<any> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/venues`,
+        venueData,
+        {
+          headers: this.getHeader(venueData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error creating venue:", error);
+      throw error;
+    }
+  }
 }
 
 export default ApiService;
