@@ -120,7 +120,7 @@ export function Header({ activePage }: HeaderProps) {
               activePage === "dashboard" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            Dashboard
+            Statistics
           </Link>
         </nav>
 

@@ -115,7 +115,7 @@ export default function OrganizersPage() {
                 isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
               }`}
             >
-              My Organizer
+              Our Organizers
             </h1>
             <p
               className={`text-gray-600 transform transition-all duration-1000 ease-out delay-200 ${
