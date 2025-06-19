@@ -9,18 +9,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { ArrowLeft, Upload } from "lucide-react"
 import Link from "next/link"
-
-// All possible amenities
-const allAmenities = [
-  "Wi-Fi",
-  "Sound System",
-  "Whiteboard",
-  "Parking",
-  "Projector",
-  "Catering",
-  "Coffee Machine",
-  "Accessibility",
-]
+import ApiService from "@/api/apiConfig";
 
 export default function CreateVenuePage() {
   const { isLoggedIn } = useAuth()
@@ -42,6 +31,12 @@ export default function CreateVenuePage() {
     image: "",
     amenities: [] as string[],
   })
+  const [amenities, setAmenities] = useState<string[]>([]);
+  const [amenitiesLoading, setAmenitiesLoading] = useState(true);
+  const [amenitiesError, setAmenitiesError] = useState("");
+  const [newAmenity, setNewAmenity] = useState("");
+  const [addingAmenity, setAddingAmenity] = useState(false);
+  const [addAmenityError, setAddAmenityError] = useState("");
 
   // Redirect if not logged in
   useEffect(() => {
@@ -49,6 +44,24 @@ export default function CreateVenuePage() {
       router.push("/login")
     }
   }, [isLoggedIn, router])
+
+  // Fetch amenities from backend
+  useEffect(() => {
+    const fetchAmenities = async () => {
+      setAmenitiesLoading(true);
+      setAmenitiesError("");
+      try {
+        const response = await ApiService.getAllAmenities();
+        // Assume response is an array of amenities, each with a name property
+        setAmenities(response.amenities ? response.amenities.map((a: any) => a.name) : []);
+      } catch (err) {
+        setAmenitiesError("Failed to load amenities.");
+      } finally {
+        setAmenitiesLoading(false);
+      }
+    };
+    fetchAmenities();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -299,36 +312,78 @@ export default function CreateVenuePage() {
               </div>
 
               {/* Right Column - Image Upload and Amenities */}
-              <div >
+              <div>
                 <div className="mb-6">
-                  
-                   <label className="block text-sm font-medium text-gray-700 mb-1">Venue Image</label>
-                  
-                    <ImageUpload />
-                    
-              
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Venue Image</label>
+                  <ImageUpload />
                   <p className="text-xs text-gray-500 mt-1">
                     Upload a high-quality image of your venue. Recommended size: 1200x600px.
                   </p>
                 </div>
-
                 <div>
                   <p className="block text-sm font-medium text-gray-700 mb-2">Amenities</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {allAmenities.map((amenity) => (
-                      <div key={amenity} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id={`amenity-${amenity}`}
-                          checked={formData.amenities.includes(amenity)}
-                          onChange={() => handleAmenityChange(amenity)}
-                          className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor={`amenity-${amenity}`} className="ml-2 block text-sm text-gray-700">
-                          {amenity}
-                        </label>
-                      </div>
-                    ))}
+                  {amenitiesLoading ? (
+                    <div className="text-gray-500 text-sm mb-2">Loading amenities...</div>
+                  ) : amenitiesError ? (
+                    <div className="text-red-500 text-sm mb-2">{amenitiesError}</div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2 mb-2">
+                      {amenities.map((amenity) => (
+                        <div key={amenity} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            id={`amenity-${amenity}`}
+                            checked={formData.amenities.includes(amenity)}
+                            onChange={() => handleAmenityChange(amenity)}
+                            className="h-4 w-4 text-gray-900 focus:ring-gray-500 border-gray-300 rounded"
+                          />
+                          <label htmlFor={`amenity-${amenity}`} className="ml-2 block text-sm text-gray-700">
+                            {amenity}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {/* Add new amenity UI */}
+                  <div className="mt-4">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">
+                      Add another amenity (resource):
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={newAmenity}
+                        onChange={e => setNewAmenity(e.target.value)}
+                        placeholder="Add new amenity"
+                        className="flex-1 px-2 py-1 border rounded text-sm"
+                        disabled={addingAmenity}
+                      />
+                      <button
+                        type="button"
+                        className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                        disabled={addingAmenity || !newAmenity.trim()}
+                        onClick={async () => {
+                          setAddAmenityError("");
+                          setAddingAmenity(true);
+                          try {
+                            await ApiService.addAmenity({ name: newAmenity.trim() });
+                            setNewAmenity("");
+                            // Re-fetch amenities
+                            setAmenitiesLoading(true);
+                            const response = await ApiService.getAllAmenities();
+                            setAmenities(response.amenities ? response.amenities.map((a: any) => a.name) : []);
+                          } catch (err) {
+                            setAddAmenityError("Failed to add amenity.");
+                          } finally {
+                            setAddingAmenity(false);
+                            setAmenitiesLoading(false);
+                          }
+                        }}
+                      >
+                        {addingAmenity ? "Adding..." : "Add"}
+                      </button>
+                    </div>
+                    {addAmenityError && <div className="text-red-500 text-xs mt-1">{addAmenityError}</div>}
                   </div>
                 </div>
               </div>

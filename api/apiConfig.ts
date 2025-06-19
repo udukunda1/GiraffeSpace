@@ -267,6 +267,43 @@ class ApiService {
       throw error;
     }
   }
+
+  //**** AMENITIES ROUTE *** */
+
+  /** Get all amenities */
+  static async getAllAmenities(): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.BASE_URL}/amenities`,
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching amenities:", error);
+      throw error;
+    }
+  }
+
+  /** Add a new amenity */
+  static async addAmenity(amenityData: { name: string }): Promise<any> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/amenities`,
+        amenityData,
+        {
+          headers: this.getHeader(amenityData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error adding amenity:", error);
+      throw error;
+    }
+  }
 }
 
 export default ApiService;

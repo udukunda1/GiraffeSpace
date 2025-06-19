@@ -63,7 +63,9 @@ export function Header({ activePage }: HeaderProps) {
     <header className="border-b">
       <div className="container mx-auto px-16 py-4 max-w-7xl flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 bg-blue-500 rounded"></div>
+          <div className="w-8 h-8">
+          <img src="/logo.png" alt="GiraffeSpace" className="w-full h-full object-cover" />
+          </div>
           <Link href="/" className="font-bold text-xl">
             GiraffeSpace
           </Link>
