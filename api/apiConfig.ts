@@ -223,7 +223,7 @@ class ApiService {
     try {
       const response = await axios.get(
         `${this.BASE_URL}/organizations`,
-      
+
         {
           headers: this.getHeader(),
           withCredentials: true,
@@ -239,7 +239,7 @@ class ApiService {
     try {
       const response = await axios.get(
         `${this.BASE_URL}/organizations/${orgId}`,
-      
+
         {
           headers: this.getHeader(),
           withCredentials: true,
@@ -268,42 +268,6 @@ class ApiService {
     }
   }
 
-  //**** AMENITIES ROUTE *** */
-
-  /** Get all amenities */
-  static async getAllAmenities(): Promise<any> {
-    try {
-      const response = await axios.get(
-        `${this.BASE_URL}/amenities`,
-        {
-          headers: this.getHeader(),
-          withCredentials: true,
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching amenities:", error);
-      throw error;
-    }
-  }
-
-  /** Add a new amenity */
-  static async addAmenity(amenityData: { name: string }): Promise<any> {
-    try {
-      const response = await axios.post(
-        `${this.BASE_URL}/amenities`,
-        amenityData,
-        {
-          headers: this.getHeader(amenityData),
-          withCredentials: true,
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error adding amenity:", error);
-      throw error;
-    }
-  }
 
   /** Create a new venue */
   static async createVenue(venueData: any): Promise<any> {
@@ -319,6 +283,41 @@ class ApiService {
       return response.data;
     } catch (error) {
       console.error("Error creating venue:", error);
+      throw error;
+    }
+  }
+
+  /** Get available venues by date and time */
+  static async getAvailableVenues(date: string, startTime: string, endTime: string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.BASE_URL}/venues/available?date=${date}&startTime=${startTime}&endTime=${endTime}`,
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching available venues:", error);
+      throw error;
+    }
+  }
+
+  /** Create a new event */
+  static async createEvent(eventData: any): Promise<any> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/events`,
+        eventData,
+        {
+          headers: this.getHeader(eventData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error creating event:", error);
       throw error;
     }
   }

@@ -11,9 +11,6 @@ export interface Event {
   imageURL: string
   organizerId: string
   venueId: string
-  createdAt: string
-  updatedAt: string
-  deletedAt?: string
   eventDate: string
   eventStartTime: string
   eventEndTime: string
@@ -33,6 +30,8 @@ export interface Event {
   typeColor: string
 }
 
+
+
 export const events: Event[] = [
   {
     eventId: "tech-conference-2025",
@@ -48,8 +47,6 @@ export const events: Event[] = [
     imageURL: "/techconference.png?height=300&width=400",
     organizerId: "org_001",
     venueId: "venue_001",
-    createdAt: "2024-12-01T10:00:00Z",
-    updatedAt: "2024-12-15T14:30:00Z",
     eventDate: "2025-04-15",
     eventStartTime: "09:00",
     eventEndTime: "17:00",
@@ -81,8 +78,6 @@ export const events: Event[] = [
     imageURL: "/cultural.png",
     organizerId: "org_002",
     venueId: "venue_002",
-    createdAt: "2024-11-15T09:00:00Z",
-    updatedAt: "2024-12-10T16:45:00Z",
     eventDate: "2025-04-20",
     eventStartTime: "10:00",
     eventEndTime: "20:00",
@@ -114,8 +109,6 @@ export const events: Event[] = [
     imageURL: "/research.png",
     organizerId: "org_003",
     venueId: "venue_003",
-    createdAt: "2024-12-05T11:30:00Z",
-    updatedAt: "2024-12-12T13:15:00Z",
     eventDate: "2025-04-25",
     eventStartTime: "13:00",
     eventEndTime: "18:00",
@@ -147,8 +140,6 @@ export const events: Event[] = [
     imageURL: "/career.png",
     organizerId: "org_004",
     venueId: "venue_004",
-    createdAt: "2024-11-20T08:00:00Z",
-    updatedAt: "2024-12-14T10:20:00Z",
     eventDate: "2025-05-05",
     eventStartTime: "10:00",
     eventEndTime: "16:00",
@@ -180,8 +171,6 @@ export const events: Event[] = [
     imageURL: "/alumni.png?height=300&width=400",
     organizerId: "org_005",
     venueId: "venue_005",
-    createdAt: "2024-12-01T15:00:00Z",
-    updatedAt: "2024-12-13T17:30:00Z",
     eventDate: "2025-05-12",
     eventStartTime: "18:00",
     eventEndTime: "21:00",
@@ -213,8 +202,6 @@ export const events: Event[] = [
     imageURL: "/sports.png?height=300&width=400",
     organizerId: "org_006",
     venueId: "venue_006",
-    createdAt: "2024-11-25T12:00:00Z",
-    updatedAt: "2024-12-11T14:45:00Z",
     eventDate: "2025-05-18",
     eventStartTime: "08:00",
     eventEndTime: "18:00",

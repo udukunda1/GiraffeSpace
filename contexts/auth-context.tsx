@@ -1,6 +1,7 @@
 "use client"
 
 import { type ReactNode, createContext, useContext, useState, useEffect } from "react"
+import { useRouter } from "next/navigation";
 import { getUserByEmail, getUserByUsername, type User, users, UserApiResponse } from "@/data/users"
 import ApiService from "@/api/apiConfig"
 
@@ -19,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState<User | null>(null)
   const [mounted, setMounted] = useState(false)
+  const router = useRouter();
 
   // Check if user is logged in from localStorage on initial load
   useEffect(() => {
@@ -97,6 +99,7 @@ const updateUser = async (
     setUser(null)
     localStorage.removeItem("isLoggedIn")
     localStorage.removeItem("currentUser")
+    router.push("/");
   }
 
   // Provide the context value
