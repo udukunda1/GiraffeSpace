@@ -58,7 +58,15 @@ export default function CreateVenuePage() {
       setOrgError("")
       try {
         if (user && user.userId) {
-          const response = await ApiService.getUserById(user.userId)
+          // const response = await ApiService.getUserById(user.userId)
+          const response = {
+            user: {
+              organizations: [
+                { organizationId: "1", organizationName: "Organization 1" },
+                { organizationId: "2", organizationName: "Organization 2" },
+              ],
+            },
+          }
           setOrganizations(response?.user?.organizations || [])
         }
       } catch (err) {
