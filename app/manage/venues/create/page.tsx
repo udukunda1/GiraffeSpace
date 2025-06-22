@@ -59,6 +59,7 @@ export default function CreateVenuePage() {
       try {
         if (user && user.userId) {
           const response = await ApiService.getUserById(user.userId)
+          console.log("response", response)
           setOrganizations(response?.user?.organizations || [])
         }
       } catch (err) {
@@ -119,7 +120,9 @@ export default function CreateVenuePage() {
         resources,
         imageSrc: formData.imageSrc, // TODO: handle image upload
       }
+       console.log("Venue created successfully", venuePayload)
       await ApiService.createVenue(venuePayload)
+     
       router.push("/manage/venues")
     } catch (err) {
       // handle error (show toast, etc)

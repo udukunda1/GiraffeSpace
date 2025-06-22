@@ -268,13 +268,12 @@ class ApiService {
     }
   }
 
-  //**** AMENITIES ROUTE *** */
-
-  /** Get all amenities */
-  static async getAllAmenities(): Promise<any> {
+ 
+  /** Delete organization */
+  static async deleteOrganization(orgId: string): Promise<any> {  
     try {
-      const response = await axios.get(
-        `${this.BASE_URL}/amenities`,
+      const response = await axios.delete(
+        `${this.BASE_URL}/organizations/${orgId}`,
         {
           headers: this.getHeader(),
           withCredentials: true,
@@ -282,16 +281,17 @@ class ApiService {
       );
       return response.data;
     } catch (error) {
-      console.error("Error fetching amenities:", error);
+      console.error(`Error deleting organization with ID ${orgId}:`, error);
       throw error;
     }
   }
 
-  /** Add a new amenity */
-  static async addAmenity(amenityData: { name: string }): Promise<any> {
+
+   /** Add a new amenity bulk */
+  static async addAOrganizationBulk(amenityData: { name: string }): Promise<any> {
     try {
       const response = await axios.post(
-        `${this.BASE_URL}/amenities`,
+        `${this.BASE_URL}/organizations/bulk`,
         amenityData,
         {
           headers: this.getHeader(amenityData),
@@ -305,11 +305,104 @@ class ApiService {
     }
   }
 
-  /** Create a new venue */
+
+  /** Add user to organization */
+  static async addUserToOrganization(userId: string, orgId: string): Promise<any> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/organizations/${orgId}/users`,
+        { userId },
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error adding user with ID ${userId} to organization with ID ${orgId}:`, error);
+      throw error;
+    }
+  }
+
+
+
+  /** add venue to organization */
+
+
+static async addVenueToOrganization(
+  orgId: string,
+  venueIds: string | string[]
+): Promise<any> {
+  try {
+    // Normalize to array
+    const idsArray = Array.isArray(venueIds) ? venueIds : [venueIds];
+
+    const response = await axios.post(
+      `${this.BASE_URL}/organizations/${orgId}/venues`,
+      { venueIds: idsArray },
+      {
+        headers: this.getHeader(),
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error adding venue(s) to organization with ID ${orgId}:`, error);
+    throw error;
+  }
+}
+
+
+
+/** Get all venues by organizationId */
+static async getVenuesByOrganizationId(orgId: string): Promise<any> {
+  try {
+    const response = await axios.get(
+      `${this.BASE_URL}/organizations/${orgId}/venues`,
+      {
+        headers: this.getHeader(),
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching venues for organization with ID ${orgId}:`, error);
+    throw error;
+  }
+}
+
+/** remove venue from organization */
+static async removeVenueFromOrganization(
+  orgId: string,
+ venueIds: string | string[]
+): Promise<any> {
+  try {
+    // Normalize to array
+    const idsArray = Array.isArray(venueIds) ? venueIds : [venueIds];
+    const response = await axios.post(
+      `${this.BASE_URL}/organizations/${orgId}/venues`,
+      { venueIds: idsArray },
+      {
+        headers: this.getHeader(),
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error removing venue(s) from organization with ID ${orgId}:`, error);
+    throw error;
+  }
+}
+
+
+
+
+
+/** Create a new venue */
   static async createVenue(venueData: any): Promise<any> {
     try {
       const response = await axios.post(
-        `${this.BASE_URL}/venues`,
+        `${this.BASE_URL}/venue/add`,
         venueData,
         {
           headers: this.getHeader(venueData),
@@ -322,6 +415,218 @@ class ApiService {
       throw error;
     }
   }
+  /** Get all venues */
+  static async getAllVenues(): Promise<any> {
+    try {
+      const response = await axios.get(`${this.BASE_URL}/venue/all`, {
+        headers: this.getHeader(),
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching all venues:", error);
+      throw error;
+    }
+  }
+
+  /** Get venue by ID */
+  static async getVenueById(venueId: string): Promise<any> {      
+    try {
+      const response = await axios.get(`${this.BASE_URL}/venue/get/${venueId}`, {
+        headers: this.getHeader(),
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching venue with ID ${venueId}:`, error);
+      throw error;
+    }
+  }
+
+  /** get venue by managerId*/
+  static async getVenueByManagerId(managerId: string): Promise<any> {
+    try {
+      const response = await axios.get(`${this.BASE_URL}/venue/manager-venues/${managerId}`, {
+        headers: this.getHeader(),
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching venue with manager ID ${managerId}:`, error);
+      throw error;
+    }
+  } 
+
+  /** Update venue by ID */
+  static async updateVenueById(
+    venueId: string): Promise<any> {  
+    try {
+      const response = await axios.put(
+        `${this.BASE_URL}/venue/update/${venueId}`,
+        {},
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating venue with ID ${venueId}:`, error);
+      throw error;
+    }
+}
+
+/** update venue manager */
+  static async updateVenueManager(
+    venueId: string,
+    managerId: string
+  ): Promise<any> {
+    try {
+      const response = await axios.put(
+        `${this.BASE_URL}/venue/updateVenueManager//${venueId}`,
+        { managerId },
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating manager for venue with ID ${venueId}:`, error);
+      throw error;
+    }
+  }
+
+  /** Delete venue */
+  static async deleteVenue(venueId: string): Promise<any> {
+    try {
+      const response = await axios.delete(`${this.BASE_URL}/venue/remove/${venueId}`, {
+        headers: this.getHeader(),
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting venue with ID ${venueId}:`, error);
+      throw error;
+    }
+  }
+
+  /*add-venue-require-admin-but-manager-available */
+  static async addVenueRequireAdminButManagerAvailable( venueData: any): Promise<any> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/venue/add`,
+        venueData,
+        {
+          headers: this.getHeader(venueData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error creating venue:", error);
+      throw error;
+    }
+  }
+
+
+
+  /* set availability for venue */
+  static async setVenueAvailability(
+    venueId: string,      
+    availabilityData: { available: boolean }
+  ): Promise<any> {         
+    try {
+      const response = await axios.put(
+        `${this.BASE_URL}/venue/set-availability/${venueId}`,
+        availabilityData,
+        {
+          headers: this.getHeader(availabilityData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error setting availability for venue with ID ${venueId}:`, error);
+      throw error;
+    }
+  }
+
+/** Search venue by name and/or capacity */
+static async searchVenueByNameAndCapacity(
+  name?: string,
+  capacity?: number
+): Promise<any> {
+  try {
+    const response = await axios.get(`${this.BASE_URL}/venue/search`, {
+      params: { name, capacity },
+      headers: this.getHeader(),
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error searching venue by name and capacity:", error);
+    throw error;
+  }
+}
+
+/** Search for venues by availability and manager status */
+static async searchVenueByAvailabilityAndManagerStatus(
+  isAvailable: boolean,
+  hasManager: boolean
+): Promise<any> {
+  try {
+    const response = await axios.get(`${this.BASE_URL}/venue/search`, {
+      params: {
+        isAvailable,
+        hasManager,
+      },
+      headers: this.getHeader(),
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error searching venues by availability and manager status:", error);
+    throw error;
+  }
+}
+
+/** get available venue by startDate and endDate */
+static async getAvailableVenueByDate(
+  startDate: string,
+  endDate: string
+): Promise<any> {
+  try {
+    const response = await axios.get(`${this.BASE_URL}/venue/availability`, {
+      params: { startDate, endDate },
+      headers: this.getHeader(),
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error getting available venue by date:", error);
+    throw error;
+  }
+}
+
+/** add venue with resource */
+static async addVenueWithResource(venueData: any): Promise<any> {
+  try {
+    const response = await axios.post(
+      `${this.BASE_URL}/venue/add-with-resources`,
+      venueData,
+      {
+        headers: this.getHeader(venueData),
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating venue:", error);
+    throw error;
+  }
+}
+
 }
 
 export default ApiService;
