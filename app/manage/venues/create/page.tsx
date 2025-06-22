@@ -16,7 +16,8 @@ export default function CreateVenuePage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({
-    venueName: "",
+     venueName: "",
+     amount: "",
     capacity: "",
     location: "",
     latitude: "",
@@ -113,16 +114,18 @@ export default function CreateVenuePage() {
       const venuePayload = {
         ...formData,
         capacity: parseInt(formData.capacity, 10) || 0,
+        amount: parseInt(formData.amount, 10) || 0,
         latitude: parseFloat(formData.latitude) || 0,
         longitude: parseFloat(formData.longitude) || 0,
         managerId: user?.userId,
         resources,
         imageSrc: formData.imageSrc, // TODO: handle image upload
       }
-       console.log("Venue created successfully", venuePayload)
+       console.log("Venue created payload", venuePayload)
       await ApiService.createVenue(venuePayload)
+      console.log("Venue created successfully ,,,,,,,,.ll", venuePayload)
      
-      router.push("/manage/venues")
+      router.push("/venues")
     } catch (err) {
       // handle error (show toast, etc)
     } finally {
@@ -156,6 +159,21 @@ export default function CreateVenuePage() {
                     id="venueName"
                     name="venueName"
                     value={formData.venueName}
+                    onChange={handleInputChange}
+                    placeholder="Enter venue name"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+                    Venue Amount
+                  </label>
+                  <input
+                    type="integer"
+                    id="amount"
+                    name="amount"
+                    value={formData.amount}
                     onChange={handleInputChange}
                     placeholder="Enter venue name"
                     className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -344,6 +362,7 @@ export default function CreateVenuePage() {
                     />
                   </div>
                 </div>
+                
               </div>
 
               {/* Right Column - Image Upload and Resources */}

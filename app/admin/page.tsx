@@ -26,16 +26,20 @@ import {
 import { events } from "@/data/events"
 import { venues } from "@/data/venues"
 import { users } from "@/data/users"
+import ApiService from "@/api/apiConfig"
 
 export default function AdminDashboard() {
   const { user, isLoggedIn } = useAuth()
   const router = useRouter()
   const [isLoaded, setIsLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState("overview")
+  const [users, setUsers] = useState<any[]>([]) // State to hold user data
+  const [venues, setVenues] = useState<any[]>([]) // State to hold venue data
+  
 
   useEffect(() => {
     // Redirect if not logged in or not admin
-    if (!isLoggedIn || user?.role.roleName !== "ADMIN") {
+    if (!isLoggedIn || user?.roles.roleName !== "admin") {
       router.push("/")
       return
     }
@@ -48,13 +52,13 @@ export default function AdminDashboard() {
   }, [isLoggedIn, user, router])
 
   // Don't render if not admin
-  if (!isLoggedIn || user?.role.roleName !== "ADMIN") {
+  if (!isLoggedIn || user?.roles.roleName !== "admin") {
     return null
   }
 
   // Mock data for pending approvals
   const pendingEvents = events.filter((event) => event.status === "Draft").slice(0, 3)
-  const pendingVenues = venues.filter((venue) => !venue.isAvailable).slice(0, 3)
+  const pendingVenues = venues.slice(0, 3) // Show first 3 venues since API doesn't have status
 
   // Statistics
   const stats = {
@@ -72,6 +76,53 @@ export default function AdminDashboard() {
     { id: "venues", label: "Venues", icon: MapPin },
     { id: "users", label: "Users", icon: Users },
   ]
+
+//fetch user data from database
+  // This is a placeholder for actual data fetching logic       
+
+  useEffect(() => {
+    // Simulate fetching user data
+    const fetchData = async () => {
+      // Replace with actual API call
+
+      try {
+        const response = await ApiService.getAllUser()
+        if (response.success && response.users) {
+          setUsers(response.users)
+        } else {
+          console.error("Failed to fetch users:", response.message || "Unknown error")
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error)   
+      }
+      // For now, we just simulate a delay  
+    
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setIsLoaded(true)
+    }
+
+    fetchData()
+  }, [])
+
+
+  // fetch venue from database
+  useEffect(() => {
+    const fetchVenues = async () => {
+      try {
+        const response = await ApiService.getAllVenues()
+        if (response.success && response.data) {
+          setVenues(response.data)
+        } else {
+          console.error("Failed to fetch venues:", response.message || "Unknown error")
+        }
+      } catch (error) {
+        console.error("Error fetching venues:", error)
+        setIsLoaded(true) // Ensure loading state is updated even on error
+      }
+    }
+
+    fetchVenues()
+  }, [])  
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -345,12 +396,12 @@ export default function AdminDashboard() {
                             <div className="flex-1">
                               <div className="flex items-center space-x-3">
                                 <h3 className="font-medium">{venue.venueName}</h3>
-                                <Badge variant={venue.isAvailable ? "default" : "secondary"}>
-                                  {venue.isAvailable ? "Available" : "Pending Approval"}
+                                <Badge variant="default">
+                                  Available
                                 </Badge>
                               </div>
                               <p className="text-sm text-gray-600 mt-1">
-                                {venue.location} • Capacity: {venue.capacity} • {venue.venueType}
+                                {venue.location} • Capacity: {venue.capacity} • {venue.venueType || 'Venue'}
                               </p>
                             </div>
                             <div className="flex space-x-2">
@@ -360,11 +411,6 @@ export default function AdminDashboard() {
                               <Button size="sm" variant="outline">
                                 <Edit className="h-4 w-4" />
                               </Button>
-                              {!venue.isAvailable && (
-                                <Button size="sm" variant="outline">
-                                  <CheckCircle className="h-4 w-4 text-green-600" />
-                                </Button>
-                              )}
                               <Button size="sm" variant="outline">
                                 <Trash2 className="h-4 w-4 text-red-600" />
                               </Button>
@@ -399,19 +445,19 @@ export default function AdminDashboard() {
                           >
                             <div className="flex items-center space-x-4">
                               <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
-                                {userData.firstName[0]}
-                                {userData.lastName[0]}
+                                {userData.firstName ? userData.firstName[0] : 'U'}
+                                {userData.lastName ? userData.lastName[0] : ''}
                               </div>
                               <div>
                                 <div className="flex items-center space-x-2">
                                   <h3 className="font-medium">
-                                    {userData.firstName} {userData.lastName}
+                                    {userData.firstName || 'Unknown'} {userData.lastName || 'User'}
                                   </h3>
-                                  <Badge variant={userData.role.roleName === "ADMIN" ? "default" : "secondary"}>
-                                    {userData.role.roleName === "ADMIN" ? "Admin" : "User"}
+                                  <Badge variant={userData.roles?.roleName === "admin" ? "default" : "secondary"}>
+                                    {userData.roles?.roleName === "admin" ? "Admin" : "User"}
                                   </Badge>
                                 </div>
-                                <p className="text-sm text-gray-600">{userData.email}</p>
+                                <p className="text-sm text-gray-600">{userData.email || 'No email'}</p>
                               </div>
                             </div>
                             <div className="flex space-x-2">

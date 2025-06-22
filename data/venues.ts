@@ -7,8 +7,7 @@ export interface Venue {
   longitude: number
   googleMapsLink: string
   managerId: string
-  isAvailable: boolean
-  isBooked: boolean
+  status: "PENDING" | "APPROVED"
   amenities: string
   venueType: string
   contactPerson: string
@@ -35,8 +34,7 @@ export const venues: Venue[] = [
     longitude: 30.0619,
     googleMapsLink: "https://maps.google.com/?q=-1.9441,30.0619",
     managerId: "mgr_001",
-    isAvailable: true,
-    isBooked: false,
+    status: "APPROVED",
     amenities: "Projector,Sound System,Air Conditioning,Stage,Wi-Fi,Microphones,Lighting",
     venueType: "Auditorium",
     contactPerson: "John Uwimana",
@@ -61,8 +59,7 @@ export const venues: Venue[] = [
     longitude: 30.0625,
     googleMapsLink: "https://maps.google.com/?q=-1.9445,30.0625",
     managerId: "mgr_002",
-    isAvailable: true,
-    isBooked: false,
+    status: "APPROVED",
     amenities: "Projector,Whiteboard,Video Conferencing,Wi-Fi,Air Conditioning",
     venueType: "Conference Room",
     contactPerson: "Marie Mukamana",
@@ -87,8 +84,7 @@ export const venues: Venue[] = [
     longitude: 30.0615,
     googleMapsLink: "https://maps.google.com/?q=-1.9440,30.0615",
     managerId: "mgr_003",
-    isAvailable: true,
-    isBooked: false,
+    status: "APPROVED",
     amenities: "Open Space,Power Supply,Parking,Restrooms",
     venueType: "Outdoor",
     contactPerson: "Paul Nkurunziza",
@@ -112,8 +108,7 @@ export const venues: Venue[] = [
     longitude: 30.063,
     googleMapsLink: "https://maps.google.com/?q=-1.9450,30.0630",
     managerId: "mgr_004",
-    isAvailable: true,
-    isBooked: false,
+    status: "APPROVED",
     amenities: "Projector,Sound System,Air Conditioning,Tiered Seating",
     venueType: "Lecture Hall",
     contactPerson: "Grace Uwimana",
@@ -138,8 +133,7 @@ export const venues: Venue[] = [
     longitude: 30.061,
     googleMapsLink: "https://maps.google.com/?q=-1.9435,30.0610",
     managerId: "mgr_005",
-    isAvailable: true,
-    isBooked: false,
+    status: "APPROVED",
     amenities: "Indoor Courts,Changing Rooms,Sound System,Scoreboard,First Aid Station",
     venueType: "Sports Facility",
     contactPerson: "Eric Habimana",
@@ -163,8 +157,7 @@ export const venues: Venue[] = [
     longitude: 30.062,
     googleMapsLink: "https://maps.google.com/?q=-1.9442,30.0620",
     managerId: "mgr_006",
-    isAvailable: true,
-    isBooked: false,
+    status: "APPROVED",
     amenities: "Projector,Whiteboard,Computers,Wi-Fi,Quiet Environment",
     venueType: "Seminar Room",
     contactPerson: "Alice Nyirahabimana",
@@ -184,7 +177,7 @@ export const venues: Venue[] = [
 // Helper functions
 export const getVenueById = (id: string) => venues.find((venue) => venue.venueId === id)
 
-export const getAvailableVenues = () => venues.filter((venue) => venue.isAvailable && !venue.isBooked)
+export const getAvailableVenues = () => venues.filter((venue) => venue.status === "APPROVED")
 
 export const getVenuesByType = (type: string) => venues.filter((venue) => venue.venueType === type)
 

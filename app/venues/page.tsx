@@ -6,8 +6,9 @@ import Link from "next/link"
 import { MapPin, Users, ChevronDown, Search, Calendar } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { venues } from "@/data/venues"
+import { venues as venuesData } from "@/data/venues"
 import { Button } from "@/components/button"
+import ApiService from "@/api/apiConfig"
 
 export default function VenuesPage() {
   const [isCapacityOpen, setIsCapacityOpen] = useState(false)
@@ -16,6 +17,7 @@ export default function VenuesPage() {
   const [selectedDate, setSelectedDate] = useState<string>("")
   const [searchTerm, setSearchTerm] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
+  const [venues, setVenues] = useState(venuesData)
 
   useEffect(() => {
     // Trigger animations after component mounts
@@ -25,6 +27,29 @@ export default function VenuesPage() {
 
     return () => clearTimeout(timer)
   }, [])
+
+
+  //fetch venues data from the server or API
+useEffect(() => {
+  try {
+    // Simulate fetching data from an API or server 
+    const fetchVenues = async () => {
+      const response = await ApiService.getAllVenues()
+      if (response.success) { 
+        console.log("Fetched venues:", response.data)
+        setVenues(response.data)
+      } else {
+        console.error("Failed to fetch venues:", response.message)
+      }
+    }
+
+    fetchVenues()
+  } catch (error) {
+    console.error("Error fetching venues:", error)
+  }
+}, [])
+
+
 
   const capacityOptions = [
     "Any capacity",
@@ -53,10 +78,15 @@ export default function VenuesPage() {
 
   // Filter venues based on search term and capacity
   const filteredVenues = venues.filter((venue) => {
-    const matchesSearch =
+    // If no search term and no capacity filter is applied, show all venues
+    if (!searchTerm && selectedCapacity === "Any capacity") {
+      return true // Show all venues from API since they don't have status field
+    }
+
+    const matchesSearch = !searchTerm || 
       venue.venueName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       venue.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      venue.venueType.toLowerCase().includes(searchTerm.toLowerCase())
+      (venue.venueType && venue.venueType.toLowerCase().includes(searchTerm.toLowerCase()))
 
     const matchesCapacity = (() => {
       if (selectedCapacity === "Any capacity") return true
@@ -68,7 +98,7 @@ export default function VenuesPage() {
       return true
     })()
 
-    return matchesSearch && matchesCapacity && venue.isAvailable
+    return matchesSearch && matchesCapacity
   })
 
   return (
@@ -214,23 +244,31 @@ export default function VenuesPage() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {venue.amenities
-                        .split(",")
-                        .slice(0, 3)
-                        .map((amenity, amenityIndex) => (
-                          <span
-                            key={amenity}
-                            className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded transition-colors duration-200 hover:bg-blue-100 hover:text-blue-800"
-                            style={{
-                              animationDelay: `${800 + index * 100 + amenityIndex * 50}ms`,
-                            }}
-                          >
-                            {amenity.trim()}
-                          </span>
-                        ))}
-                      {venue.amenities.split(",").length > 3 && (
+                      {venue.amenities ? (
+                        <>
+                          {venue.amenities
+                            .split(",")
+                            .slice(0, 3)
+                            .map((amenity, amenityIndex) => (
+                              <span
+                                key={amenity}
+                                className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded transition-colors duration-200 hover:bg-blue-100 hover:text-blue-800"
+                                style={{
+                                  animationDelay: `${800 + index * 100 + amenityIndex * 50}ms`,
+                                }}
+                              >
+                                {amenity.trim()}
+                              </span>
+                            ))}
+                          {venue.amenities.split(",").length > 3 && (
+                            <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
+                              +{venue.amenities.split(",").length - 3} more
+                            </span>
+                          )}
+                        </>
+                      ) : (
                         <span className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
-                          +{venue.amenities.split(",").length - 3} more
+                          Venue details available
                         </span>
                       )}
                     </div>

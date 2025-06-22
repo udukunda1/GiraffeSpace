@@ -59,10 +59,10 @@ export default function VenuePage({ params }: { params: { id: string } }) {
                   {venue.venueType}
                 </span>
               </div>
-              {venue.isBooked && (
+              {venue.status === "PENDING" && (
                 <div className="absolute top-4 right-4">
-                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    Currently Booked
+                  <span className="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    Pending Approval
                   </span>
                 </div>
               )}
@@ -259,11 +259,11 @@ export default function VenuePage({ params }: { params: { id: string } }) {
                   <div className="mt-6">
                     <button
                       className={`bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 ${
-                        !selectedDate || !selectedTimeSlot || venue.isBooked ? "opacity-50 cursor-not-allowed" : ""
+                        !selectedDate || !selectedTimeSlot || venue.status === "PENDING" ? "opacity-50 cursor-not-allowed" : ""
                       }`}
-                      disabled={!selectedDate || !selectedTimeSlot || venue.isBooked}
+                      disabled={!selectedDate || !selectedTimeSlot || venue.status === "PENDING"}
                     >
-                      {venue.isBooked ? "Venue Currently Booked" : "Book This Time Slot"}
+                      {venue.status === "PENDING" ? "Venue Currently Pending Approval" : "Book This Time Slot"}
                     </button>
                   </div>
                 </div>
@@ -300,7 +300,7 @@ export default function VenuePage({ params }: { params: { id: string } }) {
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                     className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    disabled={venue.isBooked}
+                    disabled={venue.status === "PENDING"}
                   />
                   <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5 pointer-events-none" />
                 </div>
@@ -316,7 +316,7 @@ export default function VenuePage({ params }: { params: { id: string } }) {
                   value={selectedTimeSlot}
                   onChange={(e) => setSelectedTimeSlot(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={venue.isBooked}
+                  disabled={venue.status === "PENDING"}
                 >
                   <option value="">Select a time slot</option>
                   {timeSlots.map((slot) => (
@@ -329,13 +329,13 @@ export default function VenuePage({ params }: { params: { id: string } }) {
 
               <button
                 className={`w-full py-2 rounded-md mb-4 ${
-                  selectedDate && selectedTimeSlot && !venue.isBooked
+                  selectedDate && selectedTimeSlot && venue.status !== "PENDING"
                     ? "bg-blue-600 text-white hover:bg-blue-700"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
-                disabled={!selectedDate || !selectedTimeSlot || venue.isBooked}
+                disabled={!selectedDate || !selectedTimeSlot || venue.status === "PENDING"}
               >
-                {venue.isBooked ? "Currently Booked" : "Book Now"}
+                {venue.status === "PENDING" ? "Currently Pending Approval" : "Book Now"}
               </button>
             </div>
 
