@@ -223,7 +223,7 @@ class ApiService {
     try {
       const response = await axios.get(
         `${this.BASE_URL}/organizations`,
-      
+
         {
           headers: this.getHeader(),
           withCredentials: true,
@@ -239,7 +239,7 @@ class ApiService {
     try {
       const response = await axios.get(
         `${this.BASE_URL}/organizations/${orgId}`,
-      
+
         {
           headers: this.getHeader(),
           withCredentials: true,
@@ -268,12 +268,13 @@ class ApiService {
     }
   }
 
- 
-  /** Delete organization */
-  static async deleteOrganization(orgId: string): Promise<any> {  
+  //**** AMENITIES ROUTE *** */
+
+  /** Get all amenities */
+  static async getAllAmenities(): Promise<any> {
     try {
-      const response = await axios.delete(
-        `${this.BASE_URL}/organizations/${orgId}`,
+      const response = await axios.get(
+        `${this.BASE_URL}/amenities`,
         {
           headers: this.getHeader(),
           withCredentials: true,
@@ -281,17 +282,16 @@ class ApiService {
       );
       return response.data;
     } catch (error) {
-      console.error(`Error deleting organization with ID ${orgId}:`, error);
+      console.error("Error fetching amenities:", error);
       throw error;
     }
   }
 
-
-   /** Add a new amenity bulk */
-  static async addAOrganizationBulk(amenityData: { name: string }): Promise<any> {
+  /** Add a new amenity */
+  static async addAmenity(amenityData: { name: string }): Promise<any> {
     try {
       const response = await axios.post(
-        `${this.BASE_URL}/organizations/bulk`,
+        `${this.BASE_URL}/amenities`,
         amenityData,
         {
           headers: this.getHeader(amenityData),
@@ -528,105 +528,6 @@ static async removeVenueFromOrganization(
       throw error;
     }
   }
-
-
-
-  /* set availability for venue */
-  static async setVenueAvailability(
-    venueId: string,      
-    availabilityData: { available: boolean }
-  ): Promise<any> {         
-    try {
-      const response = await axios.put(
-        `${this.BASE_URL}/venue/set-availability/${venueId}`,
-        availabilityData,
-        {
-          headers: this.getHeader(availabilityData),
-          withCredentials: true,
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error(`Error setting availability for venue with ID ${venueId}:`, error);
-      throw error;
-    }
-  }
-
-/** Search venue by name and/or capacity */
-static async searchVenueByNameAndCapacity(
-  name?: string,
-  capacity?: number
-): Promise<any> {
-  try {
-    const response = await axios.get(`${this.BASE_URL}/venue/search`, {
-      params: { name, capacity },
-      headers: this.getHeader(),
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error searching venue by name and capacity:", error);
-    throw error;
-  }
-}
-
-/** Search for venues by availability and manager status */
-static async searchVenueByAvailabilityAndManagerStatus(
-  isAvailable: boolean,
-  hasManager: boolean
-): Promise<any> {
-  try {
-    const response = await axios.get(`${this.BASE_URL}/venue/search`, {
-      params: {
-        isAvailable,
-        hasManager,
-      },
-      headers: this.getHeader(),
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error searching venues by availability and manager status:", error);
-    throw error;
-  }
-}
-
-/** get available venue by startDate and endDate */
-static async getAvailableVenueByDate(
-  startDate: string,
-  endDate: string
-): Promise<any> {
-  try {
-    const response = await axios.get(`${this.BASE_URL}/venue/availability`, {
-      params: { startDate, endDate },
-      headers: this.getHeader(),
-      withCredentials: true,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error getting available venue by date:", error);
-    throw error;
-  }
-}
-
-/** add venue with resource */
-static async addVenueWithResource(venueData: any): Promise<any> {
-  try {
-    const response = await axios.post(
-      `${this.BASE_URL}/venue/add-with-resources`,
-      venueData,
-      {
-        headers: this.getHeader(venueData),
-        withCredentials: true,
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error creating venue:", error);
-    throw error;
-  }
-}
-
 }
 
 export default ApiService;

@@ -18,7 +18,15 @@ export default function MyOrganizationsPage() {
       setIsLoading(true);
       setError("");
       try {
-        const response = await ApiService.getUserById(user!.userId);
+        // const response = await ApiService.getUserById(user!.userId);
+        const response = {
+          user: {
+            organizations: [
+              { organizationId: "1", organizationName: "Organization 1" },
+              { organizationId: "2", organizationName: "Organization 2" },
+            ],
+          },
+        }
         const orgs = response?.user?.organizations || [];
         console.log(response);
         setOrganizations(orgs);
