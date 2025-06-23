@@ -127,36 +127,9 @@ export default function AdminUsers() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="admin" />
+      
       <div className="flex flex-1">
-        {/* Sidebar */}
-        <div className="w-64 bg-white border-r border-gray-200 flex-shrink-0">
-          <div className="p-6">
-            <div className="flex items-center mb-8">
-              <Users className="h-6 w-6 text-blue-600 mr-3" />
-              <h2 className="text-lg font-semibold text-gray-900">Admin Panel</h2>
-            </div>
-            <nav className="space-y-2">
-              {sidebarItems.map((item) => {
-                const Icon = item.icon
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => router.push(item.href)}
-                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                      item.id === "users"
-                        ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
-                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    }`}
-                  >
-                    <Icon className="h-4 w-4 mr-3" />
-                    {item.label}
-                  </button>
-                )
-              })}
-            </nav>
-          </div>
-        </div>
+       
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           <div className="flex-1 p-8">
@@ -279,33 +252,20 @@ export default function AdminUsers() {
                           <TableHead>Email</TableHead>
                           <TableHead>Role</TableHead>
                           <TableHead>Status</TableHead>
-                          <TableHead>Created At</TableHead>
                           <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {paginatedUsers.length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                            <TableCell colSpan={5} className="text-center py-8 text-gray-500">
                               No users found
                             </TableCell>
                           </TableRow>
                         ) : (
                           paginatedUsers.map((user) => (
                             <TableRow key={user.userId}>
-                              <TableCell>
-                                <div className="flex items-center space-x-3">
-                                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
-                                    {(user.firstName?.[0] || '').toUpperCase()}
-                                    {(user.lastName?.[0] || '').toUpperCase()}
-                                  </div>
-                                  <div>
-                                    <p className="font-medium">
-                                      {user.firstName} {user.lastName}
-                                    </p>
-                                  </div>
-                                </div>
-                              </TableCell>
+                              <TableCell>{user.firstName} {user.lastName}</TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-2">
                                   <Mail className="h-4 w-4 text-gray-500" />
@@ -322,34 +282,16 @@ export default function AdminUsers() {
                                   {user.isActive ? "Active" : "Inactive"}
                                 </Badge>
                               </TableCell>
-                              <TableCell>
-                                {new Date(user.createdAt).toLocaleDateString()}
-                              </TableCell>
                               <TableCell className="text-right">
-                                <div className="flex justify-end space-x-2">
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline"
-                                    onClick={() => router.push(`/admin/users/${user.userId}`)}
-                                  >
+                                <div className="flex space-x-2">
+                                  <Button size="icon" variant="outline" onClick={() => router.push(`/admin/users/${user.userId}`)}>
                                     <Eye className="h-4 w-4" />
                                   </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline"
-                                    onClick={() => router.push(`/admin/users/${user.userId}/edit`)}
-                                  >
+                                  <Button size="icon" variant="outline" onClick={() => router.push(`/admin/users/${user.userId}/edit`)}>
                                     <Edit className="h-4 w-4" />
                                   </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline"
-                                    onClick={() => {
-                                      // TODO: Implement delete functionality
-                                      alert('Delete user functionality will be implemented')
-                                    }}
-                                  >
-                                    <UserX className="h-4 w-4 text-red-600" />
+                                  <Button size="icon" variant="destructive" onClick={() => { /* TODO: Implement delete functionality */ }}>
+                                    <UserX className="h-4 w-4" />
                                   </Button>
                                 </div>
                               </TableCell>
@@ -390,7 +332,7 @@ export default function AdminUsers() {
           </div>
         </div>
       </div>
-      <Footer />
+     
     </div>
   )
 } 
