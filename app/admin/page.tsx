@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Header } from "@/components/header"
+import { UserHeader } from "@/components/UserHeader"
 import { Footer } from "@/components/footer"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+
 import {
   Users,
   Calendar,
@@ -94,7 +95,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="admin" />
+      <UserHeader activePage="admin" />
 
       <div className="flex flex-1">
         {/* Sidebar */}
@@ -111,11 +112,10 @@ export default function AdminDashboard() {
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                      activeTab === item.id
+                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${activeTab === item.id
                         ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                    }`}
+                      }`}
                   >
                     <Icon className="h-4 w-4 mr-3" />
                     {item.label}
@@ -128,14 +128,13 @@ export default function AdminDashboard() {
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
-         
+
 
           {/* Dashboard Content */}
           <div className="flex-1 p-8">
             <div
-              className={`transform transition-all duration-1000 ease-out delay-400 ${
-                isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-              }`}
+              className={`transform transition-all duration-1000 ease-out delay-400 ${isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                }`}
             >
               {renderContent()}
             </div>

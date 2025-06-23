@@ -1,9 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-// import { useAuth } from "@/components/providers"
+import { UserHeader } from "@/components/UserHeader"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -201,7 +200,7 @@ export default function UserDashboard() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="user-dashboard" />
+      <UserHeader activePage="user-dashboard" />
 
       <main className="flex-1">
         {/* Dashboard Content with Sidebar */}

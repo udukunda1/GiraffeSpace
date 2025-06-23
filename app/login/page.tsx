@@ -5,63 +5,59 @@ import Link from "next/link"
 import { Calendar, AlertCircle } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-// import { useAuth } from "@/components/providers"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/contexts/auth-context"
+import { useAuth } from "@/contexts/auth-context" // ✅ Use your AuthContext
 
 export default function LoginPage() {
-  const { login, isLoggedIn } = useAuth()
   const router = useRouter()
+  const { login, user } = useAuth()
+
   const [identifier, setIdentifier] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [isLoaded, setIsLoaded] = useState(false)
 
-  // Redirect if already logged in
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.push("/user-dashboard")
-    }
-  }, [isLoggedIn, router])
-
-  // Animation trigger
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoaded(true)
     }, 100)
-
     return () => clearTimeout(timer)
   }, [])
+
+  // ✅ Redirect if logged in and user info is available
+  useEffect(() => {
+    if (user) {
+      const role = user?.role?.roleName?.toLowerCase()
+      if (role === "admin") {
+        router.push("/admin")
+      } else {
+        router.push("/user-dashboard")
+      }
+    }
+  }, [user, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
-    try {
-      const result = await login(identifier, password)
+    const result = await login(identifier, password)
 
-      if (result.success) {
-        // Redirect will happen automatically due to useEffect above
-        router.push("/user-dashboard")
-      } else {
-        setError(result.error || "Login failed. Please try again.")
-      }
-    } catch (err) {
-      setError("An unexpected error occurred. Please try again.")
-    } finally {
+    if (!result.success) {
+      setError(result.error || "Login failed.")
       setIsLoading(false)
     }
+    // ✅ If login succeeds, redirection is handled by useEffect
   }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header activePage="login" />
-
       <main className="flex-1 flex items-center justify-center py-12 px-4 bg-gray-50">
         <div className="w-full max-w-md">
+          {/* Top Logo */}
           <div
             className={`flex justify-center mb-6 transform transition-all duration-1000 ease-out ${
               isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
@@ -72,6 +68,7 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* Heading */}
           <div
             className={`text-center mb-8 transform transition-all duration-1000 ease-out delay-200 ${
               isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
@@ -81,6 +78,7 @@ export default function LoginPage() {
             <p className="text-gray-600">Enter your credentials to access your account</p>
           </div>
 
+          {/* Form */}
           <div
             className={`bg-white rounded-lg border shadow-sm p-6 mb-6 transform transition-all duration-1000 ease-out delay-400 ${
               isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
@@ -111,7 +109,7 @@ export default function LoginPage() {
                   value={identifier}
                   onChange={(e) => {
                     setIdentifier(e.target.value)
-                    if (error) setError("") // Clear error when user starts typing
+                    if (error) setError("")
                   }}
                 />
               </div>
@@ -121,7 +119,10 @@ export default function LoginPage() {
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                     Password
                   </label>
-                  <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                  >
                     Forgot password?
                   </Link>
                 </div>
@@ -134,7 +135,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value)
-                    if (error) setError("") // Clear error when user starts typing
+                    if (error) setError("")
                   }}
                 />
               </div>
@@ -185,21 +186,9 @@ export default function LoginPage() {
                 )}
               </button>
             </form>
-
-            {/* Demo Credentials */}
-            <div className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-md">
-              <p className="text-sm font-medium text-blue-800 mb-2">Demo Credentials:</p>
-              <div className="text-xs text-blue-700 space-y-1">
-                <div>
-                  <strong>Admin:</strong> jean.uwimana@ur.ac.rw / hashed_password_123
-                </div>
-                <div>
-                  <strong>User:</strong> marie.mukamana@student.ur.ac.rw / hashed_password_456
-                </div>
-              </div>
-            </div>
           </div>
 
+          {/* Footer Message */}
           <div
             className={`text-center text-gray-600 transform transition-all duration-1000 ease-out delay-600 ${
               isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
