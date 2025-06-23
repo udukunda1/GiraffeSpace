@@ -150,7 +150,7 @@ export function Header({ activePage }: HeaderProps) {
                   <div className="py-1">
                     {user?.role.roleName === "ADMIN" && (
                       <Link
-                        href="/admin"
+                        href="/admin/overview"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setIsManageMenuOpen(false)}
                       >
