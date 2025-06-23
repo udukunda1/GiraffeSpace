@@ -31,7 +31,7 @@ export default function LoginPage() {
     if (user) {
       const role = user?.role?.roleName?.toLowerCase()
       if (role === "admin") {
-        router.push("/admin")
+        router.push("/admin/overview")
       } else {
         router.push("/user-dashboard")
       }
