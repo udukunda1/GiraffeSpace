@@ -2,39 +2,29 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { Menu, X, ChevronDown, LogOut, Calendar, MapPin, Shield } from "lucide-react"
+import { Menu, X, ChevronDown, LogOut } from "lucide-react"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { Button } from "./button"
 
 interface HeaderProps {
-  activePage?: string
+  activePage?: string;
 }
 
 export function Header({ activePage }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [isManageMenuOpen, setIsManageMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { isLoggedIn, user, logout } = useAuth()
   const router = useRouter()
 
-  // Set mounted state after component mounts
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement
-
-      // Close manage menu if clicking outside
-      if (isManageMenuOpen && !target.closest("[data-manage-menu]")) {
-        setIsManageMenuOpen(false)
-      }
-
-      // Close user menu if clicking outside
       if (isUserMenuOpen && !target.closest("[data-user-menu]")) {
         setIsUserMenuOpen(false)
       }
@@ -44,7 +34,7 @@ export function Header({ activePage }: HeaderProps) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [isManageMenuOpen, isUserMenuOpen])
+  }, [isUserMenuOpen])
 
   const handleLogout = () => {
     logout()
@@ -52,19 +42,16 @@ export function Header({ activePage }: HeaderProps) {
     router.push("/")
   }
 
-  // Don't render logged-in state until component is mounted
   const showLoggedIn = mounted && isLoggedIn
-
-  // Get user display name and initials
   const userDisplayName = user ? `${user.firstName} ${user.lastName}` : "User"
   const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : "U"
 
   return (
     <header className="border-b">
-      <div className="container mx-auto px-16 py-4 max-w-7xl flex items-center justify-between">
+      <div className="w-full px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8">
-          <img src="/logo.png" alt="GiraffeSpace" className="w-full h-full object-cover" />
+            <img src="/logo.png" alt="GiraffeSpace" className="w-full h-full object-cover" />
           </div>
           <Link href="/" className="font-bold text-xl">
             GiraffeSpace
@@ -80,113 +67,11 @@ export function Header({ activePage }: HeaderProps) {
           {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
 
-        {/* Desktop navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link
-            href="/"
-            className={`text-sm font-medium ${
-              activePage === "home" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Home
-          </Link>
-          <Link
-            href="/events"
-            className={`text-sm font-medium ${
-              activePage === "events" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Events
-          </Link>
-          <Link
-            href="/venues"
-            className={`text-sm font-medium ${
-              activePage === "venues" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Venues
-          </Link>
-          <Link
-            href="/organizers"
-            className={`text-sm font-medium ${
-              activePage === "organizers" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Organizers
-          </Link>
-          <Link
-            href="/dashboard"
-            className={`text-sm font-medium ${
-              activePage === "dashboard" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            Statistics
-          </Link>
-        </nav>
-
         {/* Desktop auth buttons or user menu */}
         {!mounted ? (
-          // Show nothing while mounting to prevent hydration mismatch
           <div className="hidden md:block w-[150px]"></div>
         ) : showLoggedIn ? (
-          <div className="hidden md:flex items-center space-x-6">
-            {/* Manage dropdown */}
-            <div className="relative" data-manage-menu>
-              <button
-                className={`flex items-center space-x-1 text-sm font-medium ${
-                  activePage === "manage" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setIsManageMenuOpen(!isManageMenuOpen)}
-                aria-expanded={isManageMenuOpen}
-                aria-haspopup="true"
-              >
-                <span>Manage</span>
-                <ChevronDown className="h-4 w-4" />
-              </button>
-
-              {/* Manage dropdown menu */}
-              {isManageMenuOpen && (
-                <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
-                  <div className="py-1">
-                    {user?.role.roleName === "ADMIN" && (
-                      <Link
-                        href="/admin"
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        onClick={() => setIsManageMenuOpen(false)}
-                      >
-                        <Shield className="h-4 w-4 mr-2 text-gray-500" />
-                        Admin Dashboard
-                      </Link>
-                    )}
-                    <Link
-                      href="/manage/events"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => setIsManageMenuOpen(false)}
-                    >
-                      <Calendar className="h-4 w-4 mr-2 text-gray-500" />
-                      Manage Events
-                    </Link>
-                    <Link
-                      href="/manage/venues/dashboard"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => setIsManageMenuOpen(false)}
-                    >
-                      <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                      Manage Venues
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Link
-              href="/tickets"
-              className={`text-sm font-medium ${
-                activePage === "tickets" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              My tickets
-            </Link>
+          <div className="hidden md:flex items-center">
             <div className="relative" data-user-menu>
               <div
                 className="flex items-center space-x-2 cursor-pointer"
@@ -203,12 +88,6 @@ export function Header({ activePage }: HeaderProps) {
                     userInitials
                   )}
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{userDisplayName}</span>
-                  {user?.role.roleName === "ADMIN" && (
-                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Admin</span>
-                  )}
-                </div>
                 <ChevronDown className="h-4 w-4" />
               </div>
 
@@ -222,20 +101,6 @@ export function Header({ activePage }: HeaderProps) {
                       onClick={() => setIsUserMenuOpen(false)}
                     >
                       Profile
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      Settings
-                    </Link>
-                    <Link
-                      href="/my-organizations"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      My Organization
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -255,15 +120,11 @@ export function Header({ activePage }: HeaderProps) {
           <div className="hidden md:flex items-center space-x-4">
             <Link
               href="/login"
-              className={`text-sm font-medium ${
-                activePage === "login" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-              }`}
+              className="text-sm font-medium text-gray-600 hover:text-gray-900"
             >
               Log In
             </Link>
-            <Button
-              href="/register"
-            >
+            <Button href="/register">
               Register
             </Button>
           </div>
@@ -272,167 +133,63 @@ export function Header({ activePage }: HeaderProps) {
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg z-50 md:hidden">
-            <div className="container mx-auto px-16 py-4">
-              <nav className="flex flex-col space-y-4">
-                <Link
-                  href="/"
-                  className={`text-sm font-medium ${
-                    activePage === "home" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/events"
-                  className={`text-sm font-medium ${
-                    activePage === "events" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Events
-                </Link>
-                <Link
-                  href="/venues"
-                  className={`text-sm font-medium ${
-                    activePage === "venues" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Venues
-                </Link>
-                <Link
-                  href="/organizers"
-                  className={`text-sm font-medium ${
-                    activePage === "organizers" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Organizers
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className={`text-sm font-medium ${
-                    activePage === "dashboard" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                {mounted && showLoggedIn ? (
-                  <>
-                    {/* Mobile Manage section */}
-                    <div className="pt-4 border-t">
-                      <p className="text-sm font-medium text-gray-900 mb-2">Manage</p>
-                      <div className="pl-2 space-y-2">
-                        {user?.role.roleName === "ADMIN" && (
-                          <Link
-                            href="/admin"
-                            className="flex items-center text-sm text-gray-600 hover:text-gray-900"
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            <Shield className="h-4 w-4 mr-2 text-gray-500" />
-                            Admin Dashboard
-                          </Link>
-                        )}
-                        <Link
-                          href="/manage/events"
-                          className="flex items-center text-sm text-gray-600 hover:text-gray-900"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <Calendar className="h-4 w-4 mr-2 text-gray-500" />
-                          Manage Events
-                        </Link>
-                        <Link
-                          href="/manage/venues"
-                          className="flex items-center text-sm text-gray-600 hover:text-gray-900"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <MapPin className="h-4 w-4 mr-2 text-gray-500" />
-                          Manage Venues
-                        </Link>
-                      </div>
+            <div className="w-full px-4 py-3">
+              {mounted && showLoggedIn ? (
+                <div className="pt-2">
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-medium">
+                      {user?.profilePictureURL ? (
+                        <img
+                          src={user.profilePictureURL || "/placeholder.svg"}
+                          alt="User avatar"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        userInitials
+                      )}
                     </div>
-                    <Link
-                      href="/tickets"
-                      className={`text-sm font-medium ${
-                        activePage === "tickets" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      My tickets
-                    </Link>
-                    <div className="pt-4 border-t">
-                      <div className="flex items-center space-x-2 mb-4">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-medium">
-                          {user?.profilePictureURL ? (
-                            <img
-                              src={user.profilePictureURL || "/placeholder.svg"}
-                              alt="User avatar"
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            userInitials
-                          )}
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-sm font-medium">{userDisplayName}</span>
-                          {user?.role.roleName === "ADMIN" && (
-                            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Admin</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Link
-                          href="/profile"
-                          className="block text-sm text-gray-600 hover:text-gray-900"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          Profile
-                        </Link>
-                        <Link
-                          href="/settings"
-                          className="block text-sm text-gray-600 hover:text-gray-900"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          Settings
-                        </Link>
-                      </div>
-                      <button
-                        onClick={() => {
-                          handleLogout()
-                          setIsMenuOpen(false)
-                        }}
-                        className="flex items-center text-sm text-red-600 mt-4"
-                      >
-                        <LogOut className="h-4 w-4 mr-2" />
-                        Logout
-                      </button>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">{userDisplayName}</span>
                     </div>
-                  </>
-                ) : mounted ? (
-                  <div className="pt-4 border-t flex flex-col space-y-4">
+                  </div>
+                  <div className="space-y-2">
                     <Link
-                      href="/login"
-                      className={`text-sm font-medium ${
-                        activePage === "login" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                      }`}
+                      href="/profile"
+                      className="block text-sm text-gray-600 hover:text-gray-900"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Log In
-                    </Link>
-                    <Link
-                      href="/register"
-                      className={`text-sm font-medium text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-800 text-center ${
-                        activePage === "register" ? "bg-blue-600 hover:bg-blue-700" : ""
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Register
+                      Profile
                     </Link>
                   </div>
-                ) : null}
-              </nav>
+                  <button
+                    onClick={() => {
+                      handleLogout()
+                      setIsMenuOpen(false)
+                    }}
+                    className="flex items-center text-sm text-red-600 mt-4"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Logout
+                  </button>
+                </div>
+              ) : mounted ? (
+                <div className="pt-2 flex flex-col space-y-4">
+                  <Link
+                    href="/login"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="text-sm font-medium text-white bg-gray-900 px-4 py-2 rounded-md hover:bg-gray-800 text-center"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Register
+                  </Link>
+                </div>
+              ) : null}
             </div>
           </div>
         )}
