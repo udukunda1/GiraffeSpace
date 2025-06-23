@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Calendar, MapPin, Users as UsersIcon, Home, Building2, Briefcase, Ticket, CreditCard, FileText, UserCog, ClipboardList, Layers, DollarSign, ChevronDown, ChevronUp } from "lucide-react"
+import { Calendar, MapPin, Users as UsersIcon, Home, Building2, Briefcase, Ticket, CreditCard, FileText, UserCog, ClipboardList, Layers, DollarSign, ChevronDown, ChevronUp,Gauge } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
 
 const sidebarItems = [
@@ -49,7 +49,7 @@ export default function SideBar() {
     <div className="w-64 h-screen fixed top-0 left-0 z-40 bg-white border-r border-gray-200 flex-shrink-0 pt-[64px]">
       <div className="p-6">
         <div className="flex items-center mb-8">
-          <Home className="h-6 w-6 text-blue-600 mr-3" />
+          <Gauge className="h-6 w-6 text-blue-600 mr-3" />
           <h2 className="text-lg font-semibold text-gray-900">Admin Panel</h2>
         </div>
         <nav className="space-y-2">
