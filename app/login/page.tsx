@@ -5,9 +5,10 @@ import Link from "next/link"
 import { Calendar, AlertCircle } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useAuth } from "@/contexts/auth-context"
+// import { useAuth } from "@/components/providers"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/auth-context"
 
 export default function LoginPage() {
   const { login, isLoggedIn } = useAuth()
@@ -21,7 +22,7 @@ export default function LoginPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (isLoggedIn) {
-      router.push("/")
+      router.push("/user-dashboard")
     }
   }, [isLoggedIn, router])
 
@@ -44,7 +45,7 @@ export default function LoginPage() {
 
       if (result.success) {
         // Redirect will happen automatically due to useEffect above
-        router.push("/")
+        router.push("/user-dashboard")
       } else {
         setError(result.error || "Login failed. Please try again.")
       }
