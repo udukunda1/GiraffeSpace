@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { Header } from "@/components/header"
+import { UserHeader } from "@/components/UserHeader"
 import { Footer } from "@/components/footer"
 import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
@@ -176,7 +176,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header activePage="profile" />
+      <UserHeader activePage="profile" />
 
       <main className="flex-1">
         {/* Header Section */}
