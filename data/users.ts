@@ -37,7 +37,7 @@ export interface User {
   stateProvince: string | null;
   postalCode: string | null;
   country: string | null;
-  roles: Role;
+  role: Role;
   organizations: Organization[];
 }
 
@@ -79,7 +79,7 @@ export const users: User[] = [
     stateProvince: null,
     postalCode: null,
     country: null,
-    roles: {
+    role: {
       roleId: "44746a4c-2e7e-4c87-8c06-b56e7e0d5557",
       roleName: "ADMIN",
       permissions: ["read:public"]

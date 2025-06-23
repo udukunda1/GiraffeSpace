@@ -56,11 +56,8 @@ export function Header({ activePage }: HeaderProps) {
   const showLoggedIn = mounted && isLoggedIn
 
   // Get user display name and initials
-  const userDisplayName = user ? `${user.username}` : "User"
-  const userInitials =
-  user && user.username && user.email
-    ? `${user.username[0]}${user.email[0]}`.toUpperCase()
-    : "U";
+  const userDisplayName = user ? `${user.firstName} ${user.lastName}` : "User"
+  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : "U"
 
   return (
     <header className="border-b">
@@ -151,7 +148,7 @@ export function Header({ activePage }: HeaderProps) {
               {isManageMenuOpen && (
                 <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
                   <div className="py-1">
-                    {user?.roles.roleName === "admin" && (
+                    {user?.role.roleName === "ADMIN" && (
                       <Link
                         href="/admin"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -208,7 +205,7 @@ export function Header({ activePage }: HeaderProps) {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">{userDisplayName}</span>
-                  {user?.roles?.roleName === "admin" && (
+                  {user?.role.roleName === "ADMIN" && (
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Admin</span>
                   )}
                 </div>
@@ -328,7 +325,7 @@ export function Header({ activePage }: HeaderProps) {
                     <div className="pt-4 border-t">
                       <p className="text-sm font-medium text-gray-900 mb-2">Manage</p>
                       <div className="pl-2 space-y-2">
-                        {user?.roles.roleName === "admin" && (
+                        {user?.role.roleName === "ADMIN" && (
                           <Link
                             href="/admin"
                             className="flex items-center text-sm text-gray-600 hover:text-gray-900"
@@ -380,7 +377,7 @@ export function Header({ activePage }: HeaderProps) {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">{userDisplayName}</span>
-                          {user?.roles.roleName === "admin" && (
+                          {user?.role.roleName === "ADMIN" && (
                             <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">Admin</span>
                           )}
                         </div>

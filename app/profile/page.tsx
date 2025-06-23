@@ -50,7 +50,7 @@ export default function ProfilePage() {
     stateProvince: user?.stateProvince || "",
     postalCode: user?.postalCode || "",
     country: user?.country || "",
-    role: user?.roles || { roleId: '', roleName: '', permissions: [] },
+    role: user?.role || { roleId: '', roleName: '', permissions: [] },
     organizations: user?.organizations || [],
   })
 
@@ -80,7 +80,7 @@ export default function ProfilePage() {
           stateProvince: user.stateProvince || "",
           postalCode: user.postalCode || "",
           country: user.country || "",
-          role: user.roles || { roleId: '', roleName: '', permissions: [] },
+          role: user.role || { roleId: '', roleName: '', permissions: [] },
           organizations: user.organizations || [],
         })
       }
@@ -148,7 +148,7 @@ export default function ProfilePage() {
         stateProvince: user.stateProvince || "",
         postalCode: user.postalCode || "",
         country: user.country || "",
-        role: user.roles || { roleId: '', roleName: '', permissions: [] },
+        role: user.role || { roleId: '', roleName: '', permissions: [] },
         organizations: user.organizations || [],
       })
     }
@@ -223,7 +223,7 @@ export default function ProfilePage() {
                   <h2 className="text-2xl font-bold">
                     {user.firstName} {user.lastName}
                   </h2>
-                  {user.roles.roleName === "ADMIN" && (
+                  {user.role.roleName === "ADMIN" && (
                     <Badge variant="default" className="flex items-center gap-1">
                       <Shield className="h-3 w-3" />
                       Admin
@@ -628,7 +628,7 @@ export default function ProfilePage() {
                         <User className="h-5 w-5 mr-3 text-gray-400 mt-0.5" />
                         <div>
                           <p className="text-sm text-gray-500">Role</p>
-                          <p className="font-medium">{user.roles.roleName}</p>
+                          <p className="font-medium">{user.role.roleName}</p>
                         </div>
                       </div>
                     </div>

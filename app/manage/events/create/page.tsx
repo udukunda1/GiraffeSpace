@@ -17,7 +17,8 @@ interface Venue {
   longitude: number
   googleMapsLink: string
   managerId: string
-  status: "PENDING" | "APPROVED"
+  isAvailable: boolean
+  isBooked: boolean
   amenities: string
   venueType: string
   contactPerson: string

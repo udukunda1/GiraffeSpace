@@ -112,9 +112,9 @@ class ApiService {
   }
 
   /** Get all users */
-  static async getAllUser(): Promise<any> {
+  static async getAllUser(): Promise<UserApiResponse> {
     try {
-      const response = await axios.get(`${this.BASE_URL}/users`, {
+      const response = await axios.get(`${this.BASE_URL}/user/getAll`, {
         headers: this.getHeader(),
         withCredentials: true, // Enable credentials
       });
@@ -402,7 +402,7 @@ static async removeVenueFromOrganization(
   static async createVenue(venueData: any): Promise<any> {
     try {
       const response = await axios.post(
-        `${this.BASE_URL}/venue/add-with-resources`,
+        `${this.BASE_URL}/venue/add`,
         venueData,
         {
           headers: this.getHeader(venueData),
@@ -528,28 +528,6 @@ static async removeVenueFromOrganization(
       throw error;
     }
   }
-
-  /**************************************** */
-
-            /** EVENT ******* */
-
-  static async createEvent(eventData: any): Promise<any> {
-    try {
-      const response = await axios.post(
-        `${this.BASE_URL}/event`,
-        eventData,
-        {
-          headers: this.getHeader(eventData),
-          withCredentials: true,
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error creating venue:", error);
-      throw error;
-    }
-  }
-
 }
 
 export default ApiService;
