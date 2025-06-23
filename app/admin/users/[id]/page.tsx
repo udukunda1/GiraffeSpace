@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { use, useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,7 +19,7 @@ import {
   Users as UsersIcon,
   Home,
 } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { users } from "@/data/users"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -68,6 +68,8 @@ interface ActivityItem {
 }
 
 export default function UserDetails({ params }: UserDetailsProps) {
+
+    const id = params.id;
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -76,7 +78,7 @@ export default function UserDetails({ params }: UserDetailsProps) {
 
   useEffect(() => {
     // In a real app, this would be an API call
-    const rawUser = users.find(u => u.userId === params.id) as RawUser | undefined
+    const rawUser = users.find(u => u.userId === id) as RawUser | undefined
     
     if (rawUser) {
       const safeUser: User = {
@@ -95,7 +97,7 @@ export default function UserDetails({ params }: UserDetailsProps) {
       setUser(safeUser)
     }
     setIsLoading(false)
-  }, [params.id])
+  }, [id])
 
   if (isLoading) {
     return (
@@ -168,7 +170,7 @@ export default function UserDetails({ params }: UserDetailsProps) {
                 <div className="flex space-x-2">
                   <Button
                     variant="outline"
-                    onClick={() => router.push(`/admin/users/${params.id}/edit`)}
+                    onClick={() => router.push(`/admin/users/${id}/edit`)}
                   >
                     <Edit className="h-4 w-4 mr-2" />
                     Edit User

@@ -14,6 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 
 // Mock event and registration data
 const events = [
@@ -56,6 +68,57 @@ const statusOptions = [
   { value: "Rejected", label: "Rejected" },
 ]
 
+function RegistrationForm({ initialData, onSubmit, loading, mode }: {
+  initialData?: any,
+  onSubmit: (data: any) => void,
+  loading: boolean,
+  mode: 'add' | 'edit',
+}) {
+  const [form, setForm] = useState({
+    attendee: initialData?.attendee || '',
+    event: initialData?.event || '',
+    status: initialData?.status || 'Pending',
+    date: initialData?.date || '',
+  })
+  const [error, setError] = useState<string | null>(null)
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target
+    setForm(f => ({ ...f, [name]: value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    onSubmit(form)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Input placeholder="Attendee" name="attendee" value={form.attendee} onChange={handleChange} required />
+      <Input placeholder="Event" name="event" value={form.event} onChange={handleChange} required />
+      <Input placeholder="Date" name="date" value={form.date} onChange={handleChange} required type="date" />
+      <Select value={form.status} onValueChange={val => setForm(f => ({ ...f, status: val }))} required>
+        <SelectTrigger>
+          <SelectValue placeholder="Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Pending">Pending</SelectItem>
+          <SelectItem value="Confirmed">Confirmed</SelectItem>
+          <SelectItem value="Cancelled">Cancelled</SelectItem>
+        </SelectContent>
+      </Select>
+      {error && <div className="text-red-600 text-sm">{error}</div>}
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button type="button" variant="outline">Cancel</Button>
+        </DialogClose>
+        <Button type="submit" disabled={loading}>{loading ? (mode === 'add' ? 'Adding...' : 'Saving...') : (mode === 'add' ? 'Add Registration' : 'Save Changes')}</Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
 export default function RegistrationList() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
@@ -64,6 +127,10 @@ export default function RegistrationList() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
   const [data, setData] = useState(registrations)
+  const [addOpen, setAddOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [editRegistration, setEditRegistration] = useState<any>(null)
 
   // Statistics
   const stats = {
@@ -90,8 +157,28 @@ export default function RegistrationList() {
   const startIndex = (safeCurrentPage - 1) * itemsPerPage
   const paginatedRegistrations = filteredRegistrations.slice(startIndex, startIndex + itemsPerPage)
 
-  function handleDelete(id: string) {
+  const handleDelete = (id: string) => {
     setData(prev => prev.filter(r => r.id !== id))
+  }
+
+  const handleAdd = async (data: any) => {
+    setLoading(true)
+    // TODO: Add registration logic
+    setTimeout(() => {
+      setLoading(false)
+      setAddOpen(false)
+      // Optionally update registration list
+    }, 1000)
+  }
+
+  const handleEdit = async (data: any) => {
+    setLoading(true)
+    // TODO: Edit registration logic
+    setTimeout(() => {
+      setLoading(false)
+      setEditOpen(null)
+      // Optionally update registration list
+    }, 1000)
   }
 
   return (
@@ -102,10 +189,17 @@ export default function RegistrationList() {
             <div className="space-y-6">
               <div className="flex justify-between items-center space-x-2">
                 <h2 className="text-2xl font-bold">Registrations</h2>
-                <Button onClick={() => router.push("/admin/registration/add")}> 
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add Registration
-                </Button>
+                <Dialog open={addOpen} onOpenChange={setAddOpen}>
+                  <DialogTrigger asChild>
+                    <Button>Add New Registration</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Registration</DialogTitle>
+                    </DialogHeader>
+                    <RegistrationForm mode="add" loading={loading} onSubmit={handleAdd} />
+                  </DialogContent>
+                </Dialog>
               </div>
               {/* Statistics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -223,10 +317,10 @@ export default function RegistrationList() {
                             <TableCell>{reg.date}</TableCell>
                             <TableCell>
                               <div className="flex space-x-2">
-                                <Button size="sm" variant="outline" onClick={() => router.push(`/admin/registration/${reg.id}`)}>
+                                <Button size="icon" variant="outline" onClick={() => router.push(`/admin/registration/${reg.id}`)}>
                                   <Eye className="h-4 w-4" />
                                 </Button>
-                                <Button size="sm" variant="outline" onClick={() => router.push(`/admin/registration/${reg.id}/edit`)}>
+                                <Button size="icon" variant="outline" onClick={() => { setEditRegistration(reg); setEditOpen(reg.id); }}>
                                   <Edit className="h-4 w-4" />
                                 </Button>
                                 <Button size="sm" variant="outline" onClick={() => handleDelete(reg.id)}>
@@ -271,6 +365,16 @@ export default function RegistrationList() {
           </div>
         </div>
       </div>
+      {editRegistration && (
+        <Dialog open={!!editOpen} onOpenChange={open => { if (!open) setEditOpen(null); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Registration</DialogTitle>
+            </DialogHeader>
+            <RegistrationForm mode="edit" initialData={editRegistration} loading={loading} onSubmit={handleEdit} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 } 

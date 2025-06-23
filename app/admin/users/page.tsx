@@ -25,6 +25,17 @@ import {
 import { useRouter } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 
 // Define TypeScript interfaces for better type safety
 interface UserRole {
@@ -57,6 +68,103 @@ interface RawUser {
   createdAt?: string;
 }
 
+function UserForm({ initialData, onSubmit, loading, mode }: {
+  initialData?: Partial<User>,
+  onSubmit: (data: any) => void,
+  loading: boolean,
+  mode: 'add' | 'edit',
+}) {
+  const [form, setForm] = useState({
+    firstName: initialData?.firstName || '',
+    lastName: initialData?.lastName || '',
+    email: initialData?.email || '',
+    phone: initialData?.phone || '',
+    role: initialData?.role?.roleName || '',
+    isActive: initialData?.isActive ?? true,
+    password: '',
+    confirmPassword: '',
+  })
+  const [error, setError] = useState<string | null>(null)
+
+  const handleChange = (e: any) => {
+    const { name, value, type, checked } = e.target
+    setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (mode === 'add' && form.password !== form.confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+    setError(null)
+    onSubmit(form)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="firstName">First Name</Label>
+            <Input id="firstName" name="firstName" value={form.firstName} onChange={handleChange} required />
+          </div>
+          <div>
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input id="lastName" name="lastName" value={form.lastName} onChange={handleChange} required />
+          </div>
+          <div>
+            <Label htmlFor="email">Email Address</Label>
+            <Input id="email" name="email" type="email" value={form.email} onChange={handleChange} required />
+          </div>
+          <div>
+            <Label htmlFor="phone">Phone Number</Label>
+            <Input id="phone" name="phone" type="tel" value={form.phone} onChange={handleChange} />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="role">User Role</Label>
+            <Select value={form.role} onValueChange={val => setForm(f => ({ ...f, role: val }))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USER">User</SelectItem>
+                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="MANAGER">Manager</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {mode === 'add' && (
+            <>
+              <div>
+                <Label htmlFor="password">Temporary Password</Label>
+                <Input id="password" name="password" type="password" value={form.password} onChange={handleChange} required />
+              </div>
+              <div>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input id="confirmPassword" name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange} required />
+              </div>
+            </>
+          )}
+          <div className="flex items-center justify-between">
+            <Label htmlFor="isActive">Account Status</Label>
+            <Switch id="isActive" checked={form.isActive} onCheckedChange={val => setForm(f => ({ ...f, isActive: val }))} />
+          </div>
+        </div>
+      </div>
+      {error && <div className="text-red-600 text-sm">{error}</div>}
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button type="button" variant="outline">Cancel</Button>
+        </DialogClose>
+        <Button type="submit" disabled={loading}>{loading ? (mode === 'add' ? 'Creating...' : 'Saving...') : (mode === 'add' ? 'Create User' : 'Save Changes')}</Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
 export default function AdminUsers() {
   const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
@@ -64,6 +172,10 @@ export default function AdminUsers() {
   const [filterRole, setFilterRole] = useState("all")
   const [filterStatus, setFilterStatus] = useState("all")
   const itemsPerPage = 10
+  const [addOpen, setAddOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [editUser, setEditUser] = useState<User | null>(null)
 
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: Home, href: "/admin/overview" },
@@ -125,6 +237,25 @@ export default function AdminUsers() {
   const startIndex = (safeCurrentPage - 1) * itemsPerPage
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage)
 
+  const handleAdd = async (data: any) => {
+    setLoading(true)
+    // TODO: Add user logic
+    setTimeout(() => {
+      setLoading(false)
+      setAddOpen(false)
+      // Optionally update user list
+    }, 1000)
+  }
+  const handleEdit = async (data: any) => {
+    setLoading(true)
+    // TODO: Edit user logic
+    setTimeout(() => {
+      setLoading(false)
+      setEditOpen(null)
+      // Optionally update user list
+    }, 1000)
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       
@@ -137,10 +268,20 @@ export default function AdminUsers() {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">User Management</h2>
-                <Button onClick={() => router.push("/admin/users/create")}>
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Add New User
-                </Button>
+                <Dialog open={addOpen} onOpenChange={setAddOpen}>
+                  <DialogTrigger asChild>
+                    <Button>
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Add New User
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New User</DialogTitle>
+                    </DialogHeader>
+                    <UserForm mode="add" loading={loading} onSubmit={handleAdd} />
+                  </DialogContent>
+                </Dialog>
               </div>
 
               {/* Statistics Cards */}
@@ -287,7 +428,7 @@ export default function AdminUsers() {
                                   <Button size="icon" variant="outline" onClick={() => router.push(`/admin/users/${user.userId}`)}>
                                     <Eye className="h-4 w-4" />
                                   </Button>
-                                  <Button size="icon" variant="outline" onClick={() => router.push(`/admin/users/${user.userId}/edit`)}>
+                                  <Button size="icon" variant="outline" onClick={() => { setEditUser(user); setEditOpen(user.userId); }}>
                                     <Edit className="h-4 w-4" />
                                   </Button>
                                   <Button size="icon" variant="destructive" onClick={() => { /* TODO: Implement delete functionality */ }}>
@@ -333,6 +474,16 @@ export default function AdminUsers() {
         </div>
       </div>
      
+      {editUser && (
+        <Dialog open={!!editOpen} onOpenChange={open => { if (!open) setEditOpen(null); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit User</DialogTitle>
+            </DialogHeader>
+            <UserForm mode="edit" initialData={editUser} loading={loading} onSubmit={handleEdit} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 } 

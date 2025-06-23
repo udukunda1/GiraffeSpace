@@ -26,6 +26,97 @@ import {
 import { useRouter } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+
+function VenueForm({ initialData, onSubmit, loading, mode }: {
+  initialData?: any,
+  onSubmit: (data: any) => void,
+  loading: boolean,
+  mode: 'add' | 'edit',
+}) {
+  const [form, setForm] = useState({
+    venueName: initialData?.venueName || '',
+    location: initialData?.location || '',
+    venueType: initialData?.venueType || '',
+    capacity: initialData?.capacity ? String(initialData.capacity) : '',
+    isAvailable: initialData?.isAvailable ?? true,
+  })
+  const [error, setError] = useState<string | null>(null)
+
+  const handleChange = (e: any) => {
+    const { name, value, type, checked } = e.target
+    setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    onSubmit({ ...form, capacity: Number(form.capacity) })
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Input
+        placeholder="Venue Name"
+        name="venueName"
+        value={form.venueName}
+        onChange={handleChange}
+        required
+      />
+      <Input
+        placeholder="Location"
+        name="location"
+        value={form.location}
+        onChange={handleChange}
+        required
+      />
+      <Select value={form.venueType} onValueChange={val => setForm(f => ({ ...f, venueType: val }))} required>
+        <SelectTrigger>
+          <SelectValue placeholder="Venue Type" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Auditorium">Auditorium</SelectItem>
+          <SelectItem value="Hall">Hall</SelectItem>
+          <SelectItem value="Outdoor">Outdoor</SelectItem>
+          <SelectItem value="Conference Room">Conference Room</SelectItem>
+        </SelectContent>
+      </Select>
+      <Input
+        type="number"
+        placeholder="Capacity"
+        name="capacity"
+        value={form.capacity}
+        onChange={handleChange}
+        required
+        min={1}
+      />
+      <div className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          checked={form.isAvailable}
+          onChange={e => setForm(f => ({ ...f, isAvailable: e.target.checked }))}
+          id="isAvailable"
+        />
+        <label htmlFor="isAvailable">Available</label>
+      </div>
+      {error && <div className="text-red-600 text-sm">{error}</div>}
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button type="button" variant="outline">Cancel</Button>
+        </DialogClose>
+        <Button type="submit" disabled={loading}>{loading ? (mode === 'add' ? 'Adding...' : 'Saving...') : (mode === 'add' ? 'Add Venue' : 'Save Changes')}</Button>
+      </DialogFooter>
+    </form>
+  )
+}
 
 export default function AdminVenues() {
   const router = useRouter()
@@ -34,6 +125,10 @@ export default function AdminVenues() {
   const [filterType, setFilterType] = useState("all")
   const [filterAvailability, setFilterAvailability] = useState("all")
   const itemsPerPage = 10
+  const [addOpen, setAddOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [editVenue, setEditVenue] = useState<any>(null)
 
   // Calculate venue statistics
   const stats = {
@@ -63,7 +158,24 @@ export default function AdminVenues() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedVenues = filteredVenues.slice(startIndex, startIndex + itemsPerPage)
 
- 
+  const handleAdd = async (data: any) => {
+    setLoading(true)
+    // TODO: Add venue logic
+    setTimeout(() => {
+      setLoading(false)
+      setAddOpen(false)
+      // Optionally update venue list
+    }, 1000)
+  }
+  const handleEdit = async (data: any) => {
+    setLoading(true)
+    // TODO: Edit venue logic
+    setTimeout(() => {
+      setLoading(false)
+      setEditOpen(null)
+      // Optionally update venue list
+    }, 1000)
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -77,7 +189,17 @@ export default function AdminVenues() {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Venue Management</h2>
-                <Button onClick={() => router.push('/admin/venues/add')}>Add New Venue</Button>
+                <Dialog open={addOpen} onOpenChange={setAddOpen}>
+                  <DialogTrigger asChild>
+                    <Button>Add New Venue</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Venue</DialogTitle>
+                    </DialogHeader>
+                    <VenueForm mode="add" loading={loading} onSubmit={handleAdd} />
+                  </DialogContent>
+                </Dialog>
               </div>
 
               {/* Statistics Cards */}
@@ -194,17 +316,20 @@ export default function AdminVenues() {
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end space-x-2">
-                                <Button size="sm" variant="outline">
+                                <Button size="icon" variant="outline" onClick={() => router.push(`/admin/venues/${venue.venueId}`)}>
                                   <Eye className="h-4 w-4" />
                                 </Button>
-                                <Button size="sm" variant="outline">
+                                <Button size="icon" variant="outline" onClick={() => { setEditVenue(venue); setEditOpen(venue.venueId); }}>
                                   <Edit className="h-4 w-4" />
                                 </Button>
-                                {!venue.isAvailable && (
-                                  <Button size="sm" variant="outline">
-                                    <CheckCircle className="h-4 w-4 text-green-600" />
-                                  </Button>
-                                )}
+                                <Dialog open={editOpen === venue.venueId} onOpenChange={open => { if (!open) setEditOpen(null); }}>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>Edit Venue</DialogTitle>
+                                    </DialogHeader>
+                                    <VenueForm mode="edit" initialData={venue} loading={loading} onSubmit={handleEdit} />
+                                  </DialogContent>
+                                </Dialog>
                                 <Button size="sm" variant="outline">
                                   <Trash2 className="h-4 w-4 text-red-600" />
                                 </Button>

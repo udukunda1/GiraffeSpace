@@ -8,6 +8,16 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useRouter } from "next/navigation"
 import { Eye, Edit, Trash2, Users, Building2, MapPin, Link2 } from "lucide-react"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 
 // Mock organization data
 const organizations = [
@@ -17,6 +27,66 @@ const organizations = [
   { id: "4", name: "Org Delta", type: "Venue", assigned: "Venue Y", contact: "delta@email.com", status: "Active" },
 ]
 
+function OrganizationForm({ initialData, onSubmit, loading, mode }: {
+  initialData?: any,
+  onSubmit: (data: any) => void,
+  loading: boolean,
+  mode: 'add' | 'edit',
+}) {
+  const [form, setForm] = useState({
+    name: initialData?.name || '',
+    type: initialData?.type || '',
+    assigned: initialData?.assigned || '',
+    contact: initialData?.contact || '',
+    status: initialData?.status || 'Active',
+  })
+  const [error, setError] = useState<string | null>(null)
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target
+    setForm(f => ({ ...f, [name]: value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    onSubmit(form)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Input placeholder="Organization Name" name="name" value={form.name} onChange={handleChange} required />
+      <Select value={form.type} onValueChange={val => setForm(f => ({ ...f, type: val }))} required>
+        <SelectTrigger>
+          <SelectValue placeholder="Type" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Event">Event</SelectItem>
+          <SelectItem value="Venue">Venue</SelectItem>
+        </SelectContent>
+      </Select>
+      <Input placeholder="Assigned to (Event or Venue)" name="assigned" value={form.assigned} onChange={handleChange} required />
+      <Input placeholder="Contact Email" name="contact" value={form.contact} onChange={handleChange} required />
+      <Select value={form.status} onValueChange={val => setForm(f => ({ ...f, status: val }))} required>
+        <SelectTrigger>
+          <SelectValue placeholder="Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Active">Active</SelectItem>
+          <SelectItem value="Inactive">Inactive</SelectItem>
+        </SelectContent>
+      </Select>
+      {error && <div className="text-red-600 text-sm">{error}</div>}
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button type="button" variant="outline">Cancel</Button>
+        </DialogClose>
+        <Button type="submit" disabled={loading}>{loading ? (mode === 'add' ? 'Adding...' : 'Saving...') : (mode === 'add' ? 'Add Organization' : 'Save Changes')}</Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
 export default function AdminOrganization() {
   const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
@@ -24,6 +94,10 @@ export default function AdminOrganization() {
   const [filterType, setFilterType] = useState("all")
   const [filterStatus, setFilterStatus] = useState("all")
   const itemsPerPage = 10
+  const [addOpen, setAddOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [editOrg, setEditOrg] = useState<any>(null)
 
   // Statistics
   const stats = {
@@ -47,6 +121,25 @@ export default function AdminOrganization() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedOrganizations = filteredOrganizations.slice(startIndex, startIndex + itemsPerPage)
 
+  const handleAdd = async (data: any) => {
+    setLoading(true)
+    // TODO: Add organization logic
+    setTimeout(() => {
+      setLoading(false)
+      setAddOpen(false)
+      // Optionally update organization list
+    }, 1000)
+  }
+  const handleEdit = async (data: any) => {
+    setLoading(true)
+    // TODO: Edit organization logic
+    setTimeout(() => {
+      setLoading(false)
+      setEditOpen(null)
+      // Optionally update organization list
+    }, 1000)
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex flex-1">
@@ -55,7 +148,17 @@ export default function AdminOrganization() {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Organization Management</h2>
-                <Button onClick={() => router.push("/admin/organization/add")}>Add New Organization</Button>
+                <Dialog open={addOpen} onOpenChange={setAddOpen}>
+                  <DialogTrigger asChild>
+                    <Button>Add New Organization</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Organization</DialogTitle>
+                    </DialogHeader>
+                    <OrganizationForm mode="add" loading={loading} onSubmit={handleAdd} />
+                  </DialogContent>
+                </Dialog>
               </div>
               {/* Statistics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -166,7 +269,9 @@ export default function AdminOrganization() {
                             <TableCell className="text-right">
                               <div className="flex justify-end space-x-2">
                                 <Button size="icon" variant="outline" onClick={() => router.push(`/admin/organization/${org.id}`)}><Eye className="h-4 w-4" /></Button>
-                                <Button size="icon" variant="outline" onClick={() => router.push(`/admin/organization/${org.id}/edit`)}><Edit className="h-4 w-4" /></Button>
+                                <Button size="icon" variant="outline" onClick={() => { setEditOrg(org); setEditOpen(org.id); }}>
+                                  <Edit className="h-4 w-4" />
+                                </Button>
                                 <Button size="icon" variant="destructive" onClick={() => {/* TODO: handle delete */}}><Trash2 className="h-4 w-4" /></Button>
                               </div>
                             </TableCell>
@@ -187,6 +292,16 @@ export default function AdminOrganization() {
           </div>
         </div>
       </div>
+      {editOrg && (
+        <Dialog open={!!editOpen} onOpenChange={open => { if (!open) setEditOpen(null); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Organization</DialogTitle>
+            </DialogHeader>
+            <OrganizationForm mode="edit" initialData={editOrg} loading={loading} onSubmit={handleEdit} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 } 

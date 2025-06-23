@@ -17,6 +17,16 @@ import {
 import { Input } from "@/components/ui/input"
 import { format, parseISO, isSameDay } from "date-fns"
 import { useRouter } from "next/navigation"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 
 export default function AdminEvents() {
   const router = useRouter()
@@ -25,6 +35,10 @@ export default function AdminEvents() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [dateFilter, setDateFilter] = useState<Date | null>(null)
   const itemsPerPage = 10
+  const [addOpen, setAddOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [editEvent, setEditEvent] = useState<any>(null)
 
   // Statistics
   const stats = {
@@ -66,15 +80,44 @@ export default function AdminEvents() {
   const startIndex = (safeCurrentPage - 1) * itemsPerPage
   const paginatedEvents = filteredEvents.slice(startIndex, startIndex + itemsPerPage)
 
+  const handleAdd = async (data: any) => {
+    setLoading(true)
+    // TODO: Add event logic
+    setTimeout(() => {
+      setLoading(false)
+      setAddOpen(false)
+      // Optionally update event list
+    }, 1000)
+  }
+  const handleEdit = async (data: any) => {
+    setLoading(true)
+    // TODO: Edit event logic
+    setTimeout(() => {
+      setLoading(false)
+      setEditOpen(null)
+      // Optionally update event list
+    }, 1000)
+  }
+
   return (
     <div className="flex-1 p-8">
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">Event Management</h2>
-          <Button onClick={() => router.push("/admin/events/create")}> 
-            <Plus className="h-4 w-4 mr-2" />
-            Add New Event
-          </Button>
+          <Dialog open={addOpen} onOpenChange={setAddOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Add New Event
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Event</DialogTitle>
+              </DialogHeader>
+              <EventForm mode="add" loading={loading} onSubmit={handleAdd} />
+            </DialogContent>
+          </Dialog>
         </div>
         <div className="space-y-6">
           {/* Statistics Cards */}
@@ -200,7 +243,7 @@ export default function AdminEvents() {
                             <Button size="sm" variant="outline" onClick={() => router.push(`/admin/events/${event.eventId}`)}>
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button size="sm" variant="outline" onClick={() => router.push(`/admin/events/${event.eventId}/edit`)}>
+                            <Button size="icon" variant="outline" onClick={() => { setEditEvent(event); setEditOpen(event.eventId); }}>
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button size="sm" variant="outline" onClick={() => {/* handle delete */}}>
@@ -245,6 +288,91 @@ export default function AdminEvents() {
           </Card>
         </div>
       </div>
+      {editEvent && (
+        <Dialog open={!!editOpen} onOpenChange={open => { if (!open) setEditOpen(null); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Event</DialogTitle>
+            </DialogHeader>
+            <EventForm mode="edit" initialData={editEvent} loading={loading} onSubmit={handleEdit} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
+  )
+}
+
+function EventForm({ initialData, onSubmit, loading, mode }: {
+  initialData?: any,
+  onSubmit: (data: any) => void,
+  loading: boolean,
+  mode: 'add' | 'edit',
+}) {
+  const [form, setForm] = useState({
+    eventTitle: initialData?.eventTitle || '',
+    venue: initialData?.venue || '',
+    eventDate: initialData?.eventDate || '',
+    status: initialData?.status || '',
+    description: initialData?.description || '',
+    organizer: initialData?.organizer || '',
+    category: initialData?.eventCategory || '',
+  })
+  const [error, setError] = useState<string | null>(null)
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target
+    setForm(f => ({ ...f, [name]: value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    onSubmit(form)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="eventTitle">Event Title</Label>
+            <Input id="eventTitle" name="eventTitle" value={form.eventTitle} onChange={handleChange} required />
+          </div>
+          <div>
+            <Label htmlFor="venue">Venue</Label>
+            <Input id="venue" name="venue" value={form.venue} onChange={handleChange} required />
+          </div>
+          <div>
+            <Label htmlFor="eventDate">Event Date</Label>
+            <Input id="eventDate" name="eventDate" type="date" value={form.eventDate} onChange={handleChange} required />
+          </div>
+          <div>
+            <Label htmlFor="status">Status</Label>
+            <Input id="status" name="status" value={form.status} onChange={handleChange} required />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="description">Description</Label>
+            <Input id="description" name="description" value={form.description} onChange={handleChange} />
+          </div>
+          <div>
+            <Label htmlFor="organizer">Organizer</Label>
+            <Input id="organizer" name="organizer" value={form.organizer} onChange={handleChange} />
+          </div>
+          <div>
+            <Label htmlFor="category">Category</Label>
+            <Input id="category" name="category" value={form.category} onChange={handleChange} />
+          </div>
+        </div>
+      </div>
+      {error && <div className="text-red-600 text-sm">{error}</div>}
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button type="button" variant="outline">Cancel</Button>
+        </DialogClose>
+        <Button type="submit" disabled={loading}>{loading ? (mode === 'add' ? 'Creating...' : 'Saving...') : (mode === 'add' ? 'Create Event' : 'Save Changes')}</Button>
+      </DialogFooter>
+    </form>
   )
 } 

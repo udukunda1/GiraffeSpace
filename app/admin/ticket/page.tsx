@@ -14,6 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 
 // Mock event and ticket data
 const events = [
@@ -56,6 +68,59 @@ const statusOptions = [
   { value: "Cancelled", label: "Cancelled" },
 ]
 
+function TicketForm({ initialData, onSubmit, loading, mode }: {
+  initialData?: any,
+  onSubmit: (data: any) => void,
+  loading: boolean,
+  mode: 'add' | 'edit',
+}) {
+  const [form, setForm] = useState({
+    event: initialData?.event || '',
+    holder: initialData?.holder || '',
+    type: initialData?.type || '',
+    price: initialData?.price || '',
+    status: initialData?.status || 'Active',
+  })
+  const [error, setError] = useState<string | null>(null)
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target
+    setForm(f => ({ ...f, [name]: value }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    onSubmit(form)
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Input placeholder="Event" name="event" value={form.event} onChange={handleChange} required />
+      <Input placeholder="Holder" name="holder" value={form.holder} onChange={handleChange} required />
+      <Input placeholder="Type" name="type" value={form.type} onChange={handleChange} required />
+      <Input placeholder="Price" name="price" value={form.price} onChange={handleChange} required type="number" min={0} />
+      <Select value={form.status} onValueChange={val => setForm(f => ({ ...f, status: val }))} required>
+        <SelectTrigger>
+          <SelectValue placeholder="Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Active">Active</SelectItem>
+          <SelectItem value="Used">Used</SelectItem>
+          <SelectItem value="Cancelled">Cancelled</SelectItem>
+        </SelectContent>
+      </Select>
+      {error && <div className="text-red-600 text-sm">{error}</div>}
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button type="button" variant="outline">Cancel</Button>
+        </DialogClose>
+        <Button type="submit" disabled={loading}>{loading ? (mode === 'add' ? 'Adding...' : 'Saving...') : (mode === 'add' ? 'Add Ticket' : 'Save Changes')}</Button>
+      </DialogFooter>
+    </form>
+  )
+}
+
 export default function TicketList() {
   const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
@@ -64,6 +129,10 @@ export default function TicketList() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
   const [data, setData] = useState(tickets)
+  const [addOpen, setAddOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [editTicket, setEditTicket] = useState<any>(null)
 
   // Statistics
   const stats = {
@@ -94,14 +163,41 @@ export default function TicketList() {
     setData(prev => prev.filter(t => t.id !== id))
   }
 
+  const handleAdd = async (data: any) => {
+    setLoading(true)
+    // TODO: Add ticket logic
+    setTimeout(() => {
+      setLoading(false)
+      setAddOpen(false)
+      // Optionally update ticket list
+    }, 1000)
+  }
+
+  const handleEdit = async (data: any) => {
+    setLoading(true)
+    // TODO: Edit ticket logic
+    setTimeout(() => {
+      setLoading(false)
+      setEditOpen(null)
+      // Optionally update ticket list
+    }, 1000)
+  }
+
   return (
     <div className="flex-1 p-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Tickets</h2>
-        <Button onClick={() => router.push("/admin/ticket/add")}> 
-          <Plus className="h-4 w-4 mr-2" />
-          Add Ticket
-        </Button>
+        <Dialog open={addOpen} onOpenChange={setAddOpen}>
+          <DialogTrigger asChild>
+            <Button>Add New Ticket</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add New Ticket</DialogTitle>
+            </DialogHeader>
+            <TicketForm mode="add" loading={loading} onSubmit={handleAdd} />
+          </DialogContent>
+        </Dialog>
       </div>
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -224,7 +320,7 @@ export default function TicketList() {
                         <Button size="sm" variant="outline" onClick={() => router.push(`/admin/ticket/${ticket.id}`)}>
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => router.push(`/admin/ticket/${ticket.id}/edit`)}>
+                        <Button size="icon" variant="outline" onClick={() => { setEditTicket(ticket); setEditOpen(ticket.id); }}>
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button size="sm" variant="outline" onClick={() => handleDelete(ticket.id)}>
@@ -265,6 +361,16 @@ export default function TicketList() {
           </div>
         </CardContent>
       </Card>
+      {editTicket && (
+        <Dialog open={!!editOpen} onOpenChange={open => { if (!open) setEditOpen(null); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Ticket</DialogTitle>
+            </DialogHeader>
+            <TicketForm mode="edit" initialData={editTicket} loading={loading} onSubmit={handleEdit} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
-} 
+}
