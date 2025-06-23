@@ -15,7 +15,7 @@ const sidebarItems = [
   // Venue Management Dropdown
   { id: "venueManagement", label: "Venue Management", icon: MapPin, children: [
     { id: "venues", label: "Venues", icon: MapPin, href: "/admin/venues" },
-    { id: "venueBooking", label: "Venue Booking", icon: Building2, href: "/admin/venue-booking" },
+    { id: "venueBooking", label: "Venue Booking", icon: Building2, href: "/admin/venuebooking" },
     { id: "resource", label: "Resource", icon: Layers, href: "/admin/resource" },
   ]},
   // Finance Dropdown
@@ -24,7 +24,7 @@ const sidebarItems = [
     { id: "invoice", label: "Invoice", icon: FileText, href: "/admin/invoice" },
   ]},
   { id: "organization", label: "Organization", icon: Briefcase, href: "/admin/organization" },
-  { id: "role", label: "Role", icon: UserCog, href: "/admin/role" },
+  // { id: "role", label: "Role", icon: UserCog, href: "/admin/role" },
   { id: "users", label: "Users", icon: UsersIcon, href: "/admin/users" },
 ]
 
