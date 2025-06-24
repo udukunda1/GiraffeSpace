@@ -29,7 +29,7 @@ export default function LoginPage() {
   // ✅ Redirect if logged in and user info is available
   useEffect(() => {
     if (user) {
-      const role = user?.role?.roleName?.toLowerCase()
+      const role = user?.roles?.roleName?.toLowerCase()
       if (role === "admin") {
         router.push("/admin/overview")
       } else {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import ApiService from "@/api/apiConfig"
 
 // Define TypeScript interfaces for better type safety
 interface UserRole {
@@ -85,6 +86,7 @@ function UserForm({ initialData, onSubmit, loading, mode }: {
     confirmPassword: '',
   })
   const [error, setError] = useState<string | null>(null)
+ 
 
   const handleChange = (e: any) => {
     const { name, value, type, checked } = e.target
@@ -100,6 +102,7 @@ function UserForm({ initialData, onSubmit, loading, mode }: {
     setError(null)
     onSubmit(form)
   }
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -171,21 +174,62 @@ export default function AdminUsers() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterRole, setFilterRole] = useState("all")
   const [filterStatus, setFilterStatus] = useState("all")
-  const itemsPerPage = 10
+  const itemsPerPage = 5
   const [addOpen, setAddOpen] = useState(false)
   const [editOpen, setEditOpen] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [editUser, setEditUser] = useState<User | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  
+  const [users, setUsers] = useState<User[]>([])
+  
+  // fetch all users from database
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await ApiService.getAllUser()
+        if (response && response.users) {
+          setUsers(response.users)
+        } else {
+          setUsers([])
+        }
+      } catch (error) {
+        setUsers([])
+        setError('Failed to fetch users')
+        console.error('Error fetching users:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const sidebarItems = [
-    { id: "overview", label: "Overview", icon: Home, href: "/admin/overview" },
-    { id: "events", label: "Events", icon: Calendar, href: "/admin/events" },
-    { id: "venues", label: "Venues", icon: MapPin, href: "/admin/venues" },
-    { id: "users", label: "Users", icon: Users, href: "/admin/users" },
-  ]
+    fetchUsers()
+  }, [])
+
+  // If users are not loaded, show loading state
+  if (loading) {  
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg text-gray-600">Loading users...</div>
+      </div>
+    )
+  }
+
+  // Show error state if there's an error
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="text-lg text-red-600 mb-4">{error}</div>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    )
+  }
 
   // Ensure users data is properly typed and has default values
-  const safeUsers: User[] = (users as RawUser[]).map(user => ({
+  const safeUsers: User[] = users.map(user => ({
     userId: user.userId || 'unknown',
     firstName: user.firstName || '',
     lastName: user.lastName || '',
@@ -238,22 +282,77 @@ export default function AdminUsers() {
   const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage)
 
   const handleAdd = async (data: any) => {
-    setLoading(true)
-    // TODO: Add user logic
-    setTimeout(() => {
+    try {
+      setLoading(true)
+      // Call API to create user
+      const response = await ApiService.registerUser(data)
+      if (response && response.success) {
+        // Refresh the users list
+        const updatedResponse = await ApiService.getAllUser()
+        if (updatedResponse && updatedResponse.users) {
+          setUsers(updatedResponse.users)
+        }
+        setAddOpen(false)
+      } else {
+        setError('Failed to create user')
+      }
+    } catch (error) {
+      setError('Failed to create user')
+      console.error('Error creating user:', error)
+    } finally {
       setLoading(false)
-      setAddOpen(false)
-      // Optionally update user list
-    }, 1000)
+    }
   }
+
   const handleEdit = async (data: any) => {
-    setLoading(true)
-    // TODO: Edit user logic
-    setTimeout(() => {
+    try {
+      setLoading(true)
+      // Call API to update user
+      if (!editUser?.userId) {
+        setError('User ID is required for update')
+        return
+      }
+      const response = await ApiService.updateUserById(editUser.userId, data)
+      if (response && response.success) {
+        // Refresh the users list
+        const updatedResponse = await ApiService.getAllUser()
+        if (updatedResponse && updatedResponse.users) {
+          setUsers(updatedResponse.users)
+        }
+        setEditOpen(null)
+        setEditUser(null)
+      } else {
+        setError('Failed to update user')
+      }
+    } catch (error) {
+      setError('Failed to update user')
+      console.error('Error updating user:', error)
+    } finally {
       setLoading(false)
-      setEditOpen(null)
-      // Optionally update user list
-    }, 1000)
+    }
+  }
+
+  const handleDelete = async (userId: string) => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      try {
+        setLoading(true)
+        const response = await ApiService.deleteUser(userId)
+        if (response && response.success) {
+          // Refresh the users list
+          const updatedResponse = await ApiService.getAllUser()
+          if (updatedResponse && updatedResponse.users) {
+            setUsers(updatedResponse.users)
+          }
+        } else {
+          setError('Failed to delete user')
+        }
+      } catch (error) {
+        setError('Failed to delete user')
+        console.error('Error deleting user:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
   }
 
   return (
@@ -431,7 +530,7 @@ export default function AdminUsers() {
                                   <Button size="icon" variant="outline" onClick={() => { setEditUser(user); setEditOpen(user.userId); }}>
                                     <Edit className="h-4 w-4" />
                                   </Button>
-                                  <Button size="icon" variant="destructive" onClick={() => { /* TODO: Implement delete functionality */ }}>
+                                  <Button size="icon" variant="destructive" onClick={() => handleDelete(user.userId)}>
                                     <UserX className="h-4 w-4" />
                                   </Button>
                                 </div>

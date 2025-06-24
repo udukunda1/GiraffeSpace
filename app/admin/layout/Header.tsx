@@ -39,11 +39,11 @@ export function AdminHeader() {
   }
 
   const showLoggedIn = mounted && isLoggedIn
-  const userDisplayName = user ? `${user.firstName} ${user.lastName}` : "User"
-  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : "U"
+  const userDisplayName = user ? `${user.username}` : "User"
+  const userInitials = user ? `${user.username[0]}` : "U"
 
   return (
-    <header className="border-b sticky fixed top-0 z-50">
+    <header className="border-b  sticky top-0 z-50">
       <div className="w-full px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8">

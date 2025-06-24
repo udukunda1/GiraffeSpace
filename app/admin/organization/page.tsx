@@ -1,13 +1,14 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useRouter } from "next/navigation"
-import { Eye, Edit, Trash2, Users, Building2, MapPin, Link2 } from "lucide-react"
+import { Eye, Edit, Trash2, Users, Building2, MapPin, Link2, Search, Plus } from "lucide-react"
 import {
   Dialog,
   DialogTrigger,
@@ -17,27 +18,55 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
+import ApiService from "@/api/apiConfig"
 
-// Mock organization data
-const organizations = [
-  { id: "1", name: "Org Alpha", type: "Event", assigned: "Event A", contact: "alpha@email.com", status: "Active" },
-  { id: "2", name: "Org Beta", type: "Venue", assigned: "Venue X", contact: "beta@email.com", status: "Inactive" },
-  { id: "3", name: "Org Gamma", type: "Event", assigned: "Event B", contact: "gamma@email.com", status: "Active" },
-  { id: "4", name: "Org Delta", type: "Venue", assigned: "Venue Y", contact: "delta@email.com", status: "Active" },
-]
+// Define TypeScript interfaces for better type safety
+interface Organization {
+  
+  id: string;
+  organizationName: string;
+  type: string;
+  assigned?: string;
+  contactEmail: string;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface RawOrganization {
+  id?: string;
+  organizationName?: string;
+  type?: string;
+  assigned?: string;
+  contactEmail?: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 function OrganizationForm({ initialData, onSubmit, loading, mode }: {
-  initialData?: any,
+  initialData?: Partial<Organization>,
   onSubmit: (data: any) => void,
   loading: boolean,
   mode: 'add' | 'edit',
 }) {
   const [form, setForm] = useState({
-    name: initialData?.name || '',
+    organizationName: initialData?.organizationName || '',
     type: initialData?.type || '',
     assigned: initialData?.assigned || '',
-    contact: initialData?.contact || '',
+    contactEmail: initialData?.contactEmail || '',
     status: initialData?.status || 'Active',
   })
   const [error, setError] = useState<string | null>(null)
@@ -54,34 +83,77 @@ function OrganizationForm({ initialData, onSubmit, loading, mode }: {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Input placeholder="Organization Name" name="name" value={form.name} onChange={handleChange} required />
-      <Select value={form.type} onValueChange={val => setForm(f => ({ ...f, type: val }))} required>
-        <SelectTrigger>
-          <SelectValue placeholder="Type" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="Event">Event</SelectItem>
-          <SelectItem value="Venue">Venue</SelectItem>
-        </SelectContent>
-      </Select>
-      <Input placeholder="Assigned to (Event or Venue)" name="assigned" value={form.assigned} onChange={handleChange} required />
-      <Input placeholder="Contact Email" name="contact" value={form.contact} onChange={handleChange} required />
-      <Select value={form.status} onValueChange={val => setForm(f => ({ ...f, status: val }))} required>
-        <SelectTrigger>
-          <SelectValue placeholder="Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="Active">Active</SelectItem>
-          <SelectItem value="Inactive">Inactive</SelectItem>
-        </SelectContent>
-      </Select>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="organizationName">Organization Name</Label>
+            <Input 
+              id="organizationName" 
+              name="organizationName" 
+              value={form.organizationName} 
+              onChange={handleChange} 
+              required 
+            />
+          </div>
+          <div>
+            <Label htmlFor="contactEmail">Contact Email</Label>
+            <Input 
+              id="contactEmail" 
+              name="contactEmail" 
+              type="email" 
+              value={form.contactEmail} 
+              onChange={handleChange} 
+              required 
+            />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="type">Organization Type</Label>
+            <Select value={form.type} onValueChange={val => setForm(f => ({ ...f, type: val }))} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Event">Event</SelectItem>
+                <SelectItem value="Venue">Venue</SelectItem>
+                <SelectItem value="Both">Both</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="assigned">Assigned To</Label>
+            <Input 
+              id="assigned" 
+              name="assigned" 
+              placeholder="Event or Venue name" 
+              value={form.assigned} 
+              onChange={handleChange} 
+            />
+          </div>
+          <div>
+            <Label htmlFor="status">Status</Label>
+            <Select value={form.status} onValueChange={val => setForm(f => ({ ...f, status: val }))} required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
       {error && <div className="text-red-600 text-sm">{error}</div>}
       <DialogFooter>
         <DialogClose asChild>
           <Button type="button" variant="outline">Cancel</Button>
         </DialogClose>
-        <Button type="submit" disabled={loading}>{loading ? (mode === 'add' ? 'Adding...' : 'Saving...') : (mode === 'add' ? 'Add Organization' : 'Save Changes')}</Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? (mode === 'add' ? 'Creating...' : 'Saving...') : (mode === 'add' ? 'Create Organization' : 'Save Changes')}
+        </Button>
       </DialogFooter>
     </form>
   )
@@ -93,51 +165,174 @@ export default function AdminOrganization() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState("all")
   const [filterStatus, setFilterStatus] = useState("all")
-  const itemsPerPage = 10
+  const itemsPerPage = 5
   const [addOpen, setAddOpen] = useState(false)
   const [editOpen, setEditOpen] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [editOrg, setEditOrg] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [editOrg, setEditOrg] = useState<Organization | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [organizations, setOrganizations] = useState<Organization[]>([])
+  const [deleteOrgId, setDeleteOrgId] = useState<string | null>(null)
 
-  // Statistics
-  const stats = {
-    totalOrganizations: organizations.length,
-    active: organizations.filter(o => o.status === "Active").length,
-    inactive: organizations.filter(o => o.status === "Inactive").length,
-    eventAssigned: organizations.filter(o => o.type === "Event").length,
-    venueAssigned: organizations.filter(o => o.type === "Venue").length,
+  // Fetch organizations from database
+  useEffect(() => {
+    const fetchOrganizations = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await ApiService.getAllOrganization()
+        if (response && response.success) {
+          setOrganizations(response.data || [])
+        } else {
+          setOrganizations([])
+          setError(response?.error || 'Failed to fetch organizations')
+        }
+      } catch (error) {
+        setOrganizations([])
+        setError('Failed to fetch organizations')
+        console.error('Error fetching organizations:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchOrganizations()
+  }, [])
+
+  // If organizations are not loaded, show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg text-gray-600">Loading organizations...</div>
+      </div>
+    )
   }
 
-  // Filtered organizations
-  const filteredOrganizations = organizations.filter(org => {
-    const matchesSearch = org.name.toLowerCase().includes(searchQuery.toLowerCase()) || org.assigned.toLowerCase().includes(searchQuery.toLowerCase())
+  // Show error state if there's an error
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="text-lg text-red-600 mb-4">{error}</div>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Ensure organizations data is properly typed and has default values
+  const safeOrganizations: Organization[] = organizations.map((org, index) => ({
+    id: org.id || `temp-${index}-${Date.now()}`,
+    organizationName: org.organizationName || '',
+    type: org.type || 'Event',
+    assigned: org.assigned || '',
+    contactEmail: org.contactEmail || '',
+    status: org.status || 'Active',
+    createdAt: org.createdAt || new Date().toISOString(),
+    updatedAt: org.updatedAt || new Date().toISOString()
+  }))
+
+  // Calculate organization statistics with safe values
+  const stats = {
+    totalOrganizations: safeOrganizations.length,
+    active: safeOrganizations.filter(o => o.status === "Active").length,
+    inactive: safeOrganizations.filter(o => o.status === "Inactive").length,
+    eventAssigned: safeOrganizations.filter(o => o.type === "Event").length,
+    venueAssigned: safeOrganizations.filter(o => o.type === "Venue").length,
+  }
+
+  // Get unique types with safe handling
+  const uniqueTypes = Array.from(new Set(safeOrganizations.map(org => org.type)))
+
+  // Filter organizations with safe string comparisons
+  const filteredOrganizations = safeOrganizations.filter(org => {
+    const searchString = searchQuery.toLowerCase()
+    const matchesSearch = 
+      (org.organizationName?.toLowerCase() || '').includes(searchString) ||
+      (org.assigned?.toLowerCase() || '').includes(searchString) ||
+      (org.contactEmail?.toLowerCase() || '').includes(searchString)
+    
     const matchesType = filterType === "all" || org.type === filterType
     const matchesStatus = filterStatus === "all" || org.status === filterStatus
+    
     return matchesSearch && matchesType && matchesStatus
   })
 
-  // Pagination
-  const totalPages = Math.ceil(filteredOrganizations.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
+  // Pagination with safe calculations
+  const totalPages = Math.max(1, Math.ceil(filteredOrganizations.length / itemsPerPage))
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages)
+  const startIndex = (safeCurrentPage - 1) * itemsPerPage
   const paginatedOrganizations = filteredOrganizations.slice(startIndex, startIndex + itemsPerPage)
 
   const handleAdd = async (data: any) => {
-    setLoading(true)
-    // TODO: Add organization logic
-    setTimeout(() => {
+    try {
+      setLoading(true)
+      const response = await ApiService.addOrganization(data)
+      if (response && response.success) {
+        // Refresh the organizations list
+        const updatedResponse = await ApiService.getAllOrganization()
+        if (updatedResponse && updatedResponse.success) {
+          setOrganizations(updatedResponse.data || [])
+        }
+        setAddOpen(false)
+      } else {
+        setError(response?.error || 'Failed to create organization')
+      }
+    } catch (error) {
+      setError('Failed to create organization')
+      console.error('Error creating organization:', error)
+    } finally {
       setLoading(false)
-      setAddOpen(false)
-      // Optionally update organization list
-    }, 1000)
+    }
   }
+
   const handleEdit = async (data: any) => {
-    setLoading(true)
-    // TODO: Edit organization logic
-    setTimeout(() => {
+    try {
+      setLoading(true)
+      if (!editOrg?.id) {
+        setError('Organization ID is required for update')
+        return
+      }
+      const response = await ApiService.updateOrganizationById(editOrg.id, data)
+      if (response && response.success) {
+        // Refresh the organizations list
+        const updatedResponse = await ApiService.getAllOrganization()
+        if (updatedResponse && updatedResponse.success) {
+          setOrganizations(updatedResponse.data || [])
+        }
+        setEditOpen(null)
+        setEditOrg(null)
+      } else {
+        setError(response?.error || 'Failed to update organization')
+      }
+    } catch (error) {
+      setError('Failed to update organization')
+      console.error('Error updating organization:', error)
+    } finally {
       setLoading(false)
-      setEditOpen(null)
-      // Optionally update organization list
-    }, 1000)
+    }
+  }
+
+  const handleDelete = async (orgId: string) => {
+    try {
+      setLoading(true)
+      const response = await ApiService.deleteOrganization(orgId)
+      if (response && response.success) {
+        // Refresh the organizations list
+        const updatedResponse = await ApiService.getAllOrganization()
+        if (updatedResponse && updatedResponse.success) {
+          setOrganizations(updatedResponse.data || [])
+        }
+        setDeleteOrgId(null)
+      } else {
+        setError(response?.error || 'Failed to delete organization')
+      }
+    } catch (error) {
+      setError('Failed to delete organization')
+      console.error('Error deleting organization:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -150,7 +345,10 @@ export default function AdminOrganization() {
                 <h2 className="text-2xl font-bold">Organization Management</h2>
                 <Dialog open={addOpen} onOpenChange={setAddOpen}>
                   <DialogTrigger asChild>
-                    <Button>Add New Organization</Button>
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add New Organization
+                    </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
@@ -160,6 +358,7 @@ export default function AdminOrganization() {
                   </DialogContent>
                 </Dialog>
               </div>
+
               {/* Statistics Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card>
@@ -168,61 +367,74 @@ export default function AdminOrganization() {
                       <div>
                         <p className="text-sm text-gray-600">Total Organizations</p>
                         <p className="text-2xl font-bold">{stats.totalOrganizations}</p>
-                        <p className="text-sm text-gray-500 mt-1">Active: {stats.active} • Inactive: {stats.inactive}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {stats.active} Active • {stats.inactive} Inactive
+                        </p>
                       </div>
-                      <Users className="h-8 w-8 text-blue-600" />
+                      <Building2 className="h-8 w-8 text-blue-600" />
                     </div>
                   </CardContent>
                 </Card>
+
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600">Assigned to Events</p>
+                        <p className="text-sm text-gray-600">Event Organizations</p>
                         <p className="text-2xl font-bold">{stats.eventAssigned}</p>
+                        <p className="text-sm text-gray-500 mt-1">Assigned to events</p>
                       </div>
                       <Link2 className="h-8 w-8 text-green-600" />
                     </div>
                   </CardContent>
                 </Card>
+
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-gray-600">Assigned to Venues</p>
+                        <p className="text-sm text-gray-600">Venue Organizations</p>
                         <p className="text-2xl font-bold">{stats.venueAssigned}</p>
+                        <p className="text-sm text-gray-500 mt-1">Assigned to venues</p>
                       </div>
-                      <Building2 className="h-8 w-8 text-purple-600" />
+                      <MapPin className="h-8 w-8 text-purple-600" />
                     </div>
                   </CardContent>
                 </Card>
+
                 <Card>
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-gray-600">Inactive Organizations</p>
                         <p className="text-2xl font-bold">{stats.inactive}</p>
+                        <p className="text-sm text-gray-500 mt-1">Currently inactive</p>
                       </div>
-                      <MapPin className="h-8 w-8 text-orange-600" />
+                      <Users className="h-8 w-8 text-orange-600" />
                     </div>
                   </CardContent>
                 </Card>
               </div>
+
               {/* Organizations Table */}
               <Card>
                 <CardHeader>
                   <CardTitle>All Organizations</CardTitle>
+                  <CardDescription>Manage organization accounts and assignments</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {/* Filters */}
                   <div className="flex flex-col md:flex-row gap-4 mb-6">
                     <div className="flex-1">
-                      <Input
-                        placeholder="Search by name or assignment..."
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                        className="pl-8"
-                      />
+                      <div className="relative">
+                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                        <Input
+                          placeholder="Search organizations..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="pl-8"
+                        />
+                      </div>
                     </div>
                     <Select value={filterType} onValueChange={setFilterType}>
                       <SelectTrigger className="w-[180px]">
@@ -230,8 +442,9 @@ export default function AdminOrganization() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="Event">Event</SelectItem>
-                        <SelectItem value="Venue">Venue</SelectItem>
+                        {uniqueTypes.map(type => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <Select value={filterStatus} onValueChange={setFilterStatus}>
@@ -245,6 +458,7 @@ export default function AdminOrganization() {
                       </SelectContent>
                     </Select>
                   </div>
+
                   {/* Table */}
                   <div className="border rounded-md">
                     <Table>
@@ -259,32 +473,104 @@ export default function AdminOrganization() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {paginatedOrganizations.map(org => (
-                          <TableRow key={org.id}>
-                            <TableCell>{org.name}</TableCell>
-                            <TableCell>{org.type}</TableCell>
-                            <TableCell>{org.assigned}</TableCell>
-                            <TableCell>{org.contact}</TableCell>
-                            <TableCell>{org.status}</TableCell>
-                            <TableCell className="text-right">
-                              <div className="flex justify-end space-x-2">
-                                <Button size="icon" variant="outline" onClick={() => router.push(`/admin/organization/${org.id}`)}><Eye className="h-4 w-4" /></Button>
-                                <Button size="icon" variant="outline" onClick={() => { setEditOrg(org); setEditOpen(org.id); }}>
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button size="icon" variant="destructive" onClick={() => {/* TODO: handle delete */}}><Trash2 className="h-4 w-4" /></Button>
-                              </div>
+                        {paginatedOrganizations.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                              No organizations found
                             </TableCell>
                           </TableRow>
-                        ))}
+                        ) : (
+                          paginatedOrganizations.map(org => (
+                            <TableRow key={org.id}>
+                              <TableCell className="font-medium">{org.organizationName}</TableCell>
+                              <TableCell>
+                                <Badge variant={org.type === "Event" ? "default" : "secondary"}>
+                                  {org.type}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{org.assigned || 'Not assigned'}</TableCell>
+                              <TableCell>{org.contactEmail}</TableCell>
+                              <TableCell>
+                                <Badge variant={org.status === "Active" ? "default" : "outline"}>
+                                  {org.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end space-x-2">
+                                  <Button 
+                                    size="icon" 
+                                    variant="outline" 
+                                    onClick={() => router.push(`/admin/organization/${org.id}`)}
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    size="icon" 
+                                    variant="outline" 
+                                    onClick={() => { setEditOrg(org); setEditOpen(org.id); }}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button 
+                                        size="icon" 
+                                        variant="destructive"
+                                        onClick={() => setDeleteOrgId(org.id)}
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Organization</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete "{org.organizationName}"? This action cannot be undone and will permanently remove the organization from the system.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                          onClick={() => handleDelete(org.id)}
+                                          className="bg-red-600 hover:bg-red-700"
+                                        >
+                                          Delete Organization
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
                       </TableBody>
                     </Table>
                   </div>
+
                   {/* Pagination */}
-                  <div className="flex justify-end mt-4 space-x-2">
-                    <Button size="sm" variant="outline" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
-                    <span className="self-center">Page {currentPage} of {totalPages}</span>
-                    <Button size="sm" variant="outline" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
+                  <div className="flex justify-between items-center mt-4">
+                    <p className="text-sm text-gray-600">
+                      Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredOrganizations.length)} of {filteredOrganizations.length} organizations
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        Previous
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -292,6 +578,7 @@ export default function AdminOrganization() {
           </div>
         </div>
       </div>
+
       {editOrg && (
         <Dialog open={!!editOpen} onOpenChange={open => { if (!open) setEditOpen(null); }}>
           <DialogContent>

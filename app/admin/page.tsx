@@ -62,18 +62,18 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen flex flex-col">
       <AdminLayout>
-        {/* Dashboard Content */}
-        <div className="flex-1 p-8">
-          <div
-            className={`transform transition-all duration-1000 ease-out delay-400 ${
-              isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-            }`}
-          >
+          {/* Dashboard Content */}
+          <div className="flex-1 p-8">
+            <div
+              className={`transform transition-all duration-1000 ease-out delay-400 ${
+                isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              }`}
+            >
             {renderContent()}
           </div>
         </div>
       </AdminLayout>
-     
+
     </div>
   )
 }

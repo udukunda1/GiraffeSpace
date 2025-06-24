@@ -112,9 +112,9 @@ class ApiService {
   }
 
   /** Get all users */
-  static async getAllUser(): Promise<UserApiResponse> {
+  static async getAllUser(): Promise<any> {
     try {
-      const response = await axios.get(`${this.BASE_URL}/user/getAll`, {
+      const response = await axios.get(`${this.BASE_URL}/users`, {
         headers: this.getHeader(),
         withCredentials: true, // Enable credentials
       });
@@ -222,7 +222,7 @@ class ApiService {
    static async getAllOrganization(): Promise<any> {
     try {
       const response = await axios.get(
-        `${this.BASE_URL}/organizations`,
+        `${this.BASE_URL}/organizations/all`,
 
         {
           headers: this.getHeader(),
@@ -264,6 +264,23 @@ class ApiService {
       return response.data;
     } catch (error) {
       console.error("Error adding organization:", error);
+      throw error;
+    }
+  }
+
+  /** Delete organization */
+  static async deleteOrganization(orgId: string): Promise<any> {
+    try {
+      const response = await axios.delete(
+        `${this.BASE_URL}/organizations/${orgId}`,
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting organization with ID ${orgId}:`, error);
       throw error;
     }
   }
@@ -325,8 +342,28 @@ class ApiService {
   }
 
 
+/**** VENUES**** */
+
+/** add new venues */
+static async addNewVenue(venueData: any): Promise<any> {
+  try { 
+    const response = await axios.post(
+      `${this.BASE_URL}/venue/add`,
+      venueData,
+      {
+        headers: this.getHeader(venueData),
+        withCredentials: true,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error adding new venue:", error);        
+    throw error;
+  }
+} 
 
   /** add venue to organization */
+
 
 
 static async addVenueToOrganization(
@@ -402,7 +439,7 @@ static async removeVenueFromOrganization(
   static async createVenue(venueData: any): Promise<any> {
     try {
       const response = await axios.post(
-        `${this.BASE_URL}/venue/add`,
+        `${this.BASE_URL}/venue/add-with-resources`,
         venueData,
         {
           headers: this.getHeader(venueData),
@@ -528,6 +565,28 @@ static async removeVenueFromOrganization(
       throw error;
     }
   }
+
+  /**************************************** */
+
+            /** EVENT ******* */
+
+  static async createEvent(eventData: any): Promise<any> {
+    try {
+      const response = await axios.post(
+        `${this.BASE_URL}/event`,
+        eventData,
+        {
+          headers: this.getHeader(eventData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error creating venue:", error);
+      throw error;
+    }
+  }
+
 }
 
 export default ApiService;
