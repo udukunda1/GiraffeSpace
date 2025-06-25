@@ -49,6 +49,7 @@ const login = async (
 
   try {
     const response: UserApiResponse = await ApiService.loginUser(formData);
+    console.log("response", response);
     //const response = {success: true, user: users[0], token: "dfghjkhgfghjjhgfd" ,message: "nice"}
     if (response.success && response.user && response.token) {
       setIsLoggedIn(true);

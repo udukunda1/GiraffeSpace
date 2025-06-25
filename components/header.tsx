@@ -179,14 +179,6 @@ export function Header({ activePage }: HeaderProps) {
               )}
             </div>
 
-            <Link
-              href="/tickets"
-              className={`text-sm font-medium ${
-                activePage === "tickets" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              My tickets
-            </Link>
             <div className="relative" data-user-menu>
               <div
                 className="flex items-center space-x-2 cursor-pointer"
@@ -216,6 +208,13 @@ export function Header({ activePage }: HeaderProps) {
               {isUserMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border">
                   <div className="py-1">
+                    <Link
+                      href="/user-dashboard"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      User Dashboard
+                    </Link>
                     <Link
                       href="/profile"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -353,15 +352,6 @@ export function Header({ activePage }: HeaderProps) {
                         </Link>
                       </div>
                     </div>
-                    <Link
-                      href="/tickets"
-                      className={`text-sm font-medium ${
-                        activePage === "tickets" ? "text-blue-600" : "text-gray-600 hover:text-gray-900"
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      My tickets
-                    </Link>
                     <div className="pt-4 border-t">
                       <div className="flex items-center space-x-2 mb-4">
                         <div className="w-8 h-8 bg-blue-500 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-medium">
@@ -383,6 +373,13 @@ export function Header({ activePage }: HeaderProps) {
                         </div>
                       </div>
                       <div className="space-y-2">
+                        <Link
+                          href="/user-dashboard"
+                          className="block text-sm text-gray-600 hover:text-gray-900"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          User Dashboard
+                        </Link>
                         <Link
                           href="/profile"
                           className="block text-sm text-gray-600 hover:text-gray-900"

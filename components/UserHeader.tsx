@@ -7,10 +7,10 @@ import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { Button } from "./button"
 
-export function UserHeader() {
+export function UserHeader({user}: {user: any}) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const { isLoggedIn, user, logout } = useAuth()
+  const { isLoggedIn, logout } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export function UserHeader() {
   const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : "U"
 
   return (
-    <header className="border-b bg-white">
+    <header className="fixed top-0 left-0 w-full z-30 border-b bg-white">
       <div className="w-full">
         <div className="px-6 py-3 max-w-[1440px] w-full mx-auto flex items-center justify-between">
           {/* Left: Logo and App Name */}

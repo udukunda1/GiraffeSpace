@@ -49,7 +49,7 @@ export function AdminHeader() {
           <div className="w-8 h-8">
             <img src="/logo.png" alt="GiraffeSpace" className="w-full h-full object-cover" />
           </div>
-          <Link href="/" className="font-bold text-xl">
+          <Link href="/admin/overview" className="font-bold text-xl">
             GiraffeSpace
           </Link>
         </div>
