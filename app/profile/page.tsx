@@ -4,6 +4,7 @@ import type React from "react"
 import { UserHeader } from "@/components/UserHeader"
 import { Footer } from "@/components/footer"
 import { useAuth } from "@/contexts/auth-context"
+import ApiService from "@/api/apiConfig";
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import {
@@ -23,13 +24,33 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 export default function ProfilePage() {
-  const { isLoggedIn, user, updateUser } = useAuth()
+  const { isLoggedIn, updateUser, user: authUser } = useAuth()
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const [user, setUser] = useState<any | null>(null)
+  const [userLoading, setUserLoading] = useState(true)
+  const [userError, setUserError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setUserLoading(true)
+      setUserError(null)
+      ApiService.getUserById(authUser?.userId || "")
+        .then((res) => {
+          setUser(res.user)
+          console.log("USER DATA:", res.user);
+          setUserLoading(false)
+        })
+        .catch((err) => {
+          setUserError(err.message)
+          setUserLoading(false)
+        })
+    }
+  }, [isLoggedIn, authUser?.userId])
   // Initialize form data with user data
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
@@ -61,6 +82,7 @@ export default function ProfilePage() {
     } else {
       // Update form data when user data is available
       if (user) {
+        console.log("USER DATA:", user);
         setFormData({
           firstName: user.firstName || "",
           lastName: user.lastName || "",
@@ -176,7 +198,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <UserHeader activePage="profile" />
+      <UserHeader user={user} />
 
       <main className="flex-1">
         {/* Header Section */}
@@ -568,7 +590,7 @@ export default function ProfilePage() {
                           <p className="text-sm text-gray-500">Organization</p>
                           <p className="font-medium">
                             {user.organizations.length > 0
-                              ? user.organizations.map(org => displayValue((org.organizationName ?? '').toString())).join(", ")
+                              ? user.organizations.map((org: any) => displayValue((org.organizationName ?? '').toString())).join(", ")
                               : "Not specified"}
                           </p>
                         </div>
@@ -644,7 +666,7 @@ export default function ProfilePage() {
                           <p className="text-sm text-gray-500">Organizations</p>
                           <p className="font-medium">
                             {user.organizations.length > 0
-                              ? user.organizations.map(org => displayValue((org.organizationName ?? '').toString())).join(", ")
+                              ? user.organizations.map((org: any) => displayValue((org.organizationName ?? '').toString())).join(", ")
                               : "Not specified"}
                           </p>
                         </div>
