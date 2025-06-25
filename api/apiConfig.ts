@@ -13,7 +13,7 @@ interface DecodedToken extends JwtPayload {
 class ApiService {
   static BASE_URL: string =
     process.env.NODE_ENV === "production"
-      ? "https://agrlink-backend.onrender.com/agritech/v1"
+      ? "https://giraffeeventsystem.onrender.com/api/v1"
       : "http://localhost:3000/api/v1";
 
   static getHeader(data?: any): Record<string, string> {
@@ -267,6 +267,23 @@ class ApiService {
       return response.data;
     } catch (error) {
       console.error("Error adding organization:", error);
+      throw error;
+    }
+  }
+
+  /** get venue by organization Id */
+  static async getVenueByOrganizationId(orgId: string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.BASE_URL}/organizations/${orgId}/venues`,
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching venues for organization with ID ${orgId}:`, error);
       throw error;
     }
   }
@@ -627,6 +644,36 @@ venueId: string, data: any): Promise<any> {
     }
   }
 
+  /* get available venue with request params startDate,endDate,startTime,endTime */
+  static async getAvailableVenues(
+    startDate: string,
+    endDate: string,
+    startTime: string,
+    endTime: string,
+    organizationId?: string
+  ): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.BASE_URL}/venue/available-venues`,
+        {
+          params: {
+            startDate,
+            endDate,
+            startTime,
+            endTime,
+            ...(organizationId ? { organizationId } : {})
+          },
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching available venues:", error);
+      throw error;
+    }
+  }
+
   /**************************************** */
 
             /** EVENT ******* */
@@ -647,6 +694,55 @@ venueId: string, data: any): Promise<any> {
       throw error;
     }
   }
+
+  /** Get all events */
+  static async getAllEvents(): Promise<any> {
+    try {
+      const response = await axios.get(`${this.BASE_URL}/event`, {
+        headers: this.getHeader(),
+         withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching all events:", error);
+      throw error;
+    }
+  }
+
+  /** Update event by ID */
+  static async updateEventById(eventId: string, data: any): Promise<any> {
+    try {
+      const response = await axios.put(
+        `${this.BASE_URL}/event/${eventId}`,
+        data,
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating event with ID ${eventId}:`, error);
+      throw error;
+    }
+  }
+
+  /** Get event by ID */
+  static async getEventById(eventId: string): Promise<any> {  
+    try {
+      const response = await axios.get(`${this.BASE_URL}/event/${eventId}`, {
+        headers: this.getHeader(),
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching event with ID ${eventId}:`, error);
+      throw error;
+    }
+  }
+
+
+
 
 }
 

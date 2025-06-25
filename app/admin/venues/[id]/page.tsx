@@ -179,7 +179,35 @@ export default function VenueDetailPage() {
               </p>
             </div>
             
-           
+            <div className="flex space-x-3">
+              <Button onClick={() => router.push(`/admin/venues/${venue.venueId}/edit`)}>
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Venue
+              </Button>
+              
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Venue</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete "{venue.venueName}"? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">
+                      Delete Venue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
         </div>
 
