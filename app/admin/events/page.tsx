@@ -32,9 +32,11 @@ import ApiService from "@/api/apiConfig"
 import { jwtDecode, JwtPayload } from "jwt-decode"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useUserOrganizations } from "@/hooks/useUserOrganizations"
+import { useToast } from "@/hooks/use-toast"
 
 export default function AdminEvents() {
   const router = useRouter()
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState("all")
@@ -105,12 +107,25 @@ export default function AdminEvents() {
 
   const handleAdd = async (data: any) => {
     setLoading(true)
-    // TODO: Add event logic
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      const response = await ApiService.createEvent(data)
+      toast({
+        title: "Event Created",
+        description: "The event was created successfully.",
+      })
       setAddOpen(false)
-      // Optionally update event list
-    }, 1000)
+      // Refresh event list after creation
+      const updatedEvents = await ApiService.getAllEvents()
+      setEvents(updatedEvents)
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to create event.",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
   }
   const handleEdit = async (data: any) => {
     setLoading(true)
@@ -565,14 +580,12 @@ function EventForm({ initialData, onSubmit, loading, mode }: {
       maxAttendees: Number(eventDetails.maxAttendees),
       isFeatured: !!eventDetails.isFeatured,
       qrCode: eventDetails.qrCode,
-      imageURL: eventDetails.imageURL,
+     // imageURL: eventDetails.imageURL,
       venueOrganizationId,
       venues: selectedVenues,
     }
-    console.log("PAYLOAD:", payload);
+    console.log('Submitted event payload:', payload)
     onSubmit(payload)
-    const response = await ApiService.createEvent(payload)
-    console.log("RESPONSE:", response);
   }
 
   // Render step content
