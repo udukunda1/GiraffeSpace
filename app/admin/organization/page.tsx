@@ -15,6 +15,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
@@ -30,16 +31,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
+import { toast } from "sonner"
 import ApiService from "@/api/apiConfig"
 
 // Define TypeScript interfaces for better type safety
 interface Organization {
-  
   id: string;
+  organizationId?: string;
   organizationName: string;
-  type: string;
-  assigned?: string;
+  description: string;
   contactEmail: string;
+  contactPhone: string;
+  address: string;
+  organizationType: string;
   status: string;
   createdAt?: string;
   updatedAt?: string;
@@ -48,9 +52,11 @@ interface Organization {
 interface RawOrganization {
   id?: string;
   organizationName?: string;
-  type?: string;
-  assigned?: string;
+  description?: string;
   contactEmail?: string;
+  contactPhone?: string;
+  address?: string;
+  organizationType?: string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -64,9 +70,11 @@ function OrganizationForm({ initialData, onSubmit, loading, mode }: {
 }) {
   const [form, setForm] = useState({
     organizationName: initialData?.organizationName || '',
-    type: initialData?.type || '',
-    assigned: initialData?.assigned || '',
+    description: initialData?.description || '',
     contactEmail: initialData?.contactEmail || '',
+    contactPhone: initialData?.contactPhone || '',
+    address: initialData?.address || '',
+    organizationType: initialData?.organizationType || '',
     status: initialData?.status || 'Active',
   })
   const [error, setError] = useState<string | null>(null)
@@ -79,6 +87,10 @@ function OrganizationForm({ initialData, onSubmit, loading, mode }: {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    
+    // Debug: Log the form data being sent
+    console.log("Organization form data:", form)
+    
     onSubmit(form)
   }
 
@@ -93,6 +105,18 @@ function OrganizationForm({ initialData, onSubmit, loading, mode }: {
               name="organizationName" 
               value={form.organizationName} 
               onChange={handleChange} 
+              placeholder="Enter organization name"
+              required 
+            />
+          </div>
+          <div>
+            <Label htmlFor="description">Description</Label>
+            <Input 
+              id="description" 
+              name="description" 
+              value={form.description} 
+              onChange={handleChange} 
+              placeholder="Enter organization description"
               required 
             />
           </div>
@@ -104,32 +128,44 @@ function OrganizationForm({ initialData, onSubmit, loading, mode }: {
               type="email" 
               value={form.contactEmail} 
               onChange={handleChange} 
+              placeholder="Enter contact email"
               required 
             />
           </div>
         </div>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="type">Organization Type</Label>
-            <Select value={form.type} onValueChange={val => setForm(f => ({ ...f, type: val }))} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Event">Event</SelectItem>
-                <SelectItem value="Venue">Venue</SelectItem>
-                <SelectItem value="Both">Both</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="contactPhone">Contact Phone</Label>
+            <Input 
+              id="contactPhone" 
+              name="contactPhone" 
+              type="tel" 
+              value={form.contactPhone} 
+              onChange={handleChange} 
+              placeholder="Enter contact phone"
+              required 
+            />
           </div>
           <div>
-            <Label htmlFor="assigned">Assigned To</Label>
+            <Label htmlFor="address">Address</Label>
             <Input 
-              id="assigned" 
-              name="assigned" 
-              placeholder="Event or Venue name" 
-              value={form.assigned} 
+              id="address" 
+              name="address" 
+              value={form.address} 
               onChange={handleChange} 
+              placeholder="Enter organization address"
+              required 
+            />
+          </div>
+          <div>
+            <Label htmlFor="organizationType">Organization Type</Label>
+            <Input 
+              id="organizationType" 
+              name="organizationType" 
+              value={form.organizationType} 
+              onChange={handleChange} 
+              placeholder="Enter organization type (e.g., Event Management, Technology, etc.)"
+              required 
             />
           </div>
           <div>
@@ -149,10 +185,17 @@ function OrganizationForm({ initialData, onSubmit, loading, mode }: {
       {error && <div className="text-red-600 text-sm">{error}</div>}
       <DialogFooter>
         <DialogClose asChild>
-          <Button type="button" variant="outline">Cancel</Button>
+          <Button type="button" variant="outline" disabled={loading}>Cancel</Button>
         </DialogClose>
         <Button type="submit" disabled={loading}>
-          {loading ? (mode === 'add' ? 'Creating...' : 'Saving...') : (mode === 'add' ? 'Create Organization' : 'Save Changes')}
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              {mode === 'add' ? 'Creating...' : 'Saving...'}
+            </>
+          ) : (
+            mode === 'add' ? 'Create Organization' : 'Save Changes'
+          )}
         </Button>
       </DialogFooter>
     </form>
@@ -181,7 +224,10 @@ export default function AdminOrganization() {
         setLoading(true)
         setError(null)
         const response = await ApiService.getAllOrganization()
+        console.log("API Response for getAllOrganization:", response)
+        console.log("Organizations data:", response?.data)
         if (response && response.success) {
+          console.log("First organization structure:", response.data?.[0])
           setOrganizations(response.data || [])
         } else {
           setOrganizations([])
@@ -222,11 +268,13 @@ export default function AdminOrganization() {
 
   // Ensure organizations data is properly typed and has default values
   const safeOrganizations: Organization[] = organizations.map((org, index) => ({
-    id: org.id || `temp-${index}-${Date.now()}`,
+    id: org.organizationId || org.id || '',
     organizationName: org.organizationName || '',
-    type: org.type || 'Event',
-    assigned: org.assigned || '',
+    description: org.description || '',
     contactEmail: org.contactEmail || '',
+    contactPhone: org.contactPhone || '',
+    address: org.address || '',
+    organizationType: org.organizationType || 'Event Management',
     status: org.status || 'Active',
     createdAt: org.createdAt || new Date().toISOString(),
     updatedAt: org.updatedAt || new Date().toISOString()
@@ -237,22 +285,24 @@ export default function AdminOrganization() {
     totalOrganizations: safeOrganizations.length,
     active: safeOrganizations.filter(o => o.status === "Active").length,
     inactive: safeOrganizations.filter(o => o.status === "Inactive").length,
-    eventAssigned: safeOrganizations.filter(o => o.type === "Event").length,
-    venueAssigned: safeOrganizations.filter(o => o.type === "Venue").length,
+    eventAssigned: safeOrganizations.filter(o => o.organizationType === "Event Management").length,
+    venueAssigned: safeOrganizations.filter(o => o.organizationType === "Venue Management").length,
   }
 
   // Get unique types with safe handling
-  const uniqueTypes = Array.from(new Set(safeOrganizations.map(org => org.type)))
+  const uniqueTypes = Array.from(new Set(safeOrganizations.map(org => org.organizationType)))
 
   // Filter organizations with safe string comparisons
   const filteredOrganizations = safeOrganizations.filter(org => {
     const searchString = searchQuery.toLowerCase()
     const matchesSearch = 
       (org.organizationName?.toLowerCase() || '').includes(searchString) ||
-      (org.assigned?.toLowerCase() || '').includes(searchString) ||
-      (org.contactEmail?.toLowerCase() || '').includes(searchString)
+      (org.description?.toLowerCase() || '').includes(searchString) ||
+      (org.contactEmail?.toLowerCase() || '').includes(searchString) ||
+      (org.contactPhone?.toLowerCase() || '').includes(searchString) ||
+      (org.address?.toLowerCase() || '').includes(searchString)
     
-    const matchesType = filterType === "all" || org.type === filterType
+    const matchesType = filterType === "all" || org.organizationType === filterType
     const matchesStatus = filterStatus === "all" || org.status === filterStatus
     
     return matchesSearch && matchesType && matchesStatus
@@ -267,7 +317,15 @@ export default function AdminOrganization() {
   const handleAdd = async (data: any) => {
     try {
       setLoading(true)
+      
+      // Debug: Log the data being sent to API
+      console.log("Data being sent to API:", data)
+      
       const response = await ApiService.addOrganization(data)
+      
+      // Debug: Log the API response
+      console.log("API Response suceess :", response)
+      
       if (response && response.success) {
         // Refresh the organizations list
         const updatedResponse = await ApiService.getAllOrganization()
@@ -275,11 +333,31 @@ export default function AdminOrganization() {
           setOrganizations(updatedResponse.data || [])
         }
         setAddOpen(false)
+        toast.success("Organization created successfully!")
       } else {
-        setError(response?.error || 'Failed to create organization')
+        const errorMessage = response?.error || 'Failed to create organization'
+        toast.error(errorMessage)
+        setError(errorMessage)
       }
-    } catch (error) {
-      setError('Failed to create organization')
+    } catch (error: any) {
+      // Handle axios error response
+      console.log("Caught error:", error)
+      console.log("Error response data:", error.response?.data)
+      
+      if (error.response?.data) {
+        const errorData = error.response.data
+        const errorMessage = errorData.message || "Failed to create organization"
+        
+        // Log the full error details
+        console.log("Error data:", errorData)
+        
+        toast.error(errorMessage)
+        setError(errorMessage)
+      } else {
+        const genericError = "Failed to create organization. Please try again."
+        toast.error(genericError)
+        setError(genericError)
+      }
       console.error('Error creating organization:', error)
     } finally {
       setLoading(false)
@@ -315,6 +393,11 @@ export default function AdminOrganization() {
 
   const handleDelete = async (orgId: string) => {
     try {
+      if (!orgId || orgId === 'undefined' || orgId === 'null') {
+        toast.error("Invalid organization ID");
+        return;
+      }
+      
       setLoading(true)
       const response = await ApiService.deleteOrganization(orgId)
       if (response && response.success) {
@@ -324,11 +407,24 @@ export default function AdminOrganization() {
           setOrganizations(updatedResponse.data || [])
         }
         setDeleteOrgId(null)
+        toast.success("Organization deleted successfully!")
       } else {
-        setError(response?.error || 'Failed to delete organization')
+        const errorMessage = response?.error || 'Failed to delete organization'
+        toast.error(errorMessage)
+        setError(errorMessage)
       }
-    } catch (error) {
-      setError('Failed to delete organization')
+    } catch (error: any) {
+      // Handle axios error response
+      if (error.response?.data) {
+        const errorData = error.response.data
+        const errorMessage = errorData.message || "Failed to delete organization"
+        toast.error(errorMessage)
+        setError(errorMessage)
+      } else {
+        const genericError = "Failed to delete organization. Please try again."
+        toast.error(genericError)
+        setError(genericError)
+      }
       console.error('Error deleting organization:', error)
     } finally {
       setLoading(false)
@@ -353,6 +449,9 @@ export default function AdminOrganization() {
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>Add New Organization</DialogTitle>
+                      <DialogDescription>
+                        Enter the details for the new organization.
+                      </DialogDescription>
                     </DialogHeader>
                     <OrganizationForm mode="add" loading={loading} onSubmit={handleAdd} />
                   </DialogContent>
@@ -466,7 +565,6 @@ export default function AdminOrganization() {
                         <TableRow>
                           <TableHead>Name</TableHead>
                           <TableHead>Type</TableHead>
-                          <TableHead>Assigned</TableHead>
                           <TableHead>Contact</TableHead>
                           <TableHead>Status</TableHead>
                           <TableHead className="text-right">Actions</TableHead>
@@ -475,7 +573,7 @@ export default function AdminOrganization() {
                       <TableBody>
                         {paginatedOrganizations.length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                            <TableCell colSpan={5} className="text-center py-8 text-gray-500">
                               No organizations found
                             </TableCell>
                           </TableRow>
@@ -484,11 +582,10 @@ export default function AdminOrganization() {
                             <TableRow key={org.id}>
                               <TableCell className="font-medium">{org.organizationName}</TableCell>
                               <TableCell>
-                                <Badge variant={org.type === "Event" ? "default" : "secondary"}>
-                                  {org.type}
+                                <Badge variant={org.organizationType === "Event Management" ? "default" : "secondary"}>
+                                  {org.organizationType}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{org.assigned || 'Not assigned'}</TableCell>
                               <TableCell>{org.contactEmail}</TableCell>
                               <TableCell>
                                 <Badge variant={org.status === "Active" ? "default" : "outline"}>
@@ -516,7 +613,6 @@ export default function AdminOrganization() {
                                       <Button 
                                         size="icon" 
                                         variant="destructive"
-                                        onClick={() => setDeleteOrgId(org.id)}
                                       >
                                         <Trash2 className="h-4 w-4" />
                                       </Button>

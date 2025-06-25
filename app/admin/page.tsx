@@ -23,7 +23,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     // Redirect if not logged in or not admin
-    if (!isLoggedIn || user?.role.roleName !== "ADMIN") {
+    if (!isLoggedIn || user?.roles.roleName !== "ADMIN") {
       router.push("/")
       return
     }
@@ -36,7 +36,7 @@ export default function AdminDashboard() {
   }, [isLoggedIn, user, router])
 
   // Don't render if not admin
-  if (!isLoggedIn || user?.role.roleName !== "ADMIN") {
+  if (!isLoggedIn || user?.roles.roleName !== "ADMIN") {
     return null
   }
 

@@ -29,9 +29,9 @@ class ApiService {
 
   /** Register a new user */
   static async registerUser(formData: UserFormData): Promise<UserApiResponse> {
-    console.log("hdtdrwywywuwuwiwqq");
+    // console.log("hdtdrwywywuwuwiwqq");
     try {
-      console.log("in try brock");
+      // console.log("in try brock");
       const response = await axios.post(
         `${this.BASE_URL}/users/auth/register`,
         formData,
@@ -187,7 +187,7 @@ class ApiService {
   static async deleteUser(userId: string): Promise<UserApiResponse> {
     try {
       const response = await axios.delete(
-        `${this.BASE_URL}/user/delete/${userId}`,
+        `${this.BASE_URL}/user/${userId}`,
         {
           headers: this.getHeader(),
           withCredentials: true, // Enable credentials
@@ -205,9 +205,12 @@ class ApiService {
   /** Add a new organization */
   static async addOrganization(orgData: any): Promise<any> {
     try {
+      const requestData = { organizations: [orgData] }; // Try with organizations field
+      
+      
       const response = await axios.post(
-        `${this.BASE_URL}/organizations`,
-        orgData,
+        `${this.BASE_URL}/organizations/bulk`,
+        requestData,
         {
           headers: this.getHeader(orgData),
           withCredentials: true,
@@ -285,13 +288,13 @@ class ApiService {
     }
   }
 
-  //**** AMENITIES ROUTE *** */
+  //**** RESOURCE ROUTE *** */
 
-  /** Get all amenities */
-  static async getAllAmenities(): Promise<any> {
+  /** Get all resources */
+  static async getAllResource(): Promise<any> {
     try {
       const response = await axios.get(
-        `${this.BASE_URL}/amenities`,
+        `${this.BASE_URL}/resources/find-all`,
         {
           headers: this.getHeader(),
           withCredentials: true,
@@ -299,29 +302,87 @@ class ApiService {
       );
       return response.data;
     } catch (error) {
-      console.error("Error fetching amenities:", error);
+      console.error("Error fetching resources:", error);
       throw error;
     }
   }
 
-  /** Add a new amenity */
-  static async addAmenity(amenityData: { name: string }): Promise<any> {
+  /** Add a new resource */
+  static async addResource(resourceData: { 
+    resourceName: string;
+    description: string;
+    costPerUnit: number;
+    quantity: number;
+  }): Promise<any> {
     try {
       const response = await axios.post(
-        `${this.BASE_URL}/amenities`,
-        amenityData,
+        `${this.BASE_URL}/resources/create-resource`,
+        resourceData,
         {
-          headers: this.getHeader(amenityData),
+          headers: this.getHeader(resourceData),
           withCredentials: true,
         }
       );
       return response.data;
     } catch (error) {
-      console.error("Error adding amenity:", error);
+      console.error("Error adding resource:", error);
       throw error;
     }
   }
 
+  /** Get resource by ID */
+  static async getResourceById(resourceId: string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.BASE_URL}/resources/find-one/${resourceId}`,
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching resource with ID ${resourceId}:`, error);
+      throw error;
+    }
+  }
+
+  /** Update resource by ID */
+  static async updateResourceById(resourceId: string, resourceData: any): Promise<any> {
+    try {
+      const response = await axios.put(
+        `${this.BASE_URL}/resources/update-resource/${resourceId}`,
+        resourceData,
+        {
+          headers: this.getHeader(resourceData),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating resource with ID ${resourceId}:`, error);
+      throw error;
+    }
+  }
+
+  /** Delete resource */
+  static async deleteResource(resourceId: string): Promise<any> {
+    try {
+      const response = await axios.delete(
+        `${this.BASE_URL}/resources/delete-resource/${resourceId}`,
+        {
+          headers: this.getHeader(),
+          withCredentials: true,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting resource with ID ${resourceId}:`, error);
+      throw error;
+    }
+  }
+
+  //**** AMENITIES ROUTE *** */
 
   /** Add user to organization */
   static async addUserToOrganization(userId: string, orgId: string): Promise<any> {
@@ -496,7 +557,7 @@ static async removeVenueFromOrganization(
 
   /** Update venue by ID */
   static async updateVenueById(
-    venueId: string): Promise<any> {  
+venueId: string, data: any): Promise<any> {  
     try {
       const response = await axios.put(
         `${this.BASE_URL}/venue/update/${venueId}`,
