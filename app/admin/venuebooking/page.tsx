@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -19,14 +19,18 @@ import {
   DialogClose,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-
-// Mock venue booking data
-const bookings = [
-  { id: "1", venue: "Venue X", user: "Alice", date: "2024-06-10", status: "Confirmed" },
-  { id: "2", venue: "Venue Y", user: "Bob", date: "2024-06-12", status: "Pending" },
-  { id: "3", venue: "Venue Z", user: "Charlie", date: "2024-06-15", status: "Cancelled" },
-  { id: "4", venue: "Venue X", user: "Diana", date: "2024-06-18", status: "Confirmed" },
-]
+import ApiService from "@/api/apiConfig"
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog"
 
 function VenueBookingForm({ initialData, onSubmit, loading, mode }: {
   initialData?: any,
@@ -89,6 +93,21 @@ export default function AdminVenueBooking() {
   const [editOpen, setEditOpen] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [editBooking, setEditBooking] = useState<any>(null)
+  const [bookings, setBookings] = useState<any[]>([])
+  const [fetching, setFetching] = useState(true)
+  const [fetchError, setFetchError] = useState<string | null>(null)
+  const [confirmDialog, setConfirmDialog] = useState<{ type: 'approve' | 'cancel', booking: any } | null>(null)
+
+  useEffect(() => {
+    setFetching(true)
+    setFetchError(null)
+    ApiService.getAllBookings()
+      .then(res => {
+        setBookings(Array.isArray(res) ? res : (res.data || []))
+      })
+      .catch(() => setFetchError("Failed to load bookings."))
+      .finally(() => setFetching(false))
+  }, [])
 
   // Statistics
   const stats = {
@@ -100,7 +119,7 @@ export default function AdminVenueBooking() {
 
   // Filtered bookings
   const filteredBookings = bookings.filter(booking => {
-    const matchesSearch = booking.venue.toLowerCase().includes(searchQuery.toLowerCase()) || booking.user.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch = (booking.venue?.toLowerCase?.() || "").includes(searchQuery.toLowerCase()) || (booking.user?.toLowerCase?.() || "").includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === "all" || booking.status === filterStatus
     return matchesSearch && matchesStatus
   })
@@ -128,6 +147,26 @@ export default function AdminVenueBooking() {
       setEditOpen(null)
       // Optionally update booking list
     }, 1000)
+  }
+
+  // Approve and Cancel handlers (implement API calls as needed)
+  const handleApprove = (booking: any) => {
+    setConfirmDialog({ type: 'approve', booking })
+  }
+  const handleCancel = (booking: any) => {
+    setConfirmDialog({ type: 'cancel', booking })
+  }
+  const handleConfirm = () => {
+    if (!confirmDialog) return
+    // TODO: Implement real API call here
+    if (confirmDialog.type === 'approve') {
+      // Approve logic
+      // Example: ApiService.approveBooking(confirmDialog.booking.bookingId)
+    } else {
+      // Cancel logic
+      // Example: ApiService.cancelBooking(confirmDialog.booking.bookingId)
+    }
+    setConfirmDialog(null)
   }
 
   return (
@@ -203,93 +242,163 @@ export default function AdminVenueBooking() {
                   <CardTitle>All Venue Bookings</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {/* Filters */}
-                  <div className="flex flex-col md:flex-row gap-4 mb-6">
-                    <div className="flex-1">
-                      <Input
-                        placeholder="Search by venue or user..."
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                        className="pl-8"
-                      />
+                  {fetching ? (
+                    <div className="text-center py-8">Loading bookings...</div>
+                  ) : fetchError ? (
+                    <div className="text-center text-red-500 py-8">{fetchError}</div>
+                  ) : (
+                    <>
+                    {/* Filters */}
+                    <div className="flex flex-col md:flex-row gap-4 mb-6">
+                      <div className="flex-1">
+                        <Input
+                          placeholder="Search by venue or user..."
+                          value={searchQuery}
+                          onChange={e => setSearchQuery(e.target.value)}
+                          className="pl-8"
+                        />
+                      </div>
+                      <Select value={filterStatus} onValueChange={setFilterStatus}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="Confirmed">Confirmed</SelectItem>
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <Select value={filterStatus} onValueChange={setFilterStatus}>
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="Confirmed">Confirmed</SelectItem>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="Cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {/* Table */}
-                  <div className="border rounded-md">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Venue</TableHead>
-                          <TableHead>User</TableHead>
-                          <TableHead>Date</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {paginatedBookings.length === 0 ? (
+                    {/* Table */}
+                    <div className="border rounded-md">
+                      <Table>
+                        <TableHeader>
                           <TableRow>
-                            <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                              No bookings found
-                            </TableCell>
+                            <TableHead>Venue</TableHead>
+                            <TableHead>User</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
-                        ) : (
-                          paginatedBookings.map((booking) => (
-                            <TableRow key={booking.id}>
-                              <TableCell>{booking.venue}</TableCell>
-                              <TableCell>{booking.user}</TableCell>
-                              <TableCell>{booking.date}</TableCell>
-                              <TableCell>
-                                <Badge variant={booking.status === "Confirmed" ? "default" : booking.status === "Pending" ? "secondary" : "outline"}>
-                                  {booking.status}
-                                </Badge>
-                              </TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex space-x-2">
-                                  <Button size="icon" variant="outline" onClick={() => router.push(`/admin/venuebooking/${booking.id}`)}>
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button size="icon" variant="outline" onClick={() => { setEditBooking(booking); setEditOpen(booking.id); }}>
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Dialog open={editOpen === booking.id} onOpenChange={open => { if (!open) setEditOpen(null); }}>
-                                    <DialogContent>
-                                      <DialogHeader>
-                                        <DialogTitle>Edit Booking</DialogTitle>
-                                      </DialogHeader>
-                                      <VenueBookingForm mode="edit" initialData={booking} loading={loading} onSubmit={handleEdit} />
-                                    </DialogContent>
-                                  </Dialog>
-                                  <Button size="icon" variant="destructive" onClick={() => { /* TODO: Implement delete functionality */ }}>
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
+                        </TableHeader>
+                        <TableBody>
+                          {paginatedBookings.length === 0 ? (
+                            <TableRow>
+                              <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                                No bookings found
                               </TableCell>
                             </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
-                  </div>
-                  {/* Pagination */}
-                  <div className="flex justify-end mt-4 space-x-2">
-                    <Button size="sm" variant="outline" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
-                    <span className="self-center">Page {currentPage} of {totalPages}</span>
-                    <Button size="sm" variant="outline" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
-                  </div>
+                          ) : (
+                            paginatedBookings.map((booking) => (
+                              <TableRow key={booking.id || booking.bookingId}>
+                                <TableCell>
+                                  {typeof booking.venue === 'object' && booking.venue !== null
+                                    ? booking.venue.venueName
+                                    : booking.venueName || booking.venue || ''}
+                                </TableCell>
+                                <TableCell>
+                                  {typeof booking.user === 'object' && booking.user !== null
+                                    ? booking.user.userName || booking.user.name || booking.user.email
+                                    : booking.userName || booking.user || ''}
+                                </TableCell>
+                                <TableCell>
+                                  {booking.createdAt
+                                    ? new Date(booking.createdAt).toLocaleString()
+                                    : booking.date || booking.bookingDate || ''}
+                                </TableCell>
+                                <TableCell>
+                                  <Badge variant={
+                                    (booking.approvalStatus === "confirmed" || booking.status === "Confirmed") ? "default" :
+                                    (booking.approvalStatus === "pending" || booking.status === "Pending") ? "secondary" :
+                                    "outline"
+                                  }>
+                                    {booking.approvalStatus || booking.status}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex justify-end gap-2">
+                                    {/* Details button always visible */}
+                                    <Button size="sm" variant="outline" onClick={() => router.push(`/admin/venuebooking/${booking.id || booking.bookingId}`)}>
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                    {/* Approve/Cancel only for pending bookings */}
+                                    {(booking.approvalStatus === 'pending') && (
+                                      <>
+                                        <Button size="sm" variant="outline" onClick={() => handleApprove(booking)}>
+                                          <CheckCircle className="h-4 w-4 text-green-600" />
+                                        </Button>
+                                        <Button size="sm" variant="outline" onClick={() => handleCancel(booking)}>
+                                          <XCircle className="h-4 w-4 text-red-600" />
+                                        </Button>
+                                      </>
+                                    )}
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    {/* Pagination */}
+                    <div className="flex justify-end mt-4 space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={safeCurrentPage === 1}
+                        onClick={() => setCurrentPage(safeCurrentPage - 1)}
+                      >
+                        Previous
+                      </Button>
+                      <span className="px-2 py-1 text-sm">
+                        Page {safeCurrentPage} of {totalPages}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={safeCurrentPage === totalPages}
+                        onClick={() => setCurrentPage(safeCurrentPage + 1)}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
+              {/* Edit Booking Dialog */}
+              {editBooking && (
+                <Dialog open={!!editOpen} onOpenChange={open => { if (!open) setEditOpen(null); }}>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Edit Booking</DialogTitle>
+                    </DialogHeader>
+                    <VenueBookingForm mode="edit" initialData={editBooking} loading={loading} onSubmit={handleEdit} />
+                  </DialogContent>
+                </Dialog>
+              )}
+              {/* Confirmation Dialog */}
+              {confirmDialog && (
+                <AlertDialog open onOpenChange={open => { if (!open) setConfirmDialog(null) }}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        {confirmDialog.type === 'approve' ? 'Approve Booking' : 'Cancel Booking'}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to {confirmDialog.type === 'approve' ? 'approve' : 'cancel'} this booking?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleConfirm} autoFocus>
+                        {confirmDialog.type === 'approve' ? 'Approve' : 'Cancel'}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </div>
           </div>
         </div>

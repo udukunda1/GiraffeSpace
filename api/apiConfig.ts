@@ -40,8 +40,8 @@ class ApiService {
           withCredentials: true, // Enable credentials
         }
       );
-      console.log("hdtdrwywywuwuwiwqq");
-      console.log("response", response.data);
+      // console.log("hdtdrwywywuwuwiwqq");
+      // console.log("response", response.data);
       return response.data;
     } catch (error) {
       console.error("Error signup:", error);
