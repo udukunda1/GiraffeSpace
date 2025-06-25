@@ -545,7 +545,7 @@ function EventForm({ initialData, onSubmit, loading, mode }: {
   }
 
   // Final submit
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validateStep()) {
       return
@@ -569,7 +569,10 @@ function EventForm({ initialData, onSubmit, loading, mode }: {
       venueOrganizationId,
       venues: selectedVenues,
     }
+    console.log("PAYLOAD:", payload);
     onSubmit(payload)
+    const response = await ApiService.createEvent(payload)
+    console.log("RESPONSE:", response);
   }
 
   // Render step content
@@ -816,7 +819,7 @@ function EventForm({ initialData, onSubmit, loading, mode }: {
                 {venueLoading && currentStep === 1 ? 'Loading Venues...' : 'Next'}
               </Button>
             ) : (
-              <Button type="submit" disabled={loading}>{loading ? (mode === 'add' ? 'Creating...' : 'Saving...') : (mode === 'add' ? 'Create Event' : 'Save Changes')}</Button>
+              <Button type="button" onClick={handleSubmit} disabled={loading}>{loading ? (mode === 'add' ? 'Creating...' : 'Saving...') : (mode === 'add' ? 'Create Event' : 'Save Changes')}</Button>
             )}
           </div>
         </div>
