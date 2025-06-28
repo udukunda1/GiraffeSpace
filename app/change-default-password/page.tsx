@@ -84,6 +84,7 @@ export default function ChangeDefaultPasswordPage() {
       }
     } else {
       setError("No token found. Please log in again.")
+      console.log("token", token)
       setIsLoading(false)
       return
     }
