@@ -37,7 +37,7 @@ export default function LoginDefaultPasswordPage() {
       const result = await loginWithDefaultPassword(email, password)
 
       if (result.success) {
-        // Redirect to email confirmation page instead of password change page
+        // Redirect to email confirmation page
         router.push("/email-confirmation")
       } else {
         setError(result.error || "Login failed. Please check your email and default password.")
