@@ -15,7 +15,7 @@ const DefaultPasswordAuthContext = createContext<DefaultPasswordAuthContextType 
 export function DefaultPasswordAuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("defaultPasswordToken")
+      return localStorage.getItem("token")
     }
     return null
   })
