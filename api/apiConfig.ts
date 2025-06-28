@@ -78,7 +78,7 @@ class ApiService {
         formData,
         {
           headers: this.getHeader(formData),
-          withCredentials: true, // Enable credentials
+           // Enable credentials
         }
       );
       return response.data;
