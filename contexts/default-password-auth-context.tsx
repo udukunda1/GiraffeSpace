@@ -6,31 +6,25 @@ import ApiService from "@/api/apiConfig"
 // Type for the context
 export type DefaultPasswordAuthContextType = {
   token: string | null
-  loginWithDefaultPassword: (email: string, password: string) => Promise<{ success: boolean; token?: string; error?: string }>
+  loginWithDefaultPassword: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => void
 }
 
 const DefaultPasswordAuthContext = createContext<DefaultPasswordAuthContextType | undefined>(undefined)
 
 export function DefaultPasswordAuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("token")
-    }
-    return null
-  })
+  const [token, setToken] = useState<string | null>(null)
 
   // Login with default password (calls a different API endpoint)
   const loginWithDefaultPassword = async (
     identifier: string,
     password: string
-  ): Promise<{ success: boolean; token?: string; error?: string }> => {
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       const response = await ApiService.loginUserDefaultPassword({ identifier, password })
-      if (response.success && response.resetToken) {
-        setToken(response.resetToken)
-        localStorage.setItem("token", response.resetToken)
-        return { success: true, token: response.resetToken }
+      if (response.success) {
+        // Don't store token or set it in state - just return success
+        return { success: true }
       } else {
         return { success: false, error: "Login failed." }
       }
