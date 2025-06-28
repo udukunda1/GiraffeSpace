@@ -27,10 +27,10 @@ export function DefaultPasswordAuthProvider({ children }: { children: ReactNode 
   ): Promise<{ success: boolean; token?: string; error?: string }> => {
     try {
       const response = await ApiService.loginUserDefaultPassword({ identifier, password })
-      if (response.success && response.token) {
-        setToken(response.token)
-        localStorage.setItem("token", response.token)
-        return { success: true, token: response.token }
+      if (response.success && response.resetToken) {
+        setToken(response.resetToken)
+        localStorage.setItem("token", response.resetToken)
+        return { success: true, token: response.resetToken }
       } else {
         return { success: false, error: "Login failed." }
       }
