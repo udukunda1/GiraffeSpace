@@ -13,7 +13,7 @@ interface DecodedToken extends JwtPayload {
 class ApiService {
   static BASE_URL: string =
     process.env.NODE_ENV === "production"
-      ? "https://giraffeeventsystem.onrender.com/api/v1"
+      ? "https://giraffe-event-system-latest-96mr.onrender.com/api/v1"
       : "http://localhost:3000/api/v1";
 
   static getHeader(data?: any): Record<string, string> {
