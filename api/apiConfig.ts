@@ -91,7 +91,7 @@ class ApiService {
   /** Login with default password (special endpoint) */
   static async loginUserDefaultPassword(
     formData: UserFormData
-  ): Promise<{ success: boolean; token?: string }> {
+  ): Promise<{ success: boolean; token?: string; resetToken?: string }> {
     console.log("hdtdrwywywuwuwiwqq");
     try {
       console.log("in try block");
@@ -104,7 +104,7 @@ class ApiService {
         }
       );
       console.log("response", response.data);
-      return { success: response.data.success, token: response.data.token };
+      return { success: response.data.success, token: response.data.token, resetToken: response.data.resetToken };
     } catch (error) {
       console.error("Error logging in with default password:", error);
       return { success: false };
