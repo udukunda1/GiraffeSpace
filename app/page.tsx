@@ -11,6 +11,7 @@ import { Container } from "@/components/container"
 import { Section } from "@/components/section"
 import { HeroSlideshow } from "@/components/hero-slideshow"
 import { events } from "@/data/events"
+import { getAvailableVenues } from "@/data/venues"
 import { useEffect, useState } from "react"
 
 export default function Home() {
@@ -38,6 +39,9 @@ export default function Home() {
 
   // Get first 3 events for upcoming events section
   const upcomingEvents = events.slice(0, 3)
+
+  // Get first 3 available venues for sample section
+  const availableVenues = getAvailableVenues().slice(0, 3)
 
   const formatEventDate = (eventDate: string, startTime: string, endTime: string) => {
     const date = new Date(eventDate).toLocaleDateString("en-US", {
@@ -89,10 +93,10 @@ export default function Home() {
                   }`}
                 >
                   <Button href="/venues" variant="primary">
-                    Manage Your Venue
+                    Booking Venue
                   </Button>
                   <Button href="/events" variant="outline">
-                    Manage Your Event
+                    Get Event
                   </Button>
                 </div>
               </div>
@@ -107,7 +111,73 @@ export default function Home() {
           </Container>
         </Section>
 
-        {/* Features Section */}
+        {/* Sample Available Venues Section */}
+        <Section background="gray">
+          <Container>
+            <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">Available Venues</h2>
+            <p className="text-center text-gray-600 mb-12">
+              Explore some of our top available venues for your next event.
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {availableVenues.map((venue) => (
+                <div key={venue.venueId} className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+                  {venue.imageSrc && (
+                    <img src={venue.imageSrc} alt={venue.venueName} className="w-full h-40 object-cover rounded mb-2" />
+                  )}
+                  <h3 className="text-lg font-semibold">{venue.venueName}</h3>
+                  <p className="text-gray-600 text-sm mb-2">{venue.location}</p>
+                  <p className="text-gray-500 text-xs mb-2">{venue.description?.slice(0, 80)}...</p>
+                  <a
+                    href={`/venues/${venue.venueId}`}
+                    className="mt-2 text-blue-600 hover:underline text-sm"
+                  >
+                    View Details
+                  </a>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-12">
+              <Button href="/venues" variant="outline">
+                View All Venue
+              </Button>
+            </div>
+          </Container>
+        </Section>
+
+        {/* Upcoming Events Section */}
+        <Section background="gray">
+          <Container>
+            <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">Upcoming Events</h2>
+            <p className="text-center text-gray-600 mb-12">
+              Discover and register for upcoming events at the University of Rwanda.
+            </p>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {upcomingEvents.map((event) => (
+                <EventCard
+                  key={event.eventId}
+                  id={event.eventId}
+                  title={event.eventTitle}
+                  type={event.eventType}
+                  typeColor={event.typeColor}
+                  date={formatEventDate(event.eventDate, event.eventStartTime, event.eventEndTime)}
+                  location={event.venue}
+                  registeredCount={event.registeredCount}
+                  imageSrc={event.imageURL}
+                  imageAlt={event.eventTitle}
+                />
+              ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <Button href="/events" variant="outline">
+                View All Events
+              </Button>
+            </div>
+          </Container>
+        </Section>
+
+               {/* Features Section */}
         <Section>
           <Container>
             <div className="text-center mb-12">
@@ -159,42 +229,8 @@ export default function Home() {
             </div>
           </Container>
         </Section>
-
-        {/* Upcoming Events Section */}
-        <Section background="gray">
-          <Container>
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">Upcoming Events</h2>
-            <p className="text-center text-gray-600 mb-12">
-              Discover and register for upcoming events at the University of Rwanda.
-            </p>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {upcomingEvents.map((event) => (
-                <EventCard
-                  key={event.eventId}
-                  id={event.eventId}
-                  title={event.eventTitle}
-                  type={event.eventType}
-                  typeColor={event.typeColor}
-                  date={formatEventDate(event.eventDate, event.eventStartTime, event.eventEndTime)}
-                  location={event.venue}
-                  registeredCount={event.registeredCount}
-                  imageSrc={event.imageURL}
-                  imageAlt={event.eventTitle}
-                />
-              ))}
-            </div>
-
-            <div className="text-center mt-12">
-              <Button href="/events" variant="outline">
-                View All Events
-              </Button>
-            </div>
-          </Container>
-        </Section>
-
-        {/* System Overview Section */}
-        <Section>
+                {/* System Overview Section */}
+                <Section>
           <Container>
             <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">System Overview</h2>
             <p className="text-center text-gray-600 mb-12">
