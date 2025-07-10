@@ -141,7 +141,6 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                     </span>
                   </div>
                 )}
-
                 {/* Photo Navigation */}
                 <button
                   onClick={prevPhoto}
@@ -270,6 +269,32 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                   </div>
                 )}
 
+                {/* Venue Location */}
+                <div className="mb-8">
+                  <h2 className="text-xl font-bold mb-4">Venue Location</h2>
+                  <div className="rounded-lg overflow-hidden border shadow-sm" style={{ height: 350 }}>
+                    <iframe
+                      title="Venue Location Map"
+                      width="100%"
+                      height="350"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      allowFullScreen
+                      referrerPolicy="no-referrer-when-downgrade"
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.478847756123!2d30.0600754!3d-1.9583425!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca539fce426b1%3A0x1e077dd0f5854efc!2sKigali%20Conference%20%26%20Exhibition%20Village!5e0!3m2!1sen!2srw!4v1709923456789!5m2!1sen!2srw"
+                    ></iframe>
+                  </div>
+                  <a
+                    href="https://www.google.com/maps/place/Kigali+Conference+%26+Exhibition+Village/@-1.9583425,30.0600754,805m/data=!3m2!1e3!4b1!4m6!3m5!1s0x19dca539fce426b1:0x1e077dd0f5854efc!8m2!3d-1.9583479!4d30.0626503!16s%2Fg%2F11fhk541tt?entry=ttu&g_ep=EgoyMDI1MDcwOC4wIKXMDSoASAFQAw%3D%3D"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium mt-2"
+                  >
+                    Open in Google Maps
+                    <ExternalLink className="h-4 w-4 ml-1" />
+                  </a>
+                </div>
+
                 {/* Amenities */}
                 <div className="mb-8">
                   <h2 className="text-xl font-bold mb-4">Amenities</h2>
@@ -280,6 +305,89 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                         <span className="text-gray-700">{amenity}</span>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* Booking Conditions */}
+                <div className="mb-8">
+                  <h2 className="text-xl font-bold mb-4">Booking Conditions & Policies</h2>
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <div className="space-y-6 text-gray-700">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3 text-lg">Cancellation Policy</h3>
+                        <div className="space-y-2">
+                          <p><strong>Free Cancellation:</strong> Up to 48 hours before the event date</p>
+                          <p><strong>Late Cancellation:</strong> 50% fee for cancellations within 48 hours</p>
+                          <p><strong>No-Show:</strong> Full charge applies for no-shows</p>
+                          <p><strong>Force Majeure:</strong> Full refund for events beyond our control</p>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3 text-lg">Payment Terms</h3>
+                        <div className="space-y-2">
+                          <p><strong>Deposit:</strong> 50% of total booking fee required upon confirmation</p>
+                          <p><strong>Final Payment:</strong> Remaining balance due 7 days before event</p>
+                          <p><strong>Payment Methods:</strong> Bank transfer, mobile money, or cash</p>
+                          <p><strong>Late Payment:</strong> 10% late fee applies after due date</p>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3 text-lg">Venue Rules & Regulations</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <h4 className="font-medium text-gray-800 mb-2">General Rules</h4>
+                            <ul className="list-disc list-inside space-y-1 text-sm">
+                              <li>No smoking inside the venue premises</li>
+                              <li>Maximum capacity must not be exceeded</li>
+                              <li>Setup and cleanup time included in booking</li>
+                              <li>External catering allowed with prior approval</li>
+                              <li>No pets allowed (except service animals)</li>
+                              <li>Quiet hours after 10:00 PM</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-gray-800 mb-2">Safety & Security</h4>
+                            <ul className="list-disc list-inside space-y-1 text-sm">
+                              <li>Fire safety equipment must not be tampered with</li>
+                              <li>Emergency exits must remain accessible</li>
+                              <li>Security deposit may be required for large events</li>
+                              <li>Venue staff must be notified of any incidents</li>
+                              <li>First aid kit available on premises</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3 text-lg">Insurance & Liability</h3>
+                        <div className="space-y-2">
+                          <p><strong>Event Liability Insurance:</strong> Strongly recommended for all bookings</p>
+                          <p><strong>Venue Insurance:</strong> Covers venue damage up to $10,000</p>
+                          <p><strong>Personal Property:</strong> Venue not responsible for personal items</p>
+                          <p><strong>Third-Party Vendors:</strong> Must provide their own insurance certificates</p>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-3 text-lg">Additional Services</h3>
+                        <div className="space-y-2">
+                          <p><strong>Setup Services:</strong> Available at additional cost</p>
+                          <p><strong>Cleaning Services:</strong> Post-event cleaning included</p>
+                          <p><strong>Technical Support:</strong> AV equipment support available</p>
+                          <p><strong>Parking:</strong> Free parking available for up to 50 vehicles</p>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                        <h4 className="font-semibold text-blue-900 mb-2">Important Notice</h4>
+                        <p className="text-blue-800 text-sm">
+                          By booking this venue, you agree to all terms and conditions outlined above. 
+                          Please read carefully and contact us if you have any questions about our policies.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
