@@ -11,10 +11,10 @@ interface DecodedToken extends JwtPayload {
 }
 
 class ApiService {
-  static BASE_URL: string =
-    process.env.NODE_ENV === "production"
-    ? "https://giraffeeventsystem.onrender.com/api/v1"
-    : "http://localhost:3000/api/v1";
+  static BASE_URL: string ="https://giraffespace.onrender.com/api/v1"
+    // process.env.NODE_ENV === "production"
+    // ? "https://giraffeeventsystem.onrender.com/api/v1"
+    // : "http://localhost:3000/api/v1";
 
   
 
