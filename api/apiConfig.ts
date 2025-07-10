@@ -13,7 +13,7 @@ interface DecodedToken extends JwtPayload {
 class ApiService {
   static BASE_URL: string =
     process.env.NODE_ENV === "production"
-      ? "https://giraffespace.onrender.com/api/v1"
+      ? "https://giraffeeventsystem.onrender.com/api/v1"
       : "http://localhost:3000/api/v1";
 
   
@@ -80,7 +80,7 @@ class ApiService {
         formData,
         {
           headers: this.getHeader(formData),
-          withCredentials: true, // Enable credentials
+           withCredentials: true // Enable credentials
         }
       );
       return response.data;
@@ -93,7 +93,7 @@ class ApiService {
   /** Login with default password (special endpoint) */
   static async loginUserDefaultPassword(
     formData: UserFormData
-  ): Promise<{ success: boolean; token?: string }> {
+  ): Promise<{ success: boolean; token?: string; resetToken?: string }> {
     console.log("hdtdrwywywuwuwiwqq");
     try {
       console.log("in try block");
@@ -106,7 +106,7 @@ class ApiService {
         }
       );
       console.log("response", response.data);
-      return { success: response.data.success, token: response.data.token };
+      return { success: response.data.success, token: response.data.token, resetToken: response.data.resetToken };
     } catch (error) {
       console.error("Error logging in with default password:", error);
       return { success: false };

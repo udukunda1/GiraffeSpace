@@ -37,8 +37,8 @@ export default function LoginDefaultPasswordPage() {
       const result = await loginWithDefaultPassword(email, password)
 
       if (result.success) {
-        // Redirect to password change page instead of home
-        router.push("/change-default-password")
+        // Redirect to email confirmation page
+        router.push("/email-confirmation")
       } else {
         setError(result.error || "Login failed. Please check your email and default password.")
       }
@@ -71,7 +71,7 @@ export default function LoginDefaultPasswordPage() {
             }`}
           >
             <h1 className="text-3xl font-bold mb-2">Login with Default Password</h1>
-            <p className="text-gray-600">Use the default password sent to your email to access your account</p>
+            <p className="text-gray-600">Use the default password sent to your email to access your account and receive a password reset link</p>
           </div>
 
           <div
@@ -175,17 +175,17 @@ export default function LoginDefaultPasswordPage() {
             </form>
 
             {/* Default Password Info */}
-            <div className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm font-medium text-blue-800 mb-2">Default Password Information:</p>
               <div className="text-xs text-blue-700 space-y-1">
                 <div>
                   • Check your email for the default password
                 </div>
                 <div>
-                  • After successful login, you'll be redirected to change your password
+                  • After successful login, you'll be redirected to check your email for a password reset link
                 </div>
                 <div>
-                  • You can change your password anytime in your account settings
+                  • Click the reset link in your email to set a new password
                 </div>
               </div>
             </div>

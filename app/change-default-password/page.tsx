@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Lock, AlertCircle, Eye, EyeOff, CheckCircle } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useDefaultPasswordAuth } from "@/contexts/default-password-auth-context"
 import { useState, useEffect } from "react"
 import axios from "axios"
@@ -12,8 +12,8 @@ import ApiService from "@/api/apiConfig"
 
 export default function ChangeDefaultPasswordPage() {
   const { token } = useDefaultPasswordAuth()
-  // console.log("token", token);
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -22,6 +22,28 @@ export default function ChangeDefaultPasswordPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [localToken, setLocalToken] = useState<string | null>(null)
+  const [tokenMissing, setTokenMissing] = useState(false)
+
+  // Extract token from URL and store in localStorage
+  useEffect(() => {
+    const tokenFromUrl = searchParams.get('token')
+    if (tokenFromUrl) {
+      // Store token in localStorage with name "token"
+      localStorage.setItem("token", tokenFromUrl)
+      setLocalToken(tokenFromUrl)
+      setTokenMissing(false)
+    } else {
+      // Check if token exists in localStorage
+      const storedToken = localStorage.getItem("token")
+      if (storedToken) {
+        setLocalToken(storedToken)
+        setTokenMissing(false)
+      } else {
+        setTokenMissing(true)
+      }
+    }
+  }, [searchParams])
 
   // Animation trigger
   useEffect(() => {
@@ -56,6 +78,14 @@ export default function ChangeDefaultPasswordPage() {
     setIsLoading(true)
     setError("")
 
+    // Check if we have a token (either from URL or localStorage)
+    const currentToken = localToken || localStorage.getItem("token")
+    if (!currentToken) {
+      setError("No valid token found. Please check your email link or try logging in again.")
+      setIsLoading(false)
+      return
+    }
+
     // Validate passwords match
     if (newPassword !== confirmPassword) {
       setError("New passwords do not match")
@@ -72,24 +102,20 @@ export default function ChangeDefaultPasswordPage() {
     }
 
     let result
-    if (token) {
-      try {
-        const response = await ApiService.resetDefaultPassword( {
-          confirm_password:confirmPassword,
-          password:newPassword
-        })
-        result = { success: true }
-      } catch (error: any) {
-        result = { success: false, error: error?.response?.data?.error || "Failed to update password. Please try again." }
-      }
-    } else {
-      setError("No token found. Please log in again.")
-      setIsLoading(false)
-      return
+    try {
+      const response = await ApiService.resetDefaultPassword({
+        confirm_password: confirmPassword,
+        password: newPassword
+      })
+      result = { success: true }
+    } catch (error: any) {
+      result = { success: false, error: error?.response?.data?.error || "Failed to update password. Please try again." }
     }
 
     if (result.success) {
       setSuccess(true)
+      // Clear the token from localStorage after successful password change
+      localStorage.removeItem("token")
       // Redirect to login after 3 seconds
       setTimeout(() => {
         router.push("/login")
@@ -117,6 +143,41 @@ export default function ChangeDefaultPasswordPage() {
             >
               Go to Login
             </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (tokenMissing) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center py-12 px-4 bg-gray-50">
+          <div className="w-full max-w-md text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="h-8 w-8 text-red-600" />
+            </div>
+            <h1 className="text-3xl font-bold mb-4 text-red-800">Invalid or Missing Token</h1>
+            <p className="text-gray-600 mb-6">
+              The password reset link appears to be invalid or has expired. Please check your email for a valid link or try requesting a new password reset.
+            </p>
+            <div className="space-y-3">
+              <Link
+                href="/login"
+                className="inline-block bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Go to Login
+              </Link>
+              <br />
+              <Link
+                href="/logindefaultpassword"
+                className="inline-block bg-gray-100 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-200 transition-colors"
+              >
+                Try Default Password Login
+              </Link>
+            </div>
           </div>
         </main>
         <Footer />
