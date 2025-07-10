@@ -60,7 +60,7 @@ export function Header({ activePage }: HeaderProps) {
   const userInitials = user ? `${user.username[0]}` : "U"
 
   return (
-    <header className="border-b">
+    <header className="border-b z-50 top-0 sticky bg-white shadow-sm">
       <div className="container mx-auto px-16 py-4 max-w-7xl flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8">

@@ -97,15 +97,15 @@ export default function AdminOverview() {
     totalEvents: events.length,
     totalVenues: venues.length,
     pendingApprovals: pendingEvents.length + pendingVenues.length,
-    activeEvents: events.filter((event) => event.status?.toUpperCase?.() === "ACTIVE").length,
-    completedEvents: events.filter((event) => event.status?.toUpperCase?.() === "COMPLETED").length,
+    approvedEvents: events.filter((event) => event.status?.toUpperCase?.() === "APPROVED").length,
+    approvedVenues: venues.filter((venue) => venue.status?.toUpperCase?.() === "APPROVED").length,
   }
 
   return (
     <div className="flex-1 p-8">
       <h2 className="text-2xl font-bold mb-4">Admin Overview</h2>
       {/* Statistics Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -143,10 +143,21 @@ export default function AdminOverview() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Active Events</p>
-                <p className="text-2xl font-bold">{stats.activeEvents}</p>
+                <p className="text-sm text-gray-600">Approved Events</p>
+                <p className="text-2xl font-bold">{stats.approvedEvents}</p>
               </div>
               <CheckCircle className="h-8 w-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Approved Venues</p>
+                <p className="text-2xl font-bold">{stats.approvedVenues}</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
           </CardContent>
         </Card>

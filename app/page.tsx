@@ -73,26 +73,26 @@ export default function Home() {
                     isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
                   }`}
                 >
-                  Events Management System
+                 Next-Gen Event And Venue Management System
                 </h1>
                 <p
                   className={`text-lg text-gray-600 transform transition-all duration-1000 ease-out delay-200 ${
                     isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
                   }`}
                 >
-                  A centralized platform for planning, organizing, and managing all types of events for your
-                  organization.
+           Empowering your organization to create, manage, and elevate every event and venue experience.
+
                 </p>
                 <div
                   className={`flex flex-wrap gap-4 transform transition-all duration-1000 ease-out delay-400 ${
                     isLoaded ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
                   }`}
                 >
-                  <Button href="/events" variant="primary">
-                    Browse Events
+                  <Button href="/venues" variant="primary">
+                    Manage Your Venue
                   </Button>
-                  <Button href="/events/create" variant="outline">
-                    Create Event
+                  <Button href="/events" variant="outline">
+                    Manage Your Event
                   </Button>
                 </div>
               </div>

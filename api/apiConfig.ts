@@ -13,8 +13,10 @@ interface DecodedToken extends JwtPayload {
 class ApiService {
   static BASE_URL: string =
     process.env.NODE_ENV === "production"
-      ? "https://giraffeeventsystem.onrender.com/api/v1"
+      ? "https://giraffespace.onrender.com/api/v1"
       : "http://localhost:3000/api/v1";
+
+  
 
   static getHeader(data?: any): Record<string, string> {
     const token = localStorage.getItem("token");
@@ -187,7 +189,7 @@ class ApiService {
   static async deleteUser(userId: string): Promise<UserApiResponse> {
     try {
       const response = await axios.delete(
-        `${this.BASE_URL}/user/${userId}`,
+        `${this.BASE_URL}/users/${userId}`,
         {
           headers: this.getHeader(),
           withCredentials: true, // Enable credentials
@@ -422,23 +424,7 @@ class ApiService {
 
 /**** VENUES**** */
 
-/** add new venues */
-static async addNewVenue(venueData: any): Promise<any> {
-  try { 
-    const response = await axios.post(
-      `${this.BASE_URL}/venue/add`,
-      venueData,
-      {
-        headers: this.getHeader(venueData),
-        withCredentials: true,
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error adding new venue:", error);        
-    throw error;
-  }
-} 
+
 
   /** add venue to organization */
 
@@ -679,9 +665,9 @@ venueId: string, data: any): Promise<any> {
   /** Aprove venue */
   static async approveVenue(venueId: string): Promise<any> {
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `${this.BASE_URL}/venue/approve/${venueId}`,
-        {},
+        
         {
           headers: this.getHeader(),
           withCredentials: true,
