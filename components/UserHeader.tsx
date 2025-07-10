@@ -37,8 +37,9 @@ export function UserHeader({user}: {user: any}) {
     router.push("/")
   }
 
-  const userDisplayName = user ? `${user.firstName} ${user.lastName}` : "User"
-  const userInitials = user ? `${user.firstName[0]}${user.lastName[0]}` : "U"
+  const showLoggedIn = mounted && isLoggedIn
+  const userDisplayName = user ? `${user.username}` : "User"
+  const userInitials = user ? `${user.username[0]}` : "U"
 
   return (
     <header className="fixed top-0 left-0 w-full z-30 border-b bg-white">
