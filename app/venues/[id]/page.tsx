@@ -21,6 +21,8 @@ import { Footer } from "@/components/footer"
 import { getVenueById } from "@/data/venues"
 import { notFound } from "next/navigation"
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import BookingForm from "../BookingForm"
+import React from "react"
 
 export default function VenuePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -54,6 +56,8 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("")
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+  const [hoveredDate, setHoveredDate] = useState<Date | null>(null)
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
 
   // Sample photos for the gallery (in real app, these would come from venue data)
   const photos = [
@@ -73,6 +77,93 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
 
   const availableDates = getAvailableDates()
 
+  // Handle mouse events for calendar hover
+  const handleCalendarMouseMove = (event: React.MouseEvent) => {
+    // For now, disable hover tooltip as it's not working with this calendar component
+    // We'll focus on the click-based detailed view instead
+  }
+
+  const handleCalendarMouseLeave = () => {
+    setHoveredDate(null)
+  }
+
+  // Get all time slots for a specific date (both available and booked)
+  const getAllTimeSlotsForDate = (date: Date) => {
+    const dateStr = date.toISOString().split("T")[0]
+    const matchingDay = venue.availability?.find(
+      (day) => new Date(day.date).toISOString().split("T")[0] === dateStr,
+    )
+    
+    if (matchingDay) {
+      return matchingDay.timeSlots
+    }
+    
+    // If no specific data for this date, return default time slots
+    return [
+      "09:00 AM - 11:00 AM",
+      "11:00 AM - 01:00 PM", 
+      "02:00 PM - 04:00 PM",
+      "04:00 PM - 06:00 PM",
+      "06:00 PM - 08:00 PM",
+      "08:00 PM - 10:00 PM"
+    ]
+  }
+
+  // Get booked time slots for a specific date
+  const getBookedTimeSlotsForDate = (date: Date) => {
+    const dateStr = date.toISOString().split("T")[0]
+    // Mock booked slots - in real app, this would come from booking data
+    const mockBookedSlots: { [key: string]: string[] } = {
+      // January 2025 - Various booking scenarios
+      "2025-01-03": ["09:00 AM - 11:00 AM", "02:00 PM - 04:00 PM"], // Partially booked
+      "2025-01-05": ["06:00 PM - 08:00 PM"], // Partially booked
+      "2025-01-08": ["11:00 AM - 01:00 PM", "04:00 PM - 06:00 PM", "08:00 PM - 10:00 PM"], // Partially booked
+      "2025-01-10": ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"], // Fully booked
+      "2025-01-12": ["09:00 AM - 11:00 AM", "02:00 PM - 04:00 PM", "06:00 PM - 08:00 PM"], // Partially booked
+      "2025-01-15": ["11:00 AM - 01:00 PM", "04:00 PM - 06:00 PM"], // Partially booked
+      "2025-01-17": ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"], // Fully booked
+      "2025-01-20": ["06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"], // Partially booked
+      "2025-01-22": ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM"], // Partially booked
+      "2025-01-25": ["04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"], // Partially booked
+      "2025-01-27": ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM", "04:00 PM - 06:00 PM", "06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"], // Fully booked
+      "2025-01-29": ["11:00 AM - 01:00 PM"], // Partially booked
+      "2025-01-31": ["09:00 AM - 11:00 AM", "02:00 PM - 04:00 PM", "06:00 PM - 08:00 PM"], // Partially booked
+      // Additional partial booking scenarios
+      "2025-01-02": ["09:00 AM - 11:00 AM"], // Early morning only
+      "2025-01-04": ["08:00 PM - 10:00 PM"], // Late evening only
+      "2025-01-06": ["11:00 AM - 01:00 PM", "06:00 PM - 08:00 PM"], // Lunch and dinner
+      "2025-01-07": ["09:00 AM - 11:00 AM", "04:00 PM - 06:00 PM"], // Morning and afternoon
+      "2025-01-09": ["02:00 PM - 04:00 PM", "08:00 PM - 10:00 PM"], // Afternoon and evening
+      "2025-01-11": ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "06:00 PM - 08:00 PM"], // Morning, lunch, dinner
+      "2025-01-13": ["04:00 PM - 06:00 PM"], // Afternoon only
+      "2025-01-14": ["09:00 AM - 11:00 AM", "08:00 PM - 10:00 PM"], // Morning and late evening
+      "2025-01-16": ["11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM", "06:00 PM - 08:00 PM"], // Lunch, afternoon, dinner
+      "2025-01-18": ["09:00 AM - 11:00 AM", "04:00 PM - 06:00 PM"], // Morning and afternoon
+      "2025-01-19": ["06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM"], // Evening slots only
+      "2025-01-21": ["11:00 AM - 01:00 PM", "02:00 PM - 04:00 PM"], // Lunch and afternoon
+      "2025-01-23": ["09:00 AM - 11:00 AM", "06:00 PM - 08:00 PM"], // Morning and dinner
+      "2025-01-24": ["04:00 PM - 06:00 PM", "08:00 PM - 10:00 PM"], // Afternoon and evening
+      "2025-01-26": ["09:00 AM - 11:00 AM", "11:00 AM - 01:00 PM", "04:00 PM - 06:00 PM"], // Morning, lunch, afternoon
+      "2025-01-28": ["02:00 PM - 04:00 PM", "06:00 PM - 08:00 PM"], // Afternoon and dinner
+      "2025-01-30": ["09:00 AM - 11:00 AM", "08:00 PM - 10:00 PM"], // Morning and late evening
+    }
+    return (mockBookedSlots as any)[dateStr] || []
+  }
+
+  // Check if a date is fully booked
+  const isDateFullyBooked = (date: Date) => {
+    const allSlots = getAllTimeSlotsForDate(date)
+    const bookedSlots = getBookedTimeSlotsForDate(date)
+    return bookedSlots.length === allSlots.length
+  }
+
+  // Check if a date is partially booked
+  const isDatePartiallyBooked = (date: Date) => {
+    const allSlots = getAllTimeSlotsForDate(date)
+    const bookedSlots = getBookedTimeSlotsForDate(date)
+    return bookedSlots.length > 0 && bookedSlots.length < allSlots.length
+  }
+
   // Generate time slots based on selected date
   const getTimeSlots = () => {
     if (!selectedDate || !venue.availability) return []
@@ -80,7 +171,25 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
     const matchingDay = venue.availability.find(
       (day) => new Date(day.date).toISOString().split("T")[0] === selectedDateStr,
     )
-    return matchingDay ? matchingDay.timeSlots : []
+    
+    if (matchingDay) {
+      const allSlots = matchingDay.timeSlots
+      const bookedSlots = getBookedTimeSlotsForDate(selectedDate)
+      // Return only available (not booked) slots
+      return allSlots.filter(slot => !bookedSlots.includes(slot))
+    }
+    
+    // If no specific data, return default slots minus booked ones
+    const defaultSlots = [
+      "09:00 AM - 11:00 AM",
+      "11:00 AM - 01:00 PM", 
+      "02:00 PM - 04:00 PM",
+      "04:00 PM - 06:00 PM",
+      "06:00 PM - 08:00 PM",
+      "08:00 PM - 10:00 PM"
+    ]
+    const bookedSlots = getBookedTimeSlotsForDate(selectedDate)
+    return defaultSlots.filter(slot => !bookedSlots.includes(slot))
   }
 
   const timeSlots = getTimeSlots()
@@ -96,7 +205,8 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
   }
 
   const isDateAvailable = (date: Date) => {
-    return availableDates.some((availableDate) => availableDate.toDateString() === date.toDateString())
+    // Make all dates available and clickable
+    return true
   }
 
   // Get the number of time slots for a specific date
@@ -106,6 +216,13 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
     const matchingDay = venue.availability.find((day) => new Date(day.date).toISOString().split("T")[0] === dateStr)
     return matchingDay ? matchingDay.timeSlots.length : 0
   }
+
+  // Check if a date is booked by others
+  const isDateBookedByOthers = (date: Date) => {
+    const allSlots = getAllTimeSlotsForDate(date);
+    const bookedSlots = getBookedTimeSlotsForDate(date);
+    return bookedSlots.length === allSlots.length;
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -441,49 +558,198 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                         <Calendar className="h-5 w-5 mr-2 text-blue-600" />
                         Select a Date
                       </h3>
+                      <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                            <div className="text-sm text-yellow-800">
+                              <strong>Tip:</strong> Click on any date to see available time slots in the booking form.
+                            </div>
+                          </div>
                       <div className="bg-white p-4 rounded-lg border">
-                        <CalendarComponent
-                          numberOfMonths={2}
-                          mode="single"
-                          selected={selectedDate}
-                          onSelect={setSelectedDate}
-                          disabled={(date) => {
-                            const today = new Date()
-                            today.setHours(0, 0, 0, 0)
-                            return date < today || !isDateAvailable(date)
-                          }}
-                          fromDate={new Date()}
-                          className="rounded-md"
-                          modifiers={{
-                            available: (date) => isDateAvailable(date),
-                            selected: (date) => selectedDate?.toDateString() === date.toDateString(),
-                          }}
-                          modifiersStyles={{
-                            available: {
-                              backgroundColor: "#dbeafe",
-                              color: "#1d4ed8",
-                              fontWeight: "bold",
-                              borderRadius: "6px",
-                            },
-                            selected: {
-                              backgroundColor: "#2563eb",
-                              color: "white",
-                              fontWeight: "bold",
-                            },
-                          }}
-                        />
-                        <div className="mt-4 space-y-2">
-                          <div className="flex items-center text-sm">
-                            <div className="w-4 h-4 bg-blue-100 border border-blue-300 rounded mr-2"></div>
-                            <span className="text-gray-600">Available dates</span>
+                        <div 
+                          onMouseMove={handleCalendarMouseMove}
+                          onMouseLeave={handleCalendarMouseLeave}
+                          className="relative"
+                        >
+                          <CalendarComponent
+                            numberOfMonths={2}
+                            mode="single"
+                            selected={selectedDate}
+                            onSelect={setSelectedDate}
+                            disabled={(date) => {
+                              const today = new Date()
+                              today.setHours(0, 0, 0, 0)
+                              // Only disable past dates, allow all future dates
+                              return date < today
+                            }}
+                            fromDate={new Date()}
+                            className="rounded-md"
+                            modifiers={{
+                              available: (date) => {
+                                const today = new Date()
+                                today.setHours(0, 0, 0, 0)
+                                return date >= today
+                              },
+                              partiallyBooked: (date) => isDatePartiallyBooked(date),
+                              fullyBooked: (date) => isDateFullyBooked(date),
+                              selected: (date) => selectedDate?.toDateString() === date.toDateString(),
+                            }}
+                            modifiersStyles={{
+                              available: {
+                                backgroundColor: "#dbeafe",
+                                color: "#1d4ed8",
+                                fontWeight: "bold",
+                                borderRadius: "6px",
+                              },
+                              partiallyBooked: {
+                                backgroundColor: "#fef3c7",
+                                color: "#d97706",
+                                fontWeight: "bold",
+                                borderRadius: "6px",
+                              },
+                              fullyBooked: {
+                                backgroundColor: "#fee2e2",
+                                color: "#dc2626",
+                                fontWeight: "bold",
+                                borderRadius: "6px",
+                              },
+                              selected: {
+                                backgroundColor: "#2563eb",
+                                color: "white",
+                                fontWeight: "bold",
+                              },
+                            }}
+                          />
+                        </div>
+                        {/* Click-based Detailed Availability Display */}
+                        {selectedDate && (
+                          <div className="mt-4 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                            <div className="flex items-center justify-between mb-3">
+                              <h4 className="font-semibold text-gray-900">
+                                📅 {selectedDate.toLocaleDateString('en-US', { 
+                                  weekday: 'long', 
+                                  year: 'numeric', 
+                                  month: 'long', 
+                                  day: 'numeric' 
+                                })}
+                              </h4>
+                              <button 
+                                onClick={() => setSelectedDate(undefined)}
+                                className="text-gray-400 hover:text-gray-600"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                            
+                            {isDateFullyBooked(selectedDate) ? (
+                              <div className="text-center py-6">
+                                <div className="text-red-600 font-medium text-lg mb-2">🚫 Fully Booked</div>
+                                <p className="text-gray-600 mb-4">This date has no available time slots.</p>
+                                <div className="bg-red-50 p-3 rounded-lg">
+                                  <div className="text-sm font-medium text-red-800 mb-2">All {getAllTimeSlotsForDate(selectedDate).length} slots are taken:</div>
+                                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    {getBookedTimeSlotsForDate(selectedDate).map((slot: string, index: number) => (
+                                      <div key={index} className="text-xs text-red-600 bg-red-100 p-2 rounded">
+                                        {slot}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            ) : isDatePartiallyBooked(selectedDate) ? (
+                              <div className="space-y-4">
+                                <div className="flex items-center">
+                                  <div className="w-4 h-4 bg-orange-500 rounded-full mr-2"></div>
+                                  <span className="text-orange-600 font-medium">Partially Booked</span>
+                                  <span className="ml-auto text-sm text-gray-500">
+                                    {getTimeSlots().length} of {getAllTimeSlotsForDate(selectedDate).length} slots available
+                                  </span>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                  <div>
+                                    <h5 className="font-medium text-red-600 mb-3 flex items-center">
+                                      ❌ Booked Time Slots ({getBookedTimeSlotsForDate(selectedDate).length})
+                                    </h5>
+                                    <div className="space-y-2">
+                                      {getBookedTimeSlotsForDate(selectedDate).map((slot: string, index: number) => (
+                                        <div key={index} className="text-sm text-red-500 bg-red-50 p-3 rounded-lg border border-red-200">
+                                          {slot}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  
+                                  <div>
+                                    <h5 className="font-medium text-green-600 mb-3 flex items-center">
+                                      ✅ Available Time Slots ({getTimeSlots().length})
+                                    </h5>
+                                    <div className="space-y-2">
+                                      {getTimeSlots().map((slot: string, index: number) => (
+                                        <div key={index} className="text-sm text-green-600 bg-green-50 p-3 rounded-lg border border-green-200">
+                                          {slot}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="text-center py-6">
+                                <div className="text-green-600 font-medium text-lg mb-2">✅ All Slots Available</div>
+                                <p className="text-gray-600 mb-4">You can book any time slot on this date.</p>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                  {getAllTimeSlotsForDate(selectedDate).map((slot: string, index: number) => (
+                                    <div key={index} className="text-sm text-green-600 bg-green-50 p-3 rounded-lg border border-green-200">
+                                      {slot}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                           </div>
-                          <div className="flex items-center text-sm">
-                            <div className="w-4 h-4 bg-blue-600 rounded mr-2"></div>
-                            <span className="text-gray-600">Selected date</span>
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <div className="w-4 h-4 bg-gray-200 rounded mr-2"></div>
-                            <span className="text-gray-600">Unavailable dates</span>
+                        )}
+                        {/* Book Now Button */}
+                        <div className="mt-6 text-center">
+                          <button
+                            onClick={() => {
+                              // Scroll to the booking form in the sidebar
+                              const bookingForm = document.getElementById('booking-form-section');
+                              if (bookingForm) {
+                                bookingForm.scrollIntoView({ 
+                                  behavior: 'smooth',
+                                  block: 'start'
+                                });
+                              }
+                            }}
+                            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+                          >
+                            Book Now
+                          </button>
+                          <p className="text-sm text-gray-600 mt-2">
+                            Click to proceed to booking form
+                          </p>
+                        </div>
+
+                        {/* Simple Availability Display */}
+                        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                          <h4 className="font-medium mb-2">Quick Availability Guide:</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <div className="font-medium text-blue-600 mb-1">Available Dates:</div>
+                              <div className="space-y-1">
+                                <div>• Jan 1st - All slots available</div>
+                                <div>• Jan 2nd - 5 slots available (1 booked)</div>
+                                <div>• Jan 3rd - 4 slots available (2 booked)</div>
+                                <div>• Jan 4th - 5 slots available (1 booked)</div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="font-medium text-orange-600 mb-1">Partially Booked:</div>
+                              <div className="space-y-1">
+                                <div>• Jan 5th, 6th, 7th, 8th, 9th</div>
+                                <div>• Jan 11th, 12th, 13th, 14th, 15th</div>
+                                <div>• Jan 16th, 18th, 19th, 20th, 21st</div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -495,71 +761,16 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {/* Booking Card */}
-            <div className="bg-white border rounded-lg p-6 mb-6">
-              <h2 className="text-xl font-bold mb-4">Book This Venue</h2>
-              <div className="mb-4">
-                <div className="flex items-center mb-2">
-                  <Mail className="h-4 w-4 text-gray-400 mr-2" />
-                  <span className="text-sm text-gray-600">{venue.contactEmail}</span>
-                </div>
-                <div className="flex items-center mb-4">
-                  <Phone className="h-4 w-4 text-gray-400 mr-2" />
-                  <span className="text-sm text-gray-600">{venue.contactPhone}</span>
-                </div>
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
-                <CalendarComponent
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  disabled={(date) => !isDateAvailable(date)}
-                  className="rounded-md border"
-                  modifiers={{
-                    available: (date) => isDateAvailable(date),
-                  }}
-                  modifiersStyles={{
-                    available: {
-                      backgroundColor: "#dbeafe",
-                      color: "#1d4ed8",
-                      fontWeight: "bold",
-                    },
-                  }}
-                />
-              </div>
-              <div className="mb-6">
-                <label htmlFor="timeSlot" className="block text-sm font-medium text-gray-700 mb-1">
-                  Time Slot
-                </label>
-                <select
-                  id="timeSlot"
-                  name="timeSlot"
-                  value={selectedTimeSlot}
-                  onChange={(e) => setSelectedTimeSlot(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={venue.isBooked || !selectedDate}
-                >
-                  <option value="">Select a time slot</option>
-                  {timeSlots.map((slot) => (
-                    <option key={slot} value={slot}>
-                      {slot}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                className={`w-full py-2 rounded-md mb-4 ${
-                  selectedDate && selectedTimeSlot && !venue.isBooked
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
-                disabled={!selectedDate || !selectedTimeSlot || venue.isBooked}
-              >
-                {venue.isBooked ? "Currently Booked" : "Book Now"}
-              </button>
-            </div>
+          <div className="lg:col-span-1" id="booking-form-section">
+            {/* Booking Form */}
+            <BookingForm
+              venue={venue}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              selectedTimeSlot={selectedTimeSlot}
+              setSelectedTimeSlot={setSelectedTimeSlot}
+              timeSlots={timeSlots}
+            />
 
             {/* Availability Overview */}
             {venue.availability && (
