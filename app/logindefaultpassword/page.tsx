@@ -38,7 +38,7 @@ export default function LoginDefaultPasswordPage() {
 
       if (result.success) {
         // Redirect to email confirmation page
-        router.push("/email-confirmation")
+        router.push("/login")
       } else {
         setError(result.error || "Login failed. Please check your email and default password.")
       }
