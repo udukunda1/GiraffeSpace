@@ -103,3 +103,60 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Calendar Styles */
+.rdp {
+  --rdp-cell-size: 48px;
+  --rdp-accent-color: #3b82f6;
+  --rdp-background-color: #eff6ff;
+  margin: 0;
+}
+
+.rdp-day_selected:not(.rdp-day_disabled):not(.rdp-day_outside) {
+  background-color: var(--rdp-accent-color);
+  color: white;
+}
+
+.rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  background-color: var(--rdp-background-color);
+}
+
+.rdp-caption_label {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.rdp-head_cell {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.rdp-day {
+  height: var(--rdp-cell-size);
+  width: var(--rdp-cell-size);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Tooltip Styles */
+.TooltipContent {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.TooltipContent[data-state='delayed-open'][data-side='top'] {
+  animation-name: slideDownAndFade;
+}
+
+@keyframes slideDownAndFade {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
