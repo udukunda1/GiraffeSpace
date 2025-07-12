@@ -83,14 +83,18 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
     "2025-01-10": true,
     "2025-01-17": true,
     "2025-01-27": true,
+    "2025-08-04": true, // Added August 5th, 2025
     "2025-08-14": true,
     "2025-11-10": true,
   }
 
   // Check if a date is fully booked
   const isDateFullyBooked = (date: Date) => {
-    const dateStr = date.toISOString().split("T")[0]
-    return mockBookedDates[dateStr] || false
+    // Use local date string for comparison
+    const dateStr = date.getFullYear() + "-" +
+      String(date.getMonth() + 1).padStart(2, "0") + "-" +
+      String(date.getDate()).padStart(2, "0");
+    return mockBookedDates[dateStr] || false;
   }
 
   const amenitiesList = venue.amenities.split(",").map((amenity) => amenity.trim())
@@ -177,7 +181,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                   priority
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                     {venue.venueType}
                   </span>
                 </div>
@@ -209,7 +213,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                   <div
                     key={index}
                     className={`relative h-16 rounded-md overflow-hidden cursor-pointer transition-all ${
-                      index === currentPhotoIndex ? "ring-2 ring-purple-500" : "hover:opacity-80"
+                      index === currentPhotoIndex ? "ring-2 ring-blue-500" : "hover:opacity-80"
                     }`}
                     onClick={() => setCurrentPhotoIndex(index)}
                   >
@@ -240,7 +244,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                     href={venue.googleMapsLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-purple-600 hover:text-purple-800 flex items-center mt-1"
+                    className="text-sm text-blue-600 hover:text-blue-700 flex items-center mt-1"
                   >
                     <ExternalLink className="h-3 w-3 mr-1" />
                     View on Google Maps
@@ -282,7 +286,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                 <button
                   className={`px-4 py-2 font-medium ${
                     activeTab === "details"
-                      ? "border-b-2 border-purple-600 text-purple-600"
+                      ? "border-b-2 border-blue-600 text-blue-600"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                   onClick={() => setActiveTab("details")}
@@ -292,7 +296,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                 <button
                   className={`px-4 py-2 font-medium ${
                     activeTab === "availability"
-                      ? "border-b-2 border-purple-600 text-purple-600"
+                      ? "border-b-2 border-blue-600 text-blue-600"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                   onClick={() => setActiveTab("availability")}
@@ -336,7 +340,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {amenitiesList.map((amenity) => (
                       <div key={amenity} className="flex items-center">
-                        <CheckCircle className="h-5 w-5 text-purple-600 mr-2" />
+                        <CheckCircle className="h-5 w-5 text-blue-600 mr-2" />
                         <span className="text-gray-700">{amenity}</span>
                       </div>
                     ))}
@@ -447,9 +451,9 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                         </div>
                       </div>
 
-                      <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400">
-                        <h4 className="font-semibold text-purple-900 mb-2">Important Notice</h4>
-                        <p className="text-purple-800 text-sm">
+                      <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+                        <h4 className="font-semibold text-blue-900 mb-2">Important Notice</h4>
+                        <p className="text-blue-800 text-sm">
                           By booking this venue, you agree to all terms and conditions outlined above. Please read
                           carefully and contact us if you have any questions about our policies.
                         </p>
@@ -496,8 +500,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                         selected={selectedRange}
                         onSelect={(range) => {
                           setSelectedRange(range);
-                          if (range?.from && !range.to) {
-                            // Scroll to booking form when check-in is selected
+                          if (range?.from || range?.to) {
                             const bookingForm = document.getElementById('booking-form-section');
                             if (bookingForm) {
                               bookingForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -505,11 +508,27 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                           }
                         }}
                         disabled={(date) => {
-                          const today = new Date()
-                          today.setHours(0, 0, 0, 0)
-                          return date < today || isDateFullyBooked(date)
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          // Always disable past dates and fully booked dates
+                          if (date < today || isDateFullyBooked(date)) return true;
+                          // If a check-in date is selected, disable dates after the first booked date in the range
+                          if (selectedRange?.from) {
+                            // Find the next booked date after check-in
+                            const checkIn = selectedRange.from;
+                            let nextBooked = null;
+                            for (let d = new Date(checkIn.getTime() + 86400000); d <= new Date(checkIn.getFullYear() + 2, 11, 31); d.setDate(d.getDate() + 1)) {
+                              if (isDateFullyBooked(new Date(d))) {
+                                nextBooked = new Date(d);
+                                break;
+                              }
+                            }
+                            if (nextBooked && date > nextBooked) return true;
+                          }
+                          return false;
                         }}
                         fromDate={new Date()}
+                        numberOfMonths={2}
                         className="rounded-lg border-0"
                         modifiers={{
                           fullyBooked: (date) => isDateFullyBooked(date),
@@ -518,20 +537,57 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                             today.setHours(0, 0, 0, 0)
                             return date >= today && !isDateFullyBooked(date)
                           },
+                          selectedCheckIn: (date) => !!(selectedRange?.from && date.toDateString() === selectedRange.from.toDateString()),
+                          selectedCheckOut: (date) => !!(selectedRange?.to && date.toDateString() === selectedRange.to.toDateString()),
+                          inRange: (date) => {
+                            if (selectedRange?.from && selectedRange?.to) {
+                              return date > selectedRange.from && date < selectedRange.to;
+                            }
+                            return false;
+                          },
+                          today: (date) => {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            return date.toDateString() === today.toDateString();
+                          },
                         }}
                         modifiersStyles={{
                           fullyBooked: {
-                            backgroundColor: "#fee2e2",
-                            color: "#dc2626",
+                            backgroundColor: "#fff",
+                            color: "#9ca3af",
                             textDecoration: "line-through",
                             cursor: "not-allowed",
                             fontWeight: "bold",
                           },
                           available: {
-                            backgroundColor: "#dbeafe",
-                            color: "#1d4ed8",
-                            fontWeight: "600",
+                            backgroundColor: "#fff",
+                            color: "#111",
+                            fontWeight: "400",
                             cursor: "pointer",
+                          },
+                          selectedCheckIn: {
+                            backgroundColor: "#111",
+                            color: "#fff",
+                            borderRadius: "50%",
+                          },
+                          selectedCheckOut: {
+                            backgroundColor: "#111",
+                            color: "#fff",
+                            borderRadius: "50%",
+                          },
+                          inRange: {
+                            backgroundColor: "#f3f4f6",
+                            color: "#111",
+                            borderRadius: 0,
+                          },
+                          today: {
+                            border: "2px solid #3b82f6",
+                            borderRadius: "50%",
+                          },
+                          disabled: {
+                            color: "#9ca3af",
+                            backgroundColor: "#fff",
+                            cursor: "not-allowed",
                           },
                         }}
                         classNames={{
@@ -578,8 +634,8 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                   {/* Selected Date Display */}
                   {selectedRange?.from && selectedRange?.to && (
                     <div className="text-center p-6 bg-blue-50 rounded-xl border border-blue-200 mb-6">
-                      <h4 className="text-xl font-bold text-blue-900 mb-2">📅 Selected Dates</h4>
-                      <p className="text-lg text-blue-800">
+                      <h4 className="text-xl font-bold text-blue-300 mb-2"> Selected Dates</h4>
+                      <p className="text-lg text-black">
                         Check-in: {selectedRange.from.toLocaleDateString("en-US", {
                           weekday: "long",
                           year: "numeric",
@@ -587,7 +643,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                           day: "numeric",
                         })}
                       </p>
-                      <p className="text-lg text-blue-800">
+                      <p className="text-lg text-black">
                         Check-out: {selectedRange.to.toLocaleDateString("en-US", {
                           weekday: "long",
                           year: "numeric",
@@ -595,7 +651,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                           day: "numeric",
                         })}
                       </p>
-                      <p className="text-sm text-blue-600 mt-2">Proceed to booking form to complete your reservation</p>
+                      <p className="text-sm text-blue-300 mt-2">Proceed to booking form to complete your reservation</p>
                     </div>
                   )}
 
@@ -615,26 +671,6 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                       )}
                     </div>
                   </div>
-
-                  {/* Book Now Button */}
-                  <div className="text-center mt-8">
-                    <button
-                      onClick={() => {
-                        if (!isLoggedIn) {
-                          router.push("/login")
-                        } else {
-                          const bookingForm = document.getElementById("booking-form-section")
-                          if (bookingForm) {
-                            bookingForm.scrollIntoView({ behavior: "smooth", block: "start" })
-                          }
-                        }
-                      }}
-                      className="bg-purple-600 text-white px-12 py-4 rounded-xl font-semibold text-lg hover:bg-purple-700 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 bg-blue-50 p-3 rounded-lg border border-blue-200 text-blue-900"
-                    >
-                      {isLoggedIn ? "Book Now" : "Book Now - Continue to Login"}
-                    </button>
-                    <p className="text-sm text-gray-600 mt-3">Select a date above and proceed to booking</p>
-                  </div>
                 </div>
               </div>
             )}
@@ -642,7 +678,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
 
           {/* Sidebar */}
           <div className="lg:col-span-1" id="booking-form-section">
-            {/* Booking Form */}
+            {/* Only show the BookingForm, no extra login prompt above */}
             <BookingForm venue={venue} checkIn={selectedRange?.from} checkOut={selectedRange?.to} />
 
             {/* Venue Rating & Comments */}
@@ -656,7 +692,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                     key={star}
                     type="button"
                     className={`text-2xl mr-1 focus:outline-none ${
-                      star <= (venue.rating || 0) ? "text-purple-400" : "text-gray-300"
+                      star <= (venue.rating || 0) ? "text-blue-300" : "text-gray-300"
                     }`}
                   >
                     ★
@@ -694,39 +730,39 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                       </span>
                     </div>
                   </div>
-
-                  {/* Name Input */}
-                  <div>
-                    <label htmlFor="commentName" className="block text-sm font-medium text-gray-700 mb-1">
-                      Your Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="commentName"
-                      value={newComment.userName}
-                      onChange={(e) => setNewComment((prev) => ({ ...prev, userName: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      placeholder="Enter your name"
-                      required
-                    />
-                  </div>
-
-                  {/* Email Input */}
-                  <div>
-                    <label htmlFor="commentEmail" className="block text-sm font-medium text-gray-700 mb-1">
-                      Your Email *
-                    </label>
-                    <input
-                      type="email"
-                      id="commentEmail"
-                      value={newComment.userEmail}
-                      onChange={(e) => setNewComment((prev) => ({ ...prev, userEmail: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      placeholder="Enter your email"
-                      required
-                    />
-                  </div>
-
+                  {/* Name and Email Inputs: Only show if not logged in */}
+                  {!isLoggedIn && (
+                    <>
+                      <div>
+                        <label htmlFor="commentName" className="block text-sm font-medium text-gray-700 mb-1">
+                          Your Name *
+                        </label>
+                        <input
+                          type="text"
+                          id="commentName"
+                          value={newComment.userName}
+                          onChange={(e) => setNewComment((prev) => ({ ...prev, userName: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Enter your name"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="commentEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                          Your Email *
+                        </label>
+                        <input
+                          type="email"
+                          id="commentEmail"
+                          value={newComment.userEmail}
+                          onChange={(e) => setNewComment((prev) => ({ ...prev, userEmail: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Enter your email"
+                          required
+                        />
+                      </div>
+                    </>
+                  )}
                   {/* Comment Input */}
                   <div>
                     <label htmlFor="commentContent" className="block text-sm font-medium text-gray-700 mb-1">
@@ -737,16 +773,15 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                       value={newComment.content}
                       onChange={(e) => setNewComment((prev) => ({ ...prev, content: e.target.value }))}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Share your experience with this venue..."
                       required
                     />
                   </div>
-
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors font-medium"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium"
                   >
                     Submit Comment
                   </button>
@@ -807,11 +842,58 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
                   )
                 )}
               </div>
+              {/* 1. Add a style for a sticky button inside the sidebar */}
+              <style jsx global>{`
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  20% { transform: translateY(-10px); }
+  40% { transform: translateY(-20px); }
+  50% { transform: translateY(-15px); }
+  60% { transform: translateY(-20px); }
+  80% { transform: translateY(-10px); }
+}
+.bounce-animate {
+  animation: bounce 1s cubic-bezier(.36,.07,.19,.97) both;
+  animation-iteration-count: infinite;
+}
+.sidebar-sticky-btn {
+  position: sticky;
+  bottom: 24px;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  background: transparent;
+}
+`}</style>
             </div>
           </div>
         </div>
       </main>
       <Footer />
+      {/* Place the Book Now button as a fixed element at the bottom right of the viewport */}
+      <div className="fixed bottom-6 right-6 z-50 flex justify-center">
+        <button
+          onClick={() => {
+            if (!isLoggedIn) {
+              router.push("/login")
+            } else {
+              const bookingForm = document.getElementById("booking-form-section")
+              if (bookingForm) {
+                bookingForm.scrollIntoView({ behavior: "smooth", block: "start" })
+              }
+            }
+          }}
+          className="bounce-animate bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-colors font-medium relative overflow-hidden shadow-lg"
+        >
+          <span
+            className="absolute left-0 top-0 w-full h-1/2 rounded-t-full bg-white opacity-30 pointer-events-none"
+            style={{ filter: 'blur(2px)' }}
+          ></span>
+          {isLoggedIn ? "Book Now" : "Book Now"}
+        </button>
+      </div>
     </div>
   )
 }

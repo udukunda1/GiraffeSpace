@@ -18,14 +18,7 @@ export default function BookingForm({ venue, checkIn, checkOut }: BookingFormPro
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!checkIn || !checkOut) {
-      alert("Please select both check-in and check-out dates")
-      return
-    }
-    if (checkOut < checkIn) {
-      alert("Check-out date must be after check-in date")
-      return
-    }
+    // Remove all required validation for checkIn and checkOut
     setIsSubmitting(true)
     await new Promise((resolve) => setTimeout(resolve, 1000))
     router.push("/login")
@@ -34,7 +27,7 @@ export default function BookingForm({ venue, checkIn, checkOut }: BookingFormPro
   return (
     <div className="bg-white border rounded-xl p-6 shadow-lg">
       <h2 className="text-2xl font-bold mb-6 flex items-center text-gray-900">
-        <CalendarIcon className="h-6 w-6 mr-3 text-blue-600" />
+        <CalendarIcon className="h-6 w-6 mr-3 text-black" />
         Book This Venue
       </h2>
       {/* Venue Info Summary */}
@@ -48,11 +41,11 @@ export default function BookingForm({ venue, checkIn, checkOut }: BookingFormPro
       </div> */}
       {/* Selected Dates Display */}
       <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-        <h4 className="font-semibold text-blue-900 mb-2">Selected Dates</h4>
-        <p className="text-blue-800">
+        <h4 className="font-semibold text-black mb-2">Selected Dates</h4>
+        <p className="text-black">
           Check-in: {checkIn ? checkIn.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }) : <span className="text-gray-400">Not selected</span>}
         </p>
-        <p className="text-blue-800">
+        <p className="text-black">
           Check-out: {checkOut ? checkOut.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }) : <span className="text-gray-400">Not selected</span>}
         </p>
       </div>
@@ -60,9 +53,9 @@ export default function BookingForm({ venue, checkIn, checkOut }: BookingFormPro
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={!checkIn || !checkOut || isSubmitting}
+          disabled={isSubmitting}
           className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all transform ${
-            checkIn && checkOut && !isSubmitting
+            !isSubmitting
               ? "bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 shadow-lg hover:shadow-xl"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
           }`}
@@ -77,7 +70,7 @@ export default function BookingForm({ venue, checkIn, checkOut }: BookingFormPro
           )}
         </button>
         <p className="text-xs text-gray-500 text-center">
-          By clicking "Book Now", you'll be redirected to login or create an account
+          By clicking above button, you'll be redirected to login or create an account if you didn't have an account or your are not logged in,,,if you have an account or you are logged in it will redirect you to the booking form
         </p>
       </form>
       {/* Pricing Info */}
