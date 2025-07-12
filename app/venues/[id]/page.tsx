@@ -879,10 +879,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
             if (!isLoggedIn) {
               router.push("/login")
             } else {
-              const bookingForm = document.getElementById("booking-form-section")
-              if (bookingForm) {
-                bookingForm.scrollIntoView({ behavior: "smooth", block: "start" })
-              }
+              router.push("/user-dashboard")
             }
           }}
           className="bounce-animate bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700 transition-colors font-medium relative overflow-hidden shadow-lg"
@@ -891,7 +888,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
             className="absolute left-0 top-0 w-full h-1/2 rounded-t-full bg-white opacity-30 pointer-events-none"
             style={{ filter: 'blur(2px)' }}
           ></span>
-          {isLoggedIn ? "Book Now" : "Book Now"}
+          {isLoggedIn ? "Book Now" : "Book Now - Continue to Login"}
         </button>
       </div>
     </div>
