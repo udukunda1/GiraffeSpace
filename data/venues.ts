@@ -22,6 +22,12 @@ export interface Venue {
     timeSlots: string[]
   }>
   imageSrc?: string
+  comments?: {
+    userName: string
+    userEmail: string
+    content: string
+  }[]
+  rating?: number
 }
 
 

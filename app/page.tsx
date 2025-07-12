@@ -93,10 +93,10 @@ export default function Home() {
                   }`}
                 >
                   <Button href="/venues" variant="primary">
-                    Booking Venue
+                   Available Venues
                   </Button>
                   <Button href="/events" variant="outline">
-                    Get Event
+                    Available Events
                   </Button>
                 </div>
               </div>
