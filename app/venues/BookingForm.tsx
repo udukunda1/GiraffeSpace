@@ -5,7 +5,6 @@ import type React from "react"
 import { CalendarIcon, User } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Calendar } from "@/components/ui/calendar"
-import { useAuth } from "@/contexts/auth-context"
 
 interface BookingFormProps {
   venue: any
@@ -16,7 +15,6 @@ interface BookingFormProps {
 export default function BookingForm({ venue, checkIn, checkOut }: BookingFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
-  const { isLoggedIn } = useAuth()
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,7 +66,7 @@ export default function BookingForm({ venue, checkIn, checkOut }: BookingFormPro
               Processing...
             </span>
           ) : (
-            isLoggedIn ? "Book Now" : "Book Now - Continue to Login"
+            "Book Now - Continue to Login"
           )}
         </button>
         <p className="text-xs text-gray-500 text-center">

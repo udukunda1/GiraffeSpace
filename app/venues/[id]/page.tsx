@@ -888,7 +888,7 @@ export default function VenuePage({ params }: { params: Promise<{ id: string }> 
             className="absolute left-0 top-0 w-full h-1/2 rounded-t-full bg-white opacity-30 pointer-events-none"
             style={{ filter: 'blur(2px)' }}
           ></span>
-          {isLoggedIn ? "Book Now" : "Book Now - Continue to Login"}
+          {isLoggedIn ? "Book Now" : "Book Now"}
         </button>
       </div>
     </div>
