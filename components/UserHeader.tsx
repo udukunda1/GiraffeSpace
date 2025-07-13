@@ -42,7 +42,7 @@ export function UserHeader({user}: {user: any}) {
   const userInitials = user ? `${user.username[0]}` : "U"
 
   return (
-    <header className="fixed top-0 left-0 w-full z-30 border-b bg-white">
+    <header className="fixed top-0 h-16 left-0 w-full z-30 border-b bg-white">
       <div className="w-full">
         <div className="px-6 py-3 max-w-[1440px] w-full mx-auto flex items-center justify-between">
           {/* Left: Logo and App Name */}

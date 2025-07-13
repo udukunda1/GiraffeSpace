@@ -93,7 +93,7 @@ export default function BookingRequestsPage() {
     <div className="min-h-screen flex">
       <Sidebar />
 
-      <main className="flex-1 bg-white">
+      <main className="ml-44 flex-1 bg-white">
         <div className="p-8">
           <div className="mb-6">
             <h1 className="text-2xl font-bold">Booking Requests</h1>

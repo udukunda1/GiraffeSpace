@@ -102,7 +102,7 @@ export default function VenueDetailsPage() {
     return (
       <div className="min-h-screen flex">
         <Sidebar />
-        <main className="flex-1 bg-white">
+        <main className="ml-44 flex-1 bg-white">
           <div className="p-8">
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
@@ -117,7 +117,7 @@ export default function VenueDetailsPage() {
     return (
       <div className="min-h-screen flex">
         <Sidebar />
-        <main className="flex-1 bg-white">
+        <main className=" ml-44 flex-1 bg-white">
           <div className="p-8">
             <Link href="/manage/venues/myvenues" className="flex items-center text-gray-600 hover:text-gray-900 mb-6">
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -140,9 +140,8 @@ export default function VenueDetailsPage() {
     <div className="min-h-screen flex">
       <Sidebar />
 
-      <main className="flex-1 bg-white">
-        <div className="p-8">
-          <div className="flex items-center justify-between mb-6">
+      <main className="ml-44 flex-1 bg-white">
+         <div className="flex items-center justify-between m-8">
             <div className="flex items-center">
               <Link href="/manage/venues/myvenues" className="text-gray-600 hover:text-gray-900 mr-4">
                 <ArrowLeft className="h-5 w-5" />
@@ -155,12 +154,11 @@ export default function VenueDetailsPage() {
                 href="#"
                 className="flex items-center gap-2 text-gray-700 border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50"
               >
-                <Eye className="h-4 w-4" />
-                View Public Page
+                Book this venue
               </Link>
               <Link
                 href={`/manage/venues/${id}/edit`}
-                className="flex items-center gap-2 text-white bg-black px-4 py-2 rounded-md hover:bg-gray-800"
+                className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90 shadow-md px-5 py-2 rounded-lg"
               >
                 <Edit className="h-4 w-4" />
                 Edit Venue
@@ -168,7 +166,37 @@ export default function VenueDetailsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* Statistics Card Section: Shows total bookings, pending approvals, and total revenue for the venue */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 m-8">
+          <div className="bg-white border rounded-lg p-6 flex items-center gap-4 shadow-sm">
+            <Users className="h-8 w-8 text-primary" />
+            <div>
+              <p className="text-sm text-gray-500">Total Bookings</p>
+              <p className="text-2xl font-bold">{venue.totalBookings}</p>
+            </div>
+          </div>
+          <div className="bg-white border rounded-lg p-6 flex items-center gap-4 shadow-sm">
+            <Eye className="h-8 w-8 text-yellow-500" />
+            <div>
+              <p className="text-sm text-gray-500">Pending Approvals</p>
+              <p className="text-2xl font-bold">{venue.pendingApprovals}</p>
+            </div>
+          </div>
+          <div className="bg-white border rounded-lg p-6 flex items-center gap-4 shadow-sm">
+            <DollarSign className="h-8 w-8 text-green-600" />
+            <div>
+              <p className="text-sm text-gray-500">Total Revenue</p>
+              <p className="text-2xl font-bold">${venue.totalRevenue}</p>
+            </div>
+          </div>
+        </div>
+        <div className="p-8">
+         
+
+          
+
+          <div className=" w-full">
             {/* Venue Details */}
             <div className="lg:col-span-2">
               <div className="bg-white border rounded-lg overflow-hidden">
@@ -223,26 +251,7 @@ export default function VenueDetailsPage() {
               </div>
             </div>
 
-            {/* Statistics */}
-            <div>
-              <div className="bg-white border rounded-lg overflow-hidden">
-                <h2 className="text-lg font-bold p-4 border-b">Statistics</h2>
-                <div className="p-4">
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-500">Total Bookings</p>
-                    <p className="text-3xl font-bold">{venue.totalBookings}</p>
-                  </div>
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-500">Pending Approvals</p>
-                    <p className="text-3xl font-bold">{venue.pendingApprovals}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Total Revenue</p>
-                    <p className="text-3xl font-bold">${venue.totalRevenue}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          
           </div>
 
           {/* Bookings */}
