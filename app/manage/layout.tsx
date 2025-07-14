@@ -10,11 +10,14 @@ export default function VenueLayout({
     <>
       <ManageUserHeader />
       <div className="flex mt-16 min-h-screen">
-        <Sidebar />
-        <main className="flex-1 ">{children}</main>
+        <Sidebar className="w-60" />
+        {/* Main content */}
+        <div className="flex-1">
+          {children}
+        </div>
       </div>
     </>
-  );
+  )
 }
 
  

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 import Link from "next/link"
-import { Sidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
 import {  useMemo } from "react"
 import { MapPin, Edit, Eye, Trash2, Search, ChevronLeft, ChevronRight } from "lucide-react"
@@ -200,7 +199,7 @@ export default function ManageVenuesPage() {
   return (
     <>
     <div className="min-h-screen flex">
-      <Sidebar />
+      {/* <Sidebar /> */}
 
       <main className="flex-1 bg-white ml-44 p-4">
       
