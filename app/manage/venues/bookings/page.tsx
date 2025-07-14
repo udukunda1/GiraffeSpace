@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/auth-context"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Check, X } from "lucide-react"
-import { Sidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
 
 // Sample booking data
@@ -91,8 +90,6 @@ export default function BookingRequestsPage() {
   return (
     <>
     <div className="min-h-screen flex">
-      <Sidebar />
-
       <main className="ml-44 flex-1 bg-white">
         <div className="p-8">
           <div className="mb-6">
